@@ -1,0 +1,5 @@
+INSERT INTO categories (name, parent_id, description) VALUES
+('Passive Components', NULL, 'Пассивные компоненты'),
+('Resistors', (SELECT id FROM categories WHERE name = 'Passive Components'), 'Резисторы'),
+('Capacitors', (SELECT id FROM categories WHERE name = 'Passive Components'), 'Конденсаторы'),
+('Inductors', (SELECT id FROM categories WHERE name = 'Passive Components'), 'Индуктивности');

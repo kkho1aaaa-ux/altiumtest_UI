@@ -1,0 +1,2 @@
+SELECT * FROM components 
+WHERE id = {{componentsTable.selectedRow.id}};

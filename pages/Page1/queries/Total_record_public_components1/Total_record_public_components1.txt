@@ -1,0 +1,1 @@
+SELECT COUNT(*) from public.components where part_number ilike '%{{componentsTable.searchText}}%';

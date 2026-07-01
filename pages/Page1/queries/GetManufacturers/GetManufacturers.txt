@@ -1,0 +1,6 @@
+SELECT 
+    id, 
+    name, 
+    website
+FROM manufacturers 
+ORDER BY name;

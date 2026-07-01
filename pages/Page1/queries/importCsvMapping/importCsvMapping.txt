@@ -1,9 +1,0 @@
-INSERT INTO csv_import_mappings (
-    source_field, target_field, data_type, is_required
-) VALUES 
-    {{csvImportForm.sourceField1Input.text}}, {{csvImportForm.targetField1Dropdown.selectedOptionValue}}, 'text', false,
-    {{csvImportForm.sourceField2Input.text}}, {{csvImportForm.targetField2Dropdown.selectedOptionValue}}, 'number', false
-)
-ON CONFLICT (source_field) DO UPDATE SET
-    target_field = EXCLUDED.target_field,
-    data_type = EXCLUDED.data_type;
