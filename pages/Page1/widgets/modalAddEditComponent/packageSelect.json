@@ -2,15 +2,18 @@
   "accentColor": "{{appsmith.theme.colors.primaryColor}}",
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 38,
+  "bottomRow": 30,
   "boxShadow": "none",
-  "defaultOptionValue": "GREEN",
+  "defaultOptionValue": "",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
     },
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "sourceData"
     }
   ],
   "dynamicHeight": "FIXED",
@@ -41,7 +44,9 @@
   "mobileTopRow": 31,
   "needsErrorInfo": false,
   "optionLabel": "name",
-  "optionValue": "code",
+  "optionValue": "id",
+  "originalBottomRow": 47,
+  "originalTopRow": 40,
   "parentColumnSpace": 13.375,
   "parentId": "5ba26oy2oq",
   "parentRowSpace": 10,
@@ -50,8 +55,8 @@
   "responsiveBehavior": "fill",
   "rightColumn": 15,
   "serverSideFiltering": false,
-  "sourceData": "[\n  {\n    \"name\": \"Blue\",\n    \"code\": \"BLUE\"\n  },\n  {\n    \"name\": \"Green\",\n    \"code\": \"GREEN\"\n  },\n  {\n    \"name\": \"Red\",\n    \"code\": \"RED\"\n  }\n]",
-  "topRow": 31,
+  "sourceData": "{{getPackages.data}}",
+  "topRow": 23,
   "type": "SELECT_WIDGET",
   "version": 1,
   "widgetId": "eucr33nuca",

@@ -15,21 +15,30 @@
     }
   ],
   "dynamicHeight": "FIXED",
-  "dynamicTriggerPathList": [],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onTextChanged"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onTextChanged"
+    }
+  ],
   "iconAlign": "left",
-  "inputType": "TEXT",
+  "inputType": "NUMBER",
   "isDisabled": false,
   "isLoading": false,
   "isRequired": true,
   "isVisible": true,
   "key": "x6mfef7ajt",
-  "label": "Part Number",
+  "label": "Value",
   "labelAlignment": "left",
   "labelPosition": "Top",
   "labelStyle": "",
   "labelTextSize": "0.875rem",
   "labelWidth": 5,
-  "leftColumn": 1,
+  "leftColumn": 16,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
@@ -38,18 +47,20 @@
   "mobileRightColumn": 26,
   "mobileTopRow": 7,
   "needsErrorInfo": false,
+  "onTextChanged": "{{formHandlers.buildValueDisplay()}}",
   "parentColumnSpace": 6.9375,
   "parentId": "5ba26oy2oq",
   "parentRowSpace": 10,
-  "placeholderText": "RC0402FR-0710KL",
+  "placeholderText": "10",
   "renderMode": "CANVAS",
   "resetOnSubmit": true,
   "responsiveBehavior": "fill",
-  "rightColumn": 15,
-  "showStepArrows": false,
+  "rightColumn": 22,
+  "shouldAllowAutofill": false,
+  "showStepArrows": true,
   "topRow": 7,
   "type": "INPUT_WIDGET_V2",
   "version": 2,
-  "widgetId": "i786x7xvit",
-  "widgetName": "partNumberInput"
+  "widgetId": "lpat5bh84v",
+  "widgetName": "valueNumberInput"
 }

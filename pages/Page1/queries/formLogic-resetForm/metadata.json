@@ -1,6 +1,6 @@
 {
-  "gitSyncId": "6a44d0f9af138a374389db91_433640f1-f3f0-40cf-8f88-488c8586a51b",
-  "id": "Page1_formLogic.submitEdit",
+  "gitSyncId": "6a44d0f9af138a374389db91_50d93583-1b83-4dc7-85c5-821aa2abaccf",
+  "id": "Page1_formLogic.resetForm",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
@@ -22,8 +22,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "formLogic.submitEdit",
-    "name": "submitEdit",
+    "fullyQualifiedName": "formLogic.resetForm",
+    "name": "resetForm",
     "pageId": "Page1",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

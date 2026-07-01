@@ -5,14 +5,14 @@ UPDATE components SET
     value_number = {{valueNumberInput.value}},
     value_multiplier = {{valueMultiplierSelect.selectedOptionValue}},
     value_unit = {{valueUnitSelect.selectedOptionValue}},
-    value_display = {{valueDisplayInput.text}},
+    value_display = {{formHandlers.buildValueDisplay()}},
     tolerance_percent = NULLIF({{toleranceInput.value}}, '')::numeric,
     voltage_rating_v = NULLIF({{voltageInput.value}}, '')::numeric,
     power_rating_w = NULLIF({{powerRatingInput.value}}, '')::numeric,
     temp_min_c = NULLIF({{tempMinInput.value}}, '')::numeric,
     temp_max_c = NULLIF({{tempMaxInput.value}}, '')::numeric,
     package = {{packageSelect.selectedOptionValue}},
-    package_id = {{packageIdSelect.selectedOptionValue}}::integer,
+    package_id = (SELECT id FROM packages WHERE name = {{packageSelect.selectedOptionValue}} LIMIT 1)::integer,
     library_path = {{libraryPathInput.text}},
     library_ref = {{libraryRefInput.text}},
     footprint_path = {{footprintPathInput.text}},
@@ -24,4 +24,4 @@ UPDATE components SET
     kicad_keywords = {{kicadKeywordsInput.text}},
     kicad_fp_filter = {{kicadFpFilterInput.text}},
     updated_at = NOW()
-WHERE id = {{editForm.editingId}};
+WHERE id = {{appsmith.store.editingComponentId}}::integer;

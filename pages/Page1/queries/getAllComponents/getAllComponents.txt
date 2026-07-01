@@ -24,8 +24,7 @@ SELECT
     c.category_id,
     cat.name AS category_name,
     c.manufacturer_id,
-    m.name AS manufacturer_name,
-    c.status
+    m.name AS manufacturer_name
 FROM components c
 LEFT JOIN categories cat ON c.category_id = cat.id
 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id

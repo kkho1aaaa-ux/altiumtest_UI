@@ -1,6 +1,6 @@
 {
-  "gitSyncId": "6a44d0f9af138a374389db91_14f961a3-7a2c-4a2e-ae6a-081c9d54036d",
-  "id": "Page1_formLogic.submitAdd",
+  "gitSyncId": "6a44d0f9af138a374389db91_0d5715d3-f38d-4103-9639-209b7b09503e",
+  "id": "Page1_formLogic.cancelAction",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
@@ -22,8 +22,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "formLogic.submitAdd",
-    "name": "submitAdd",
+    "fullyQualifiedName": "formLogic.cancelAction",
+    "name": "cancelAction",
     "pageId": "Page1",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

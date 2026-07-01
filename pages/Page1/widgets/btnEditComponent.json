@@ -39,7 +39,7 @@
   "mobileRightColumn": 21,
   "mobileTopRow": 45,
   "needsErrorInfo": false,
-  "onClick": "partNumberInput.setValue(Table1.selectedRow.part_number);\n\t\tvalueDisplayInput.setValue(Table1.selectedRow.value_display);\n\t\ttoleranceInput.setValue(Table1.selectedRow.tolerance_percent);\n\t\ttempMinInput.setValue(Table1.selectedRow.temp_min_c);\n\t\ttempMaxInput.setValue(Table1.selectedRow.temp_max_c);\t\n\t\tpowerRatingInput.setValue(Table1.selectedRow.power_rating_w);\n\t\tshowModal(modalAddEditComponent.name);",
+  "onClick": "{{formHandlers.openEditForm()}}",
   "originalBottomRow": 49,
   "originalTopRow": 45,
   "parentColumnSpace": 20.25,
