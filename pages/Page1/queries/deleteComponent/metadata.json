@@ -1,11 +1,11 @@
 {
   "gitSyncId": "6a44afdb8905c61a90ad7cd6_b599226d-461a-44b5-b052-9a25c070601d",
-  "id": "Page1_DeleteComponent",
+  "id": "Page1_deleteComponent",
   "pluginId": "postgres-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "DELETE FROM components \nWHERE id = {{componentsTable.selectedRow.id}}\nRETURNING part_number;",
+      "body": "DELETE FROM components \nWHERE id = {{Table1.selectedRow.id}}\nRETURNING part_number;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -27,7 +27,7 @@
         "key": "body"
       }
     ],
-    "name": "DeleteComponent",
+    "name": "deleteComponent",
     "pageId": "Page1",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

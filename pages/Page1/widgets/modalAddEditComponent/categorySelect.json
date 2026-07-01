@@ -51,7 +51,7 @@
   "placeholderText": "Select option",
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 21,
+  "rightColumn": 15,
   "serverSideFiltering": false,
   "sourceData": "{{GetCategories.data}}",
   "topRow": 15,

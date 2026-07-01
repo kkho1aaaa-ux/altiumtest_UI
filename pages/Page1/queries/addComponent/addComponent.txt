@@ -1,0 +1,26 @@
+INSERT INTO components (
+	part_number, value_display, tolerance_percent,
+	temp_min_c, temp_max_c, power_rating_w,
+	package, library_path, library_ref,
+	footprint_path, footprint_ref,
+	datasheet_url, spice_model_path,
+	altium_comment, altium_designator,
+	category_id
+) VALUES (
+	{{partNumberInput.text}},
+	{{valueDisplayInput.text}},
+	{{toleranceInput.value}},
+	{{tempMinInput.value}},
+	{{tempMaxInput.value}},
+	{{powerRatingInput.value}},
+	{{packageSelect.selectedOptionValue}},
+	{{libraryPathInput.text}},
+	{{libraryRefInput.text}},
+	{{footprintPathInput.text}},
+	{{footprintRefInput.text}},
+	{{datasheetUrlInput.text}},
+	{{spiceModelInput.text}},
+	{{altiumCommentInput.text}},
+	{{altiumDesignatorInput.text}},
+	{{categorySelect.selectedOptionValue}}
+);

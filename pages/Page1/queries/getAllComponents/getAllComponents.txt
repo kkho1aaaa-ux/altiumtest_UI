@@ -1,11 +1,24 @@
 SELECT 
-    part_number,
-    value_display,
-    tolerance_percent,
-    package,
-    temp_min_c,
-    temp_max_c,
-    power_rating_w
-FROM components
-WHERE 
-    part_number ILIKE '%' || COALESCE({{searchInput.text}}, '') || '%';
+    c.id,
+    c.part_number,
+    c.value_display,
+    c.tolerance_percent,
+    c.temp_min_c,
+    c.temp_max_c,
+    c.power_rating_w,
+    c.package,
+    c.library_path,
+    c.library_ref,
+    c.footprint_path,
+    c.footprint_ref,
+    c.datasheet_url,
+    c.spice_model_path,
+    c.altium_comment,
+    c.altium_designator,
+    c.category_id,
+    cat.name AS category_name,
+    m.name AS manufacturer_name
+FROM components c
+LEFT JOIN categories cat ON c.category_id = cat.id
+LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
+ORDER BY c.part_number;

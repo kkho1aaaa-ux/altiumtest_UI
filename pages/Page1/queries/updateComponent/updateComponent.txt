@@ -1,0 +1,19 @@
+UPDATE components SET
+    part_number = {{partNumberInput.text}},
+    value_display = {{valueDisplayInput.text}},
+    tolerance_percent = NULLIF({{toleranceInput.value}}, '')::numeric,
+    temp_min_c = NULLIF({{tempMinInput.value}}, '')::numeric,
+    temp_max_c = NULLIF({{tempMaxInput.value}}, '')::numeric,
+    power_rating_w = NULLIF({{powerRatingInput.value}}, '')::numeric,
+    package = {{packageSelect.selectedOptionValue}},
+    library_path = {{libraryPathInput.text}},
+    library_ref = {{libraryRefInput.text}},
+    footprint_path = {{footprintPathInput.text}},
+    footprint_ref = {{footprintRefInput.text}},
+    datasheet_url = {{datasheetUrlInput.text}},
+    spice_model_path = {{spiceModelInput.text}},
+    altium_comment = {{altiumCommentInput.text}},
+    altium_designator = {{altiumDesignatorInput.text}},
+    category_id = {{categorySelect.selectedOptionValue}},
+    updated_at = NOW()
+WHERE part_number = {{partNumberInput.text}};

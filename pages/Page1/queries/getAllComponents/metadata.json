@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT \n    part_number,\n    value_display,\n    tolerance_percent,\n    package,\n    temp_min_c,\n    temp_max_c,\n    power_rating_w\nFROM components\nWHERE \n    part_number ILIKE '%' || COALESCE({{searchInput.text}}, '') || '%';",
+      "body": "SELECT \n    c.id,\n    c.part_number,\n    c.value_display,\n    c.tolerance_percent,\n    c.temp_min_c,\n    c.temp_max_c,\n    c.power_rating_w,\n    c.package,\n    c.library_path,\n    c.library_ref,\n    c.footprint_path,\n    c.footprint_ref,\n    c.datasheet_url,\n    c.spice_model_path,\n    c.altium_comment,\n    c.altium_designator,\n    c.category_id,\n    cat.name AS category_name,\n    m.name AS manufacturer_name\nFROM components c\nLEFT JOIN categories cat ON c.category_id = cat.id\nLEFT JOIN manufacturers m ON c.manufacturer_id = m.id\nORDER BY c.part_number;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -22,11 +22,7 @@
       "name": "Altium",
       "pluginId": "postgres-plugin"
     },
-    "dynamicBindingPathList": [
-      {
-        "key": "body"
-      }
-    ],
+    "dynamicBindingPathList": [],
     "name": "getAllComponents",
     "pageId": "Page1",
     "runBehaviour": "AUTOMATIC",
