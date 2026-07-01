@@ -1,7 +1,0 @@
-SELECT 
-    id, 
-    name, 
-    parent_id, 
-    description
-FROM categories 
-ORDER BY parent_id, name;

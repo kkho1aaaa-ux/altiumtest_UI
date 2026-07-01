@@ -53,7 +53,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 15,
   "serverSideFiltering": false,
-  "sourceData": "{{GetCategories.data}}",
+  "sourceData": "{{getCategories.data}}",
   "topRow": 15,
   "type": "SELECT_WIDGET",
   "version": 1,

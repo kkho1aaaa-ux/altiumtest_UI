@@ -1,0 +1,4 @@
+INSERT INTO package_standards (name, description) 
+VALUES ({{newStandardNameInput.text}}, {{newStandardDescInput.text}})
+ON CONFLICT (name) DO NOTHING
+RETURNING id;

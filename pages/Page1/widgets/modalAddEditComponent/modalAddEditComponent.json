@@ -1,14 +1,14 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 623,
+  "bottomRow": 663,
   "boxShadow": "none",
   "canEscapeKeyClose": true,
   "canOutsideClickClose": true,
   "children": [
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 510,
+      "bottomRow": 550,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -29,7 +29,7 @@
       "leftColumn": 0,
       "maxDynamicHeight": 9000,
       "minDynamicHeight": 4,
-      "minHeight": 560,
+      "minHeight": 550,
       "minWidth": 450,
       "mobileBottomRow": 240,
       "mobileLeftColumn": 0,
@@ -57,7 +57,7 @@
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
-  "height": 510,
+  "height": 550,
   "isCanvas": true,
   "isLoading": false,
   "key": "iwaqp5yo2e",
@@ -80,5 +80,5 @@
   "version": 2,
   "widgetId": "qunummtuw1",
   "widgetName": "modalAddEditComponent",
-  "width": 1074.6
+  "width": 1202.6
 }

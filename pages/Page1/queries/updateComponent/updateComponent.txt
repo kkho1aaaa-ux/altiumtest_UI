@@ -1,11 +1,18 @@
 UPDATE components SET
     part_number = {{partNumberInput.text}},
+    category_id = {{categorySelect.selectedOptionValue}}::integer,
+    manufacturer_id = {{manufacturerSelect.selectedOptionValue}}::integer,
+    value_number = {{valueNumberInput.value}},
+    value_multiplier = {{valueMultiplierSelect.selectedOptionValue}},
+    value_unit = {{valueUnitSelect.selectedOptionValue}},
     value_display = {{valueDisplayInput.text}},
     tolerance_percent = NULLIF({{toleranceInput.value}}, '')::numeric,
+    voltage_rating_v = NULLIF({{voltageInput.value}}, '')::numeric,
+    power_rating_w = NULLIF({{powerRatingInput.value}}, '')::numeric,
     temp_min_c = NULLIF({{tempMinInput.value}}, '')::numeric,
     temp_max_c = NULLIF({{tempMaxInput.value}}, '')::numeric,
-    power_rating_w = NULLIF({{powerRatingInput.value}}, '')::numeric,
     package = {{packageSelect.selectedOptionValue}},
+    package_id = {{packageIdSelect.selectedOptionValue}}::integer,
     library_path = {{libraryPathInput.text}},
     library_ref = {{libraryRefInput.text}},
     footprint_path = {{footprintPathInput.text}},
@@ -14,6 +21,7 @@ UPDATE components SET
     spice_model_path = {{spiceModelInput.text}},
     altium_comment = {{altiumCommentInput.text}},
     altium_designator = {{altiumDesignatorInput.text}},
-    category_id = {{categorySelect.selectedOptionValue}},
+    kicad_keywords = {{kicadKeywordsInput.text}},
+    kicad_fp_filter = {{kicadFpFilterInput.text}},
     updated_at = NOW()
-WHERE part_number = {{partNumberInput.text}};
+WHERE id = {{editForm.editingId}};

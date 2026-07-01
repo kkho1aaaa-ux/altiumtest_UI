@@ -1,0 +1,24 @@
+{
+  "gitSyncId": "6a44d0f9af138a374389db91_740b445f-940a-4d3a-bf6d-b72459f18c2b",
+  "id": "Page1_formLogic",
+  "unpublishedCollection": {
+    "name": "formLogic",
+    "pageId": "Page1",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": [
+      {
+        "name": "CATEGORY_IDS",
+        "value": "{\n  RESISTORS: ['1', '3', '7'],\n  CAPACITORS: ['2', '4', '8'],\n  INDUCTORS: ['5'],\n  PASSES_ALL: ['1', '2', '3', '4', '5', '7', '8']\n}"
+      },
+      {
+        "name": "MULTIPLIERS",
+        "value": "[{\n  label: '-',\n  value: ''\n}, {\n  label: 'p (пико)',\n  value: 'p'\n}, {\n  label: 'n (нано)',\n  value: 'n'\n}, {\n  label: 'u (микро)',\n  value: 'u'\n}, {\n  label: 'm (милли)',\n  value: 'm'\n}, {\n  label: 'K (кило)',\n  value: 'K'\n}, {\n  label: 'M (мега)',\n  value: 'M'\n}, {\n  label: 'G (гига)',\n  value: 'G'\n}]"
+      },
+      {
+        "name": "UNITS",
+        "value": "[{\n  label: 'Ом (Ω)',\n  value: 'Ω'\n}, {\n  label: 'Ф (F)',\n  value: 'F'\n}, {\n  label: 'Гн (H)',\n  value: 'H'\n}, {\n  label: 'В (V)',\n  value: 'V'\n}, {\n  label: 'А (A)',\n  value: 'A'\n}, {\n  label: 'Вт (W)',\n  value: 'W'\n}, {\n  label: 'Гц (Hz)',\n  value: 'Hz'\n}]"
+      }
+    ]
+  }
+}

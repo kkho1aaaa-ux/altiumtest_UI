@@ -14,9 +14,6 @@
   "dynamicPropertyPathList": [
     {
       "key": "isDisabled"
-    },
-    {
-      "key": "onClick"
     }
   ],
   "dynamicTriggerPathList": [
@@ -36,7 +33,7 @@
   "mobileRightColumn": 21,
   "mobileTopRow": 45,
   "needsErrorInfo": false,
-  "onClick": "{{deleteComponent.run()}}",
+  "onClick": "",
   "originalBottomRow": 49,
   "originalTopRow": 45,
   "parentColumnSpace": 20.25,

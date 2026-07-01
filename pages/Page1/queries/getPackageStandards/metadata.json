@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "6a44afdb8905c61a90ad7cd6_382fc586-d9e4-49c0-a3a5-fcbb71176204",
-  "id": "Page1_GetManufacturers",
+  "gitSyncId": "6a44d0f9af138a374389db91_17e9507f-690a-442c-8ffa-ec19350ed972",
+  "id": "Page1_getPackageStandards",
   "pluginId": "postgres-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT \n    id, \n    name, \n    website\nFROM manufacturers \nORDER BY name;",
+      "body": "SELECT id, name FROM package_standards ORDER BY name;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -23,7 +23,7 @@
       "pluginId": "postgres-plugin"
     },
     "dynamicBindingPathList": [],
-    "name": "GetManufacturers",
+    "name": "getPackageStandards",
     "pageId": "Page1",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

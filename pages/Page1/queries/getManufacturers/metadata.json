@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "6a44afdb8905c61a90ad7cd6_1b4bcb58-f5fc-4eaf-9bb8-4a2a65920e37",
-  "id": "Page1_GetCategories",
+  "gitSyncId": "6a44afdb8905c61a90ad7cd6_382fc586-d9e4-49c0-a3a5-fcbb71176204",
+  "id": "Page1_getManufacturers",
   "pluginId": "postgres-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT \n    id, \n    name, \n    parent_id, \n    description\nFROM categories \nORDER BY parent_id, name;",
+      "body": "SELECT \n    id, \n    name, \n    website\nFROM manufacturers \nORDER BY name;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -23,9 +23,9 @@
       "pluginId": "postgres-plugin"
     },
     "dynamicBindingPathList": [],
-    "name": "GetCategories",
+    "name": "getManufacturers",
     "pageId": "Page1",
-    "runBehaviour": "AUTOMATIC",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

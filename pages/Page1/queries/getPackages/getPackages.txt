@@ -1,0 +1,1 @@
+SELECT id, name, standard_id FROM packages WHERE is_active = TRUE ORDER BY name;

@@ -1,0 +1,1 @@
+SELECT id, name FROM package_standards ORDER BY name;
