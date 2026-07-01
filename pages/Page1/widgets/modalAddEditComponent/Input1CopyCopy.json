@@ -2,22 +2,19 @@
   "accentColor": "{{appsmith.theme.colors.primaryColor}}",
   "animateLoading": true,
   "autoFocus": false,
-  "borderRadius": "0.375rem",
-  "bottomRow": 58,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 22,
   "boxShadow": "none",
   "defaultText": "",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
     }
   ],
   "dynamicHeight": "FIXED",
-  "dynamicPropertyPathList": [],
-  "dynamicTriggerPathList": [
-    {
-      "key": "onTextChanged"
-    }
-  ],
   "iconAlign": "left",
   "inputType": "TEXT",
   "isDisabled": false,
@@ -25,35 +22,32 @@
   "isRequired": false,
   "isVisible": true,
   "key": "x6mfef7ajt",
-  "label": "Поиск по Part Number",
+  "label": "Label",
   "labelAlignment": "left",
   "labelPosition": "Top",
-  "labelStyle": "BOLD",
-  "labelTextColor": "#231f20",
-  "labelTextSize": "1.25rem",
+  "labelStyle": "",
+  "labelTextSize": "0.875rem",
   "labelWidth": 5,
-  "leftColumn": 4,
+  "leftColumn": 22,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
-  "mobileBottomRow": 58,
-  "mobileLeftColumn": 4,
-  "mobileRightColumn": 24,
-  "mobileTopRow": 51,
+  "mobileBottomRow": 14,
+  "mobileLeftColumn": 6,
+  "mobileRightColumn": 26,
+  "mobileTopRow": 7,
   "needsErrorInfo": false,
-  "onTextChanged": "",
-  "parentColumnSpace": 20.25,
-  "parentId": "0",
+  "parentColumnSpace": 6.9375,
+  "parentId": "5ba26oy2oq",
   "parentRowSpace": 10,
-  "placeholderText": "RC0402...",
   "renderMode": "CANVAS",
   "resetOnSubmit": true,
   "responsiveBehavior": "fill",
-  "rightColumn": 24,
+  "rightColumn": 42,
   "showStepArrows": false,
-  "topRow": 51,
+  "topRow": 15,
   "type": "INPUT_WIDGET_V2",
   "version": 2,
-  "widgetId": "17ruil59xs",
-  "widgetName": "searchInput"
+  "widgetId": "nyrtldklg9",
+  "widgetName": "Input1CopyCopy"
 }

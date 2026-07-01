@@ -1,8 +1,8 @@
 {
   "gitSyncId": "6a44afdb8905c61a90ad7cd6_36df5f46-5e4f-4ef7-85e2-fe2e423f75ca",
-  "id": "Page1_JSObject1",
+  "id": "Page1_searchUtils",
   "unpublishedCollection": {
-    "name": "JSObject1",
+    "name": "searchUtils",
     "pageId": "Page1",
     "pluginId": "js-plugin",
     "pluginType": "JS",

@@ -1,23 +1,11 @@
 SELECT 
-    c.id,
-    c.part_number,
-    c.value_display,
-    c.tolerance_percent,
-    c.package,
-    c.temp_min_c,
-    c.temp_max_c,
-    cat.name as category_name,
-    m.name as manufacturer_name,
-    c.created_at,
-    c.updated_at
-FROM components c
-LEFT JOIN categories cat ON c.category_id = cat.id
-LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
+    part_number,
+    value_display,
+    tolerance_percent,
+    package,
+    temp_min_c,
+    temp_max_c,
+    power_rating_w
+FROM components
 WHERE 
-    ({{searchInput.text}} IS NULL OR 
-     c.part_number ILIKE '%{{searchInput.text}}%' OR
-     c.value_display ILIKE '%{{searchInput.text}}%' OR
-     cat.name ILIKE '%{{searchInput.text}}%')
-ORDER BY c.part_number
-LIMIT {{pageSize}} 
-OFFSET {{(currentPage - 1) * pageSize}};
+    part_number ILIKE '%' || COALESCE({{searchInput.text}}, '') || '%';

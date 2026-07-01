@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT \n    c.id,\n    c.part_number,\n    c.value_display,\n    c.tolerance_percent,\n    c.package,\n    c.temp_min_c,\n    c.temp_max_c,\n    cat.name as category_name,\n    m.name as manufacturer_name,\n    c.created_at,\n    c.updated_at\nFROM components c\nLEFT JOIN categories cat ON c.category_id = cat.id\nLEFT JOIN manufacturers m ON c.manufacturer_id = m.id\nWHERE \n    ({{searchInput.text}} IS NULL OR \n     c.part_number ILIKE '%{{searchInput.text}}%' OR\n     c.value_display ILIKE '%{{searchInput.text}}%' OR\n     cat.name ILIKE '%{{searchInput.text}}%')\nORDER BY c.part_number\nLIMIT {{pageSize}} \nOFFSET {{(currentPage - 1) * pageSize}};",
+      "body": "SELECT \n    part_number,\n    value_display,\n    tolerance_percent,\n    package,\n    temp_min_c,\n    temp_max_c,\n    power_rating_w\nFROM components\nWHERE \n    part_number ILIKE '%' || COALESCE({{searchInput.text}}, '') || '%';",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
