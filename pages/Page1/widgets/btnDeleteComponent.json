@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 59,
+  "bottomRow": 49,
   "boxShadow": "none",
   "buttonColor": "#b91c1c",
   "buttonVariant": "PRIMARY",
@@ -9,11 +9,17 @@
   "dynamicBindingPathList": [
     {
       "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicPropertyPathList": [
     {
       "key": "isDisabled"
+    },
+    {
+      "key": "onClick"
     }
   ],
   "dynamicTriggerPathList": [
@@ -22,7 +28,7 @@
     }
   ],
   "isDefaultClickDisabled": true,
-  "isDisabled": "",
+  "isDisabled": "{{!Table1.selectedRows || Table1.selectedRows.length === 0}}",
   "isLoading": false,
   "isVisible": true,
   "key": "83uofz05od",
@@ -33,7 +39,7 @@
   "mobileRightColumn": 21,
   "mobileTopRow": 45,
   "needsErrorInfo": false,
-  "onClick": "",
+  "onClick": "{{deleteHandler.deleteSelected()}}",
   "originalBottomRow": 49,
   "originalTopRow": 45,
   "parentColumnSpace": 20.25,
@@ -45,8 +51,8 @@
   "resetFormOnClick": false,
   "responsiveBehavior": "hug",
   "rightColumn": 61,
-  "text": "Delete Component",
-  "topRow": 55,
+  "text": "Удалить компонент",
+  "topRow": 45,
   "type": "BUTTON_WIDGET",
   "version": 1,
   "widgetId": "bsnzeuqxxk",

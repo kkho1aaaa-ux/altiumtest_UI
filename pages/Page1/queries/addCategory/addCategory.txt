@@ -1,0 +1,18 @@
+INSERT INTO categories (
+    name, 
+    schlib_path, 
+    pcblib_path, 
+    altium_designator,
+    parent_id, 
+    created_at
+)
+VALUES (
+    '{{newCategoryNameInput.text}}',
+    '{{newCategorySchLibInput.text || "Passive.SchLib"}}',
+    '{{newCategoryPcbLibInput.text || "Passive.PcbLib"}}',
+    '{{newCategoryDesignatorInput.text || "X"}}',
+    NULL,
+    NOW()
+)
+ON CONFLICT (name) DO NOTHING
+RETURNING id, name, schlib_path, pcblib_path, altium_designator;

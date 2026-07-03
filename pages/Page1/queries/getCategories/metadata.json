@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT id, name FROM categories ORDER BY name;",
+      "body": "SELECT \n    id,\n    name,\n    schlib_path,\n    pcblib_path,\n    altium_designator\nFROM categories\nORDER BY name",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

@@ -36,7 +36,7 @@
   "mobileRightColumn": 21,
   "mobileTopRow": 45,
   "needsErrorInfo": false,
-  "onClick": "openModal('modalImportCSV')",
+  "onClick": "{{\n(function() {\n\tcsvImport.reset();\n\tremoveValue('csvFieldOptions');\n\tremoveValue('csvFieldSelectedValues');\n\tremoveValue('currentImportTab');\n\tgetColumnNames.run();\n\tshowModal(modalCSVImport.name);\n})()\n}}",
   "originalBottomRow": 44,
   "originalTopRow": 40,
   "parentColumnSpace": 20.25,

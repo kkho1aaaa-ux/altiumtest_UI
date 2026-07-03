@@ -1,0 +1,7 @@
+SELECT 
+    column_name,
+    column_name AS label
+FROM information_schema.columns
+WHERE table_name = 'components'
+  AND column_name NOT IN ('id', 'created_at', 'updated_at')
+ORDER BY ordinal_position

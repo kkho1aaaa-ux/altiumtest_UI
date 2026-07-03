@@ -1,1 +1,8 @@
-SELECT id, name FROM categories ORDER BY name;
+SELECT 
+    id,
+    name,
+    schlib_path,
+    pcblib_path,
+    altium_designator
+FROM categories
+ORDER BY name

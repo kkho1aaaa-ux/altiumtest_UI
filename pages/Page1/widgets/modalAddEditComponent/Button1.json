@@ -38,6 +38,8 @@
   "mobileTopRow": 18,
   "needsErrorInfo": false,
   "onClick": "{{formLogic.resetForm()}}",
+  "originalBottomRow": 207,
+  "originalTopRow": 203,
   "parentId": "5ba26oy2oq",
   "placement": "CENTER",
   "recaptchaType": "V3",

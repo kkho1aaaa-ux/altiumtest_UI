@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "INSERT INTO categories (name, parent_id, description) VALUES\n('Passive Components', NULL, 'Пассивные компоненты'),\n('Resistors', (SELECT id FROM categories WHERE name = 'Passive Components'), 'Резисторы'),\n('Capacitors', (SELECT id FROM categories WHERE name = 'Passive Components'), 'Конденсаторы'),\n('Inductors', (SELECT id FROM categories WHERE name = 'Passive Components'), 'Индуктивности');",
+      "body": "-- Добавляем новые поля в таблицу categories\nALTER TABLE categories \n    ADD COLUMN IF NOT EXISTS schlib_path VARCHAR(255),\n    ADD COLUMN IF NOT EXISTS pcblib_path VARCHAR(255),\n    ADD COLUMN IF NOT EXISTS altium_designator VARCHAR(50);\n\n-- Проверяем, что поля добавлены\nSELECT column_name, data_type \nFROM information_schema.columns \nWHERE table_name = 'categories'\nORDER BY ordinal_position;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

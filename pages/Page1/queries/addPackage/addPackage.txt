@@ -1,0 +1,16 @@
+INSERT INTO packages (
+    name, 
+    standard_id,
+    description,
+    is_active,
+    created_at
+)
+VALUES (
+    '{{newPackageNameInput.text}}',
+    (SELECT id FROM package_standards WHERE name = 'Custom'),
+    'Custom package',
+    TRUE,
+    NOW()
+)
+ON CONFLICT (name) DO NOTHING
+RETURNING id, name;

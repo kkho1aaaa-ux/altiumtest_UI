@@ -1,0 +1,55 @@
+{
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 12,
+  "boxShadow": "none",
+  "buttonColor": "{{appsmith.theme.colors.primaryColor}}",
+  "buttonVariant": "PRIMARY",
+  "disabledWhenInvalid": false,
+  "dynamicBindingPathList": [
+    {
+      "key": "buttonColor"
+    },
+    {
+      "key": "borderRadius"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onClick"
+    }
+  ],
+  "isDefaultClickDisabled": true,
+  "isDisabled": false,
+  "isLoading": false,
+  "isVisible": true,
+  "key": "sm44vuqt70",
+  "leftColumn": 14,
+  "minWidth": 120,
+  "mobileBottomRow": 12,
+  "mobileLeftColumn": 42,
+  "mobileRightColumn": 58,
+  "mobileTopRow": 8,
+  "needsErrorInfo": false,
+  "onClick": "{{\n(function() {\n\tconst files = csvFileUpload.files;\n\tif (!files || files.length === 0) {\n\t\tshowAlert('Сначала выберите файл CSV', 'warning');\n\t\treturn;\n\t}\n\tconst file = files[0];\n\tif (file.data) {\n\t\tcsvImport.parseCSV(file.data);\n\t} else {\n\t\tshowAlert('Не удалось прочитать файл', 'error');\n\t}\n})()\n}}",
+  "parentColumnSpace": 14.8125,
+  "parentId": "8naj8bf078",
+  "parentRowSpace": 10,
+  "placement": "CENTER",
+  "recaptchaType": "V3",
+  "renderMode": "CANVAS",
+  "resetFormOnClick": false,
+  "responsiveBehavior": "hug",
+  "rightColumn": 22,
+  "text": "Загрузить",
+  "topRow": 8,
+  "type": "BUTTON_WIDGET",
+  "version": 1,
+  "widgetId": "7q6qs04isy",
+  "widgetName": "Button9"
+}

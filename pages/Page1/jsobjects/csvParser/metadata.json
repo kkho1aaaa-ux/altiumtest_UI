@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "6a44d0f9af138a374389db91_43aa092a-fcc3-4960-8abd-4022bea0b2bd",
+  "id": "Page1_csvParser",
+  "unpublishedCollection": {
+    "name": "csvParser",
+    "pageId": "Page1",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

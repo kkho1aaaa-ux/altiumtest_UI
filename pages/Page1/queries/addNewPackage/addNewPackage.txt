@@ -1,8 +1,0 @@
-INSERT INTO packages (name, standard_id, description) 
-VALUES (
-    {{newPackageNameInput.text}},
-    {{newPackageStandardSelect.selectedOptionValue}}::integer,
-    {{newPackageDescInput.text}}
-)
-ON CONFLICT (name) DO NOTHING
-RETURNING id;

@@ -1,4 +1,0 @@
-INSERT INTO categories (name, description) 
-VALUES ({{newCategoryNameInput.text}}, {{newCategoryDescInput.text}})
-ON CONFLICT (name) DO NOTHING
-RETURNING id;

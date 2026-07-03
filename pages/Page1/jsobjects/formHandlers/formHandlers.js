@@ -1,10 +1,42 @@
 export default {
 	// Обновление отображаемого номинала
 	buildValueDisplay: () => {
-		const num = valueNumberInput.value || 0;
+		let num = valueNumberInput.text || '0';
 		const mult = valueMultiplierSelect.selectedOptionValue || '';
 		const unit = valueUnitSelect.selectedOptionValue || '';
+
+		// Преобразуем в число и обратно в строку, чтобы убрать лишние нули
+		const parsedNum = parseFloat(num);
+
+		// Если это валидное число, форматируем его
+		if (!isNaN(parsedNum)) {
+			// Если число целое, убираем десятичную точку
+			if (Number.isInteger(parsedNum)) {
+				num = Math.floor(parsedNum).toString();
+			} else {
+				// Округляем до 6 знаков после запятой (максимум)
+				num = parseFloat(parsedNum.toFixed(6)).toString();
+			}
+		}
+
 		return `${num}${mult}${unit}`;
+	},
+
+	// Разбор value_display на части
+	parseValueDisplay: (valueDisplay) => {
+		if (!valueDisplay) return { number: '0', multiplier: '', unit: '' };
+
+		// Регулярное выражение: число + опциональный множитель + единица
+		const regex = /^([\d.]+)\s*([pnumkKMG]?)\s*([a-zA-ZΩ]+)?$/;
+		const match = valueDisplay.trim().match(regex);
+
+		if (!match) return { number: '0', multiplier: '', unit: '' };
+
+		return {
+			number: match[1],
+			multiplier: match[2] || '',
+			unit: match[3] || ''
+		};
 	},
 
 	// Открытие формы редактирования
@@ -16,95 +48,100 @@ export default {
 
 		const row = Table1.selectedRow;
 
-		// Text Input
-		partNumberInput.setValue(row.part_number);
-		toleranceInput.setValue(row.tolerance_percent);
-		voltageInput.setValue(row.voltage_rating_v);
-		tempMinInput.setValue(row.temp_min_c);
-		tempMaxInput.setValue(row.temp_max_c);
-		powerRatingInput.setValue(row.power_rating_w);
-		libraryPathInput.setValue(row.library_path);
-		libraryRefInput.setValue(row.library_ref);
-		footprintPathInput.setValue(row.footprint_path);
-		footprintRefInput.setValue(row.footprint_ref);
-		datasheetUrlInput.setValue(row.datasheet_url);
-		spiceModelInput.setValue(row.spice_model_path);
-		altiumCommentInput.setValue(row.altium_comment);
-		altiumDesignatorInput.setValue(row.altium_designator);
+		// Text Input - основные поля
+		partNumberInput.setValue(row.part_number || '');
+		toleranceInput.setValue(row.tolerance_percent || '');
+		voltageInput.setValue(row.voltage_rating_v || '');
+		tempMinInput.setValue(row.temp_min_c || '');
+		tempMaxInput.setValue(row.temp_max_c || '');
+		powerRatingInput.setValue(row.power_rating_w || '');
+
+		// Text Input - библиотеки
+		libraryPathInput.setValue(row.library_path || '');
+		libraryRefInput.setValue(row.library_ref || '');
+		footprintPathInput.setValue(row.footprint_path || '');
+		footprintRefInput.setValue(row.footprint_ref || '');
+
+		// Text Input - ссылки
+		datasheetUrlInput.setValue(row.datasheet_url || '');
+		spiceModelInput.setValue(row.spice_model_path || '');
+
+		// Text Input - Altium/KiCad
+		altiumCommentInput.setValue(row.altium_comment || '');
+		altiumDesignatorInput.setValue(row.altium_designator || '');
 		kicadKeywordsInput.setValue(row.kicad_keywords || '');
 		kicadFpFilterInput.setValue(row.kicad_fp_filter || '');
 
-		// Text widget (valueDisplayInput - это Text, не Text Input!)
-		valueDisplayInput.setText(row.value_display);
+		// Text widget
+		valueDisplayInput.setText(row.value_display || '');
 
-		// Select
-		categorySelect.setSelectedOption(row.category_id);
-		manufacturerSelect.setSelectedOption(row.manufacturer_id);
-		packageSelect.setSelectedOption(row.package);
+		// Select - Category
+		if (row.category_id) {
+			categorySelect.setSelectedOption(row.category_id);
+		}
 
-		// Сохраняем ID в store
+		// Select - Manufacturer
+		if (row.manufacturer_id) {
+			manufacturerSelect.setSelectedOption(row.manufacturer_id);
+		}
+
+		// Select - Package
+		if (row.package) {
+			packageSelect.setSelectedOption(row.package);
+		}
+
+		// Разбираем value_display
+		const valueParts = formHandlers.parseValueDisplay(row.value_display);
+		valueNumberInput.setValue(valueParts.number);
+		valueMultiplierSelect.setSelectedOption(valueParts.multiplier || '');
+		valueUnitSelect.setSelectedOption(valueParts.unit || '');
+
+		// Сохраняем ID
 		storeValue('editingComponentId', row.id);
 
 		// Открываем модалку
 		showModal(modalAddEditComponent.name);
 	},
 
-	// Открытие формы добавления (новая)
+	// Открытие формы добавления
 	openAddForm: () => {
-		formLogic.resetForm();
 		showModal(modalAddEditComponent.name);
 	},
 
-	// Автозаполнение при выборе категории
-	onCategoryChange: () => {
+	// Автозаполнение при выборе категории (ИЗМЕНЁННЫЙ)
+	onCategoryChange: async () => {
 		const categoryId = categorySelect.selectedOptionValue;
-		const categoryName = categorySelect.selectedOptionLabel?.toLowerCase() || '';
 
 		if (!categoryId) return;
 
-		let libraryPath = '';
-		let footprintPath = '';
-		let designator = '';
+		// Находим категорию в загруженных данных
+		const categories = getCategories.data || [];
+		const selectedCategory = categories.find(cat => cat.id == categoryId);
 
-		if (categoryName.includes('capacitor')) {
-			libraryPath = 'Passive.SchLib';
-			footprintPath = 'Passive.PcbLib';
-			designator = 'C';
-		} else if (categoryName.includes('resistor')) {
-			libraryPath = 'Passive.SchLib';
-			footprintPath = 'Passive.PcbLib';
-			designator = 'R';
-		} else if (categoryName.includes('inductor') || categoryName.includes('inductance')) {
-			libraryPath = 'Inductors.SchLib';
-			footprintPath = 'Inductors.PcbLib';
-			designator = 'L';
-		} else if (categoryName.includes('diode')) {
-			libraryPath = 'Diodes.SchLib';
-			footprintPath = 'Diodes.PcbLib';
-			designator = 'D';
-		} else if (categoryName.includes('transistor')) {
-			libraryPath = 'Transistors.SchLib';
-			footprintPath = 'Transistors.PcbLib';
-			designator = 'Q';
-		} else if (categoryName.includes('ic') || categoryName.includes('microcontroller') || categoryName.includes('mcu')) {
-			libraryPath = 'MCU.SchLib';
-			footprintPath = 'MCU.PcbLib';
-			designator = 'U';
-		} else {
-			libraryPath = 'Passive.SchLib';
-			footprintPath = 'Passive.PcbLib';
-			designator = 'X';
-		}
+		if (!selectedCategory) return;
 
-		libraryPathInput.setValue(libraryPath);
-		footprintPathInput.setValue(footprintPath);
+		// Заполняем поля из данных категории
+		const schLib = selectedCategory.schlib_path || 'Passive.SchLib';
+		const pcbLib = selectedCategory.pcblib_path || 'Passive.PcbLib';
+		const designator = selectedCategory.altium_designator || 'X';
+
+		// Устанавливаем значения
+		libraryPathInput.setValue(schLib);
+		footprintPathInput.setValue(pcbLib);
 		altiumDesignatorInput.setValue(designator);
 
-		if (designator === 'C' && !libraryRefInput.value) {
+		// Автозаполнение library_ref для стандартных случаев
+		if (designator === 'C' && !libraryRefInput.text) {
 			libraryRefInput.setValue('C');
 		}
-		if (designator === 'R' && !libraryRefInput.value) {
+		if (designator === 'R' && !libraryRefInput.text) {
 			libraryRefInput.setValue('R');
+		}
+		if (designator === 'L' && !libraryRefInput.text) {
+			libraryRefInput.setValue('L');
+		}
+		if (designator === 'D' && !libraryRefInput.text) {
+			libraryRefInput.setValue('D');
 		}
 	}
 }

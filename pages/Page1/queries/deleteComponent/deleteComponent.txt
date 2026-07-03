@@ -1,3 +1,0 @@
-DELETE FROM components 
-WHERE id = {{Table1.selectedRow.id}}
-RETURNING part_number;

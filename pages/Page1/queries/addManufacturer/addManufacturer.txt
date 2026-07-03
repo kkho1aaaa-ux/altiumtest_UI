@@ -1,0 +1,12 @@
+INSERT INTO manufacturers (
+	name, 
+	website,
+	created_at
+)
+VALUES (
+	'{{newManufacturerNameInput.text}}',
+	NULLIF('{{newManufacturerWebSiteInput.text}}', '')::VARCHAR(500),
+	NOW()
+)
+ON CONFLICT (name) DO NOTHING
+RETURNING id, name, website;
