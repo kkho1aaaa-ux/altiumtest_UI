@@ -22,18 +22,33 @@ export default {
 		};
 	},
 
+	// Расчет базового значения (в основных единицах)
+	calculateBaseValue: (number, multiplier) => {
+		const multipliers = {
+			'p': 1e-12,  // пико
+			'n': 1e-9,   // нано
+			'u': 1e-6,   // микро
+			'm': 1e-3,   // милли
+			'': 1,       // без множителя
+			'K': 1e3,    // кило
+			'M': 1e6,    // мега
+			'G': 1e9     // гига
+		};
+
+		const mult = multipliers[multiplier] || 1;
+		return number * mult;
+	},
+
 	// Парсинг tolerance: "10%" → 10, "0.1" → 0.1
 	parseTolerance: (str) => {
 		if (str === null || str === undefined) return null;
 
 		const s = String(str).trim();
 
-		// Если это просто число
 		if (!isNaN(parseFloat(s)) && !s.includes('%')) {
 			return parseFloat(s);
 		}
 
-		// Если есть знак %
 		const match = s.match(/([\d.]+)\s*%/);
 		return match ? parseFloat(match[1]) : null;
 	},

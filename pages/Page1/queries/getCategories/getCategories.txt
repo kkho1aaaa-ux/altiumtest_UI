@@ -1,8 +1,11 @@
 SELECT 
     id,
     name,
-    schlib_path,
-    pcblib_path,
-    altium_designator
+    parent_id,
+    designator_prefix,
+    description,
+    is_active_component,
+    sort_order,
+    created_at
 FROM categories
-ORDER BY name
+ORDER BY parent_id NULLS FIRST, sort_order, name;

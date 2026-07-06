@@ -1,28 +1,6 @@
-CREATE OR REPLACE VIEW v_components_altium AS
-SELECT 
-    id,
-    part_number,
-    category_id,
-    manufacturer_id,
-    value_number,
-    value_multiplier,
-    value_unit,
-    value_display,
-    tolerance_percent,
-    voltage_rating_v,
-    temp_min_c,
-    temp_max_c,
-    package,
-    library_path AS "Library Path",
-    library_ref AS "Library Reference",
-    footprint_path AS "Footprint Path",
-    footprint_ref AS "Footprint",
-    datasheet_url,
-    spice_model_path,
-    altium_comment,
-    altium_designator,
-    kicad_keywords,
-    kicad_fp_filter,
-    created_at,
-    updated_at
-FROM components;
+INSERT INTO packages (name, standard)
+VALUES (
+	{{newPackageNameInput.text}},
+	{{newPackageStandardSelect.selectedOptionValue || 'Custom'}}
+)
+RETURNING id;

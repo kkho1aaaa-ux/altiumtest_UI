@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "6a44d0f9af138a374389db91_296cbf08-85fe-4b7d-8553-e9693e91f9a9",
+  "gitSyncId": "6a44d0f9af138a374389db91_a3227a56-2fb5-4cb1-b7e3-8813b994af49",
   "id": "Page1_getPackages",
   "pluginId": "postgres-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT id, name, standard_id FROM packages WHERE is_active = TRUE ORDER BY name;",
+      "body": "SELECT \n    id,\n    name,\n    standard,\n    description,\n    created_at\nFROM packages\nORDER BY standard, name ASC;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

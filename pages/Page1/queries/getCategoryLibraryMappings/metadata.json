@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "6a44d0f9af138a374389db91_eac6e58c-604e-4c9c-8868-242f59f44cb6",
-  "id": "Page1_getManufacturers",
+  "gitSyncId": "6a44d0f9af138a374389db91_919098a3-b72b-4f75-9973-8a3ae8b89b37",
+  "id": "Page1_getCategoryLibraryMappings",
   "pluginId": "postgres-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT \n    id,\n    name,\n    website,\n    created_at\nFROM manufacturers\nORDER BY name ASC;",
+      "body": "SELECT \n    clm.id,\n    clm.category_id,\n    clm.platform,\n    clm.library_name,\n    clm.library_path,\n    clm.is_default,\n    cat.name as category_name\nFROM category_library_mapping clm\nLEFT JOIN categories cat ON clm.category_id = cat.id\nORDER BY clm.category_id, clm.platform;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -23,9 +23,9 @@
       "pluginId": "postgres-plugin"
     },
     "dynamicBindingPathList": [],
-    "name": "getManufacturers",
+    "name": "getCategoryLibraryMappings",
     "pageId": "Page1",
-    "runBehaviour": "AUTOMATIC",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

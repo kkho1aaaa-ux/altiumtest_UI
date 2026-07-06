@@ -1,5 +1,5 @@
 {
-  "gitSyncId": "6a44d0f9af138a374389db91_226a22bd-b100-4a8e-bf04-418047537dd1",
+  "gitSyncId": "6a44d0f9af138a374389db91_57a30d01-4744-4a47-82a5-8bd8eef32d99",
   "id": "Page1_componentConstants",
   "unpublishedCollection": {
     "name": "componentConstants",
@@ -18,18 +18,6 @@
       {
         "name": "PACKAGE_STANDARDS",
         "value": "[{\n  label: 'EIA',\n  value: 'EIA'\n}, {\n  label: 'Metric',\n  value: 'Metric'\n}, {\n  label: 'JEDEC',\n  value: 'JEDEC'\n}, {\n  label: 'IPC',\n  value: 'IPC'\n}, {\n  label: 'Custom',\n  value: 'Custom'\n}]"
-      },
-      {
-        "name": "DESIGNATORS",
-        "value": "{\n  '1': 'R',\n  '2': 'C',\n  '3': 'R',\n  '4': 'C',\n  '5': 'L',\n  '6': 'D',\n  '7': 'Q',\n  '8': 'U',\n  '9': 'Q',\n  '10': 'U'\n}"
-      },
-      {
-        "name": "LIBRARY_PATHS",
-        "value": "{\n  '1': 'Resistors.SchLib',\n  '2': 'Capacitors.SchLib',\n  '3': 'Resistors.SchLib',\n  '4': 'Capacitors.SchLib',\n  '5': 'Inductors.SchLib',\n  '6': 'Diodes.SchLib',\n  '7': 'Transistors.SchLib',\n  '8': 'MCU.SchLib',\n  '9': 'Transistors.SchLib',\n  '10': 'MCU.SchLib'\n}"
-      },
-      {
-        "name": "FOOTPRINT_PATHS",
-        "value": "{\n  '1': 'Resistors.PcbLib',\n  '2': 'Capacitors.PcbLib',\n  '3': 'Resistors.PcbLib',\n  '4': 'Capacitors.PcbLib',\n  '5': 'Inductors.PcbLib',\n  '6': 'Diodes.PcbLib',\n  '7': 'Transistors.PcbLib',\n  '8': 'MCU.PcbLib',\n  '9': 'Transistors.PcbLib',\n  '10': 'MCU.PcbLib'\n}"
       }
     ]
   }

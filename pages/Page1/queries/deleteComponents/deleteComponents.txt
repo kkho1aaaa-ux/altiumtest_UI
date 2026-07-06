@@ -1,3 +1,0 @@
-DELETE FROM components 
-WHERE id = ANY({{appsmith.store.deleteTargetIds}})
-RETURNING part_number;

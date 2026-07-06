@@ -38,71 +38,8 @@ export default {
 	],
 
 	// ============================================
-	// DESIGNATOR ПО КАТЕГОРИЯМ
-	// ============================================
-	DESIGNATORS: {
-		'1': 'R',   // Резисторы
-		'2': 'C',   // Конденсаторы
-		'3': 'R',   // SMD резисторы
-		'4': 'C',   // SMD конденсаторы
-		'5': 'L',   // Индуктивности
-		'6': 'D',   // Диоды
-		'7': 'Q',   // Транзисторы
-		'8': 'U',   // Микросхемы
-		'9': 'Q',   // Транзисторы
-		'10': 'U'   // Микросхемы
-	},
-
-	// ============================================
-	// LIBRARY PATH ПО КАТЕГОРИЯМ
-	// ============================================
-	LIBRARY_PATHS: {
-		'1': 'Resistors.SchLib',
-		'2': 'Capacitors.SchLib',
-		'3': 'Resistors.SchLib',
-		'4': 'Capacitors.SchLib',
-		'5': 'Inductors.SchLib',
-		'6': 'Diodes.SchLib',
-		'7': 'Transistors.SchLib',
-		'8': 'MCU.SchLib',
-		'9': 'Transistors.SchLib',
-		'10': 'MCU.SchLib'
-	},
-
-	// ============================================
-	// FOOTPRINT PATH ПО КАТЕГОРИЯМ
-	// ============================================
-	FOOTPRINT_PATHS: {
-		'1': 'Resistors.PcbLib',
-		'2': 'Capacitors.PcbLib',
-		'3': 'Resistors.PcbLib',
-		'4': 'Capacitors.PcbLib',
-		'5': 'Inductors.PcbLib',
-		'6': 'Diodes.PcbLib',
-		'7': 'Transistors.PcbLib',
-		'8': 'MCU.PcbLib',
-		'9': 'Transistors.PcbLib',
-		'10': 'MCU.PcbLib'
-	},
-
-	// ============================================
 	// ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
 	// ============================================
-
-	// Получить Designator по категории
-	getDesignator: (categoryId) => {
-		return componentConstants.DESIGNATORS[categoryId] || 'X';
-	},
-
-	// Получить Library Path по категории
-	getLibraryPath: (categoryId) => {
-		return componentConstants.LIBRARY_PATHS[categoryId] || '';
-	},
-
-	// Получить Footprint Path по категории
-	getFootprintPath: (categoryId) => {
-		return componentConstants.FOOTPRINT_PATHS[categoryId] || '';
-	},
 
 	// Собрать номинал из частей
 	buildValueDisplay: (number, multiplier, unit) => {
@@ -112,11 +49,10 @@ export default {
 		return `${num}${mult}${un}`;
 	},
 
-	// Разобрать номинал на части (простой парсинг)
+	// Разобрать номинал на части
 	parseValueDisplay: (valueDisplay) => {
 		if (!valueDisplay) return { number: 0, multiplier: '', unit: '' };
 
-		// Регулярное выражение: число + опциональный множитель + единица
 		const regex = /^([\d.]+)\s*([pnumkKMG]?)\s*([a-zA-ZΩ]+)?$/;
 		const match = valueDisplay.trim().match(regex);
 
@@ -127,5 +63,30 @@ export default {
 			multiplier: match[2] || '',
 			unit: match[3] || ''
 		};
+	},
+
+	// Получить единицу измерения по категории
+	getUnitByCategory: (categoryName) => {
+		const unitMap = {
+			'Resistors': 'Ω',
+			'Capacitors': 'F',
+			'Inductors': 'H',
+			'Diodes': 'V',
+			'Transistors': 'A',
+			'LEDs': 'V'
+		};
+		return unitMap[categoryName] || '';
+	},
+
+	// Получить специфичное поле для категории
+	getSpecificFieldByCategory: (categoryName) => {
+		const fieldMap = {
+			'Resistors': 'resistance_ohm',
+			'Capacitors': 'capacitance_pf',
+			'Inductors': 'inductance_uh',
+			'Diodes': 'voltage_breakdown_v',
+			'Transistors': 'current_rating_a'
+		};
+		return fieldMap[categoryName] || null;
 	}
 }

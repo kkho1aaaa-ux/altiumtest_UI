@@ -1,6 +1,6 @@
 {
-  "gitSyncId": "6a44d0f9af138a374389db91_80393bd1-68ca-43c0-aca6-4004e18096a5",
-  "id": "Page1_componentConstants.parseValueDisplay",
+  "gitSyncId": "6a44d0f9af138a374389db91_22455d40-bd28-48ef-bd47-983415be41e4",
+  "id": "Page1_componentConstants.getSpecificFieldByCategory",
   "pluginId": "js-plugin",
   "pluginType": "JS",
   "unpublishedAction": {
@@ -8,7 +8,7 @@
       "encodeParamsToggle": true,
       "jsArguments": [
         {
-          "name": "valueDisplay"
+          "name": "categoryName"
         }
       ],
       "paginationType": "NONE",
@@ -26,8 +26,8 @@
         "key": "body"
       }
     ],
-    "fullyQualifiedName": "componentConstants.parseValueDisplay",
-    "name": "parseValueDisplay",
+    "fullyQualifiedName": "componentConstants.getSpecificFieldByCategory",
+    "name": "getSpecificFieldByCategory",
     "pageId": "Page1",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

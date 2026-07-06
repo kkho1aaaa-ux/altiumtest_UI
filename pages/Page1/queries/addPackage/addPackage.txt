@@ -1,16 +1,6 @@
-INSERT INTO packages (
-    name, 
-    standard_id,
-    description,
-    is_active,
-    created_at
-)
+INSERT INTO packages (name, standard)
 VALUES (
-    '{{newPackageNameInput.text}}',
-    (SELECT id FROM package_standards WHERE name = 'Custom'),
-    'Custom package',
-    TRUE,
-    NOW()
+	{{newPackageNameInput.text}},
+	{{newPackageStandardSelect.selectedOptionValue || 'Custom'}}
 )
-ON CONFLICT (name) DO NOTHING
-RETURNING id, name;
+RETURNING id;

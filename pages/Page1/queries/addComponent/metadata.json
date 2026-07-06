@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "6a44afdb8905c61a90ad7cd6_e54d1fe6-888b-40f7-8384-d87323a72b71",
+  "gitSyncId": "6a44d0f9af138a374389db91_b6cce6b1-48d4-4e71-b4fc-d6918041fb88",
   "id": "Page1_addComponent",
   "pluginId": "postgres-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "INSERT INTO components (\n\tpart_number,\n\tcategory_id,\n\tmanufacturer_id,\n\tvalue_number,\n\tvalue_multiplier,\n\tvalue_unit,\n\tvalue_display,\n\ttolerance_percent,\n\tvoltage_rating_v,\n\tpower_rating_w,\n\ttemp_min_c,\n\ttemp_max_c,\n\tpackage,\n\tpackage_id,\n\tlibrary_path,\n\tlibrary_ref,\n\tfootprint_path,\n\tfootprint_ref,\n\tdatasheet_url,\n\tspice_model_path,\n\taltium_comment,\n\taltium_designator,\n\tkicad_keywords,\n\tkicad_fp_filter\n) VALUES (\n\t'{{componentData.prepareData().part_number}}',\n\t{{componentData.prepareData().category_id}},\n\t{{componentData.prepareData().manufacturer_id}},\n\t{{componentData.prepareData().value_number}},\n\t'{{componentData.prepareData().value_multiplier}}',\n\t'{{componentData.prepareData().value_unit}}',\n\t'{{componentData.prepareData().value_display}}',\n\t{{componentData.prepareData().tolerance_percent}},\n\t{{componentData.prepareData().voltage_rating_v}},\n\t{{componentData.prepareData().power_rating_w}},\n\t{{componentData.prepareData().temp_min_c}},\n\t{{componentData.prepareData().temp_max_c}},\n\t'{{componentData.prepareData().package}}',\n\t(SELECT id FROM packages WHERE name = '{{componentData.prepareData().package}}' LIMIT 1),\n\t'{{componentData.prepareData().library_path}}',\n\t'{{componentData.prepareData().library_ref}}',\n\t'{{componentData.prepareData().footprint_path}}',\n\t'{{componentData.prepareData().footprint_ref}}',\n\t'{{componentData.prepareData().datasheet_url}}',\n\t'{{componentData.prepareData().spice_model_path}}',\n\t'{{componentData.prepareData().altium_comment}}',\n\t'{{componentData.prepareData().altium_designator}}',\n\t'{{componentData.prepareData().kicad_keywords}}',\n\t'{{componentData.prepareData().kicad_fp_filter}}'\n)",
+      "body": "INSERT INTO components (\n\tpart_number,\n\tname,\n\tdescription,\n\tcategory_id,\n\tmanufacturer_id,\n\tvalue_numeric,\n\tvalue_unit,\n\tvalue_display,\n\ttolerance_percent,\n\tvoltage_rating_v,\n\tpower_rating_w,\n\ttemp_min_c,\n\ttemp_max_c,\n\tresistance_ohm,\n\tcapacitance_pf,\n\tinductance_uh,\n\tpackage,\n\tlibrary_path,\n\tlibrary_ref,\n\tfootprint_path,\n\tfootprint_ref,\n\tdatasheet_url,\n\tspice_model_path,\n\taltium_comment,\n\taltium_designator,\n\tkicad_keywords,\n\tkicad_fp_filter,\n\tcreated_by\n) VALUES (\n\t{{componentData.prepareData().part_number}},\n\t{{componentData.prepareData().part_number}},\n\t{{componentData.prepareData().description || ''}},\n\t{{componentData.prepareData().category_id}},\n\t{{componentData.prepareData().manufacturer_id}},\n\t{{componentData.prepareData().value_numeric}},\n\t{{componentData.prepareData().value_unit}},\n\t{{componentData.prepareData().value_display}},\n\t{{componentData.prepareData().tolerance_percent}},\n\t{{componentData.prepareData().voltage_rating_v}},\n\t{{componentData.prepareData().power_rating_w}},\n\t{{componentData.prepareData().temp_min_c}},\n\t{{componentData.prepareData().temp_max_c}},\n\t{{componentData.prepareData().resistance_ohm}},\n\t{{componentData.prepareData().capacitance_pf}},\n\t{{componentData.prepareData().inductance_uh}},\n\t{{componentData.prepareData().package}},\n\t{{componentData.prepareData().library_path}},\n\t{{componentData.prepareData().library_ref}},\n\t{{componentData.prepareData().footprint_path}},\n\t{{componentData.prepareData().footprint_ref}},\n\t{{componentData.prepareData().datasheet_url}},\n\t{{componentData.prepareData().spice_model_path}},\n\t{{componentData.prepareData().altium_comment}},\n\t{{componentData.prepareData().altium_designator}},\n\t{{componentData.prepareData().kicad_keywords}},\n\t{{componentData.prepareData().kicad_fp_filter}},\n\t{{appsmith.user.email}}\n)\nRETURNING id;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -30,6 +30,6 @@
     "name": "addComponent",
     "pageId": "Page1",
     "runBehaviour": "MANUAL",
-    "userSetOnLoad": true
+    "userSetOnLoad": false
   }
 }

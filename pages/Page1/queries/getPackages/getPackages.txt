@@ -1,1 +1,8 @@
-SELECT id, name, standard_id FROM packages WHERE is_active = TRUE ORDER BY name;
+SELECT 
+    id,
+    name,
+    standard,
+    description,
+    created_at
+FROM packages
+ORDER BY standard, name ASC;

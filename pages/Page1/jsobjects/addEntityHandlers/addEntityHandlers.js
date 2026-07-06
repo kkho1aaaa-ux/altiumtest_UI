@@ -1,89 +1,16 @@
 export default {
 	// Добавление категории
-	addCategory: async () => {
-		const name = newCategoryNameInput.text;
-
-		// ===== ОБЯЗАТЕЛЬНОЕ ПОЛЕ =====
-		if (!name || name.trim() === '') {
-			showAlert('Введите название категории', 'warning');
-			return;
-		}
-
-		try {
-			const result = await addCategory.run();
-			if (result && result.length > 0) {
-				showAlert(`Категория "${name}" добавлена!`, 'success');
-				// Очищаем поля
-				newCategoryNameInput.setValue('');
-				newCategorySchLibInput.setValue('');
-				newCategoryPcbLibInput.setValue('');
-				newCategoryDesignatorInput.setValue('');
-				closeModal('modalAddCategory');
-				// Обновляем список категорий
-				await getCategories.run();
-			} else {
-				showAlert('Категория с таким названием уже существует', 'warning');
-			}
-		} catch (error) {
-			showAlert('Ошибка добавления: ' + error.message, 'error');
-		}
-	},
-
-	// Добавление производителя
-	addManufacturer: async () => {
-		const name = newManufacturerNameInput.text;
-		const website = newManufacturerWebSiteInput.text;
-
-		// ===== ОБЯЗАТЕЛЬНЫЕ ПОЛЯ =====
-
-		// 1. Название производителя
-		if (!name || name.trim() === '') {
-			showAlert('Введите название производителя', 'warning');
-			return;
-		}
-
-		// 2. Сайт (обязателен)
-		if (!website || website.trim() === '') {
-			showAlert('Введите сайт производителя', 'warning');
-			return;
-		}
-
-		// Проверка формата URL (если указан)
-		const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-		if (!urlPattern.test(website)) {
-			showAlert('Введите корректный URL вебсайта (например: https://example.com)', 'warning');
-			return;
-		}
-
-		try {
-			const result = await addManufacturer.run();
-			if (result && result.length > 0) {
-				showAlert(`Производитель "${name}" добавлен!`, 'success');
-				// Очищаем поля
-				newManufacturerNameInput.setValue('');
-				newManufacturerWebSiteInput.setValue('');
-				closeModal('modalAddManufacturer');
-				// Обновляем список производителей
-				await getManufacturers.run();
-			} else {
-				showAlert('Производитель с таким названием уже существует', 'warning');
-			}
-		} catch (error) {
-			showAlert('Ошибка добавления: ' + error.message, 'error');
-		}
-	},
-
 	// Добавление корпуса
 	addPackage: async () => {
 		const name = newPackageNameInput.text;
 
-		// ===== ОБЯЗАТЕЛЬНОЕ ПОЛЕ =====
+		// ===== ВАЛИДАЦИЯ =====
 		if (!name || name.trim() === '') {
 			showAlert('Введите название корпуса', 'warning');
 			return;
 		}
 
-		// Проверка формата названия (только буквы, цифры, дефисы)
+		// Проверка формата
 		const packagePattern = /^[a-zA-Z0-9\-]+$/;
 		if (!packagePattern.test(name)) {
 			showAlert('Название корпуса должно содержать только буквы, цифры и дефисы', 'warning');
@@ -91,16 +18,71 @@ export default {
 		}
 
 		try {
-			const result = await addPackage.run();
+			const result = await addPackage.run({
+				name: name.trim(),
+				standard: 'Custom'  // Значение по умолчанию
+			});
+
 			if (result && result.length > 0) {
 				showAlert(`Корпус "${name}" добавлен!`, 'success');
+
 				// Очищаем поле
 				newPackageNameInput.setValue('');
+
 				closeModal('modalAddPackage');
-				// Обновляем список корпусов
+
+				// Обновляем список
 				await getPackages.run();
 			} else {
 				showAlert('Корпус с таким названием уже существует', 'warning');
+			}
+		} catch (error) {
+			showAlert('Ошибка добавления: ' + error.message, 'error');
+		}
+	}, 
+
+	// Добавление производителя
+	addManufacturer: async () => {
+		const name = newManufacturerNameInput.text;
+		const website = newManufacturerWebSiteInput.text;
+
+		// ===== ВАЛИДАЦИЯ =====
+		if (!name || name.trim() === '') {
+			showAlert('Введите название производителя', 'warning');
+			return;
+		}
+
+		if (!website || website.trim() === '') {
+			showAlert('Введите сайт производителя', 'warning');
+			return;
+		}
+
+		// Проверка URL
+		const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+		if (!urlPattern.test(website)) {
+			showAlert('Введите корректный URL вебсайта (например: https://example.com)', 'warning');
+			return;
+		}
+
+		try {
+			const result = await addManufacturer.run({
+				name: name.trim(),
+				website: website.trim()
+			});
+
+			if (result && result.length > 0) {
+				showAlert(`Производитель "${name}" добавлен!`, 'success');
+
+				// Очищаем поля
+				newManufacturerNameInput.setValue('');
+				newManufacturerWebSiteInput.setValue('');
+
+				closeModal('modalAddManufacturer');
+
+				// Обновляем список
+				await getManufacturers.run();
+			} else {
+				showAlert('Производитель с таким названием уже существует', 'warning');
 			}
 		} catch (error) {
 			showAlert('Ошибка добавления: ' + error.message, 'error');

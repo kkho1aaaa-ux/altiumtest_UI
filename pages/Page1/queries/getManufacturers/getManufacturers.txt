@@ -1,6 +1,7 @@
 SELECT 
-    id, 
-    name, 
-    website
-FROM manufacturers 
-ORDER BY name;
+    id,
+    name,
+    website,
+    created_at
+FROM manufacturers
+ORDER BY name ASC;

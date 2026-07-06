@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "CREATE OR REPLACE VIEW v_components_altium AS\nSELECT \n    id,\n    part_number,\n    category_id,\n    manufacturer_id,\n    value_number,\n    value_multiplier,\n    value_unit,\n    value_display,\n    tolerance_percent,\n    voltage_rating_v,\n    temp_min_c,\n    temp_max_c,\n    package,\n    library_path AS \"Library Path\",\n    library_ref AS \"Library Reference\",\n    footprint_path AS \"Footprint Path\",\n    footprint_ref AS \"Footprint\",\n    datasheet_url,\n    spice_model_path,\n    altium_comment,\n    altium_designator,\n    kicad_keywords,\n    kicad_fp_filter,\n    created_at,\n    updated_at\nFROM components;",
+      "body": "INSERT INTO packages (name, standard)\nVALUES (\n\t{{newPackageNameInput.text}},\n\t{{newPackageStandardSelect.selectedOptionValue || 'Custom'}}\n)\nRETURNING id;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -22,7 +22,11 @@
       "name": "Altium",
       "pluginId": "postgres-plugin"
     },
-    "dynamicBindingPathList": [],
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
     "name": "Debug",
     "pageId": "Page1",
     "runBehaviour": "MANUAL",

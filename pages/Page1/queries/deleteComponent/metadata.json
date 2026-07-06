@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "6a44d0f9af138a374389db91_eac6e58c-604e-4c9c-8868-242f59f44cb6",
-  "id": "Page1_getManufacturers",
+  "gitSyncId": "6a44d0f9af138a374389db91_c2606a93-e983-4dc0-b82f-6f4ba38c4ba3",
+  "id": "Page1_deleteComponent",
   "pluginId": "postgres-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT \n    id,\n    name,\n    website,\n    created_at\nFROM manufacturers\nORDER BY name ASC;",
+      "body": "DELETE FROM components WHERE id IN ({{appsmith.store.deleteTargetIds.join(',')}});",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -22,10 +22,14 @@
       "name": "Altium",
       "pluginId": "postgres-plugin"
     },
-    "dynamicBindingPathList": [],
-    "name": "getManufacturers",
+    "dynamicBindingPathList": [
+      {
+        "key": "body"
+      }
+    ],
+    "name": "deleteComponent",
     "pageId": "Page1",
-    "runBehaviour": "AUTOMATIC",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

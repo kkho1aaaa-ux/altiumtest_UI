@@ -97,10 +97,10 @@ export default {
 	},
 
 	confirmFieldSelection: () => {
-		const selected = appsmith.store.csvFieldSelectedValues || 
-					csvFieldsCheckbox.selectedOptionValues || [];
+		// Берем из store (который заполняется при парсинге CSV)
+		const selected = appsmith.store.csvFieldSelectedValues || [];
 
-		if (selected.length === 0) {
+		if (!selected || selected.length === 0) {
 			showAlert('Выберите хотя бы одно поле', 'warning');
 			return false;
 		}
@@ -115,6 +115,7 @@ export default {
 	buildMappingUI: () => {
 		const allDbFields = [
 			{ key: 'part_number', label: 'Part Number', required: true, type: 'mapping' },
+			{ key: 'category_name', label: 'Category Name', required: true, type: 'mapping' },
 			{ key: 'manufacturer_name', label: 'Manufacturer', required: true, type: 'mapping' },
 			{ key: 'value_display', label: 'Value Display', required: false, type: 'mapping' },
 			{ key: 'tolerance_percent', label: 'Tolerance %', required: false, type: 'mapping' },
@@ -124,8 +125,6 @@ export default {
 			{ key: 'package', label: 'Package', required: false, type: 'mapping' },
 			{ key: 'datasheet_url', label: 'Datasheet URL', required: false, type: 'mapping' },
 			{ key: 'spice_model_path', label: 'Spice Model Path', required: false, type: 'mapping' },
-			{ key: 'category_name', label: 'Category Name', required: false, type: 'static', default: 'Capacitors' },
-			{ key: 'altium_designator', label: 'Altium Designator', required: false, type: 'static', default: 'C' },
 			{ key: 'altium_comment', label: 'Altium Comment', required: false, type: 'static', default: '' },
 			{ key: 'kicad_keywords', label: 'KiCad Keywords', required: false, type: 'static', default: '' },
 			{ key: 'kicad_fp_filter', label: 'KiCad FP Filter', required: false, type: 'static', default: '' }
@@ -154,6 +153,7 @@ export default {
 
 		const rules = {
 			'part_number': ['Display PN', 'Base Pn', 'Part Number', 'PN'],
+			'category_name': ['Category', 'Type', 'Component Type'],
 			'manufacturer_name': ['Manufacturer', 'Mfg', 'Brand'],
 			'value_display': ['Capacitance', 'Resistance', 'Inductance', 'Value'],
 			'tolerance_percent': ['Tolerance', 'Tol'],
@@ -200,18 +200,13 @@ export default {
 		const mapping = csvImport.state.mapping;
 		const staticValues = csvImport.state.staticValues;
 
-		const requiredFields = ['part_number', 'manufacturer_name'];
+		const requiredFields = ['part_number', 'category_name', 'manufacturer_name'];
 		const missingRequired = requiredFields.filter(f => !mapping[f]);
 
 		if (missingRequired.length > 0) {
 			showAlert(`Не замапплены обязательные поля: ${missingRequired.join(', ')}`, 'warning');
 			return false;
 		}
-
-		const firstRow = csvImport.state.rawData[0];
-		console.log('=== RAW DATA KEYS ===', Object.keys(firstRow));
-		console.log('=== RAW DATA FIRST ROW ===', firstRow);
-		console.log('=== MAPPING ===', mapping);
 
 		csvImport.state.previewData = csvImport.state.rawData.map((row, index) => {
 			const getFieldValue = (fieldName) => {
@@ -225,7 +220,6 @@ export default {
 																									 );
 					if (matchingKey) {
 						value = row[matchingKey];
-						console.log(`Found match: "${fieldName}" -> "${matchingKey}"`);
 					}
 				}
 
@@ -233,6 +227,7 @@ export default {
 			};
 
 			const partNumber = getFieldValue(mapping.part_number);
+			const categoryName = getFieldValue(mapping.category_name);
 			const manufacturerName = getFieldValue(mapping.manufacturer_name);
 			const valueDisplayRaw = getFieldValue(mapping.value_display);
 			const valueData = csvParser.parseValue(valueDisplayRaw);
@@ -240,6 +235,7 @@ export default {
 			return {
 				_id: index,
 				part_number: partNumber,
+				category_name: categoryName,
 				manufacturer_name: manufacturerName,
 				value_display: valueDisplayRaw,
 				value_number: valueData.number,
@@ -252,21 +248,12 @@ export default {
 				package: getFieldValue(mapping.package),
 				datasheet_url: getFieldValue(mapping.datasheet_url),
 				spice_model_path: getFieldValue(mapping.spice_model_path),
-				library_path: '',
-				library_ref: '',
-				footprint_path: '',
-				footprint_ref: '',
-				category_name: mapping.category_name ? (getFieldValue(mapping.category_name) || staticValues.category_name || 'Capacitors') : (staticValues.category_name || 'Capacitors'),
-				altium_designator: mapping.altium_designator ? (getFieldValue(mapping.altium_designator) || staticValues.altium_designator || 'C') : (staticValues.altium_designator || 'C'),
 				altium_comment: mapping.altium_comment ? (getFieldValue(mapping.altium_comment) || staticValues.altium_comment || '') : (staticValues.altium_comment || ''),
 				kicad_keywords: mapping.kicad_keywords ? (getFieldValue(mapping.kicad_keywords) || staticValues.kicad_keywords || '') : (staticValues.kicad_keywords || ''),
 				kicad_fp_filter: mapping.kicad_fp_filter ? (getFieldValue(mapping.kicad_fp_filter) || staticValues.kicad_fp_filter || '') : (staticValues.kicad_fp_filter || ''),
 				_selected: false
 			};
 		});
-
-		console.log('=== PREVIEW FIRST ROW ===', csvImport.state.previewData[0]);
-		console.log('Part number from preview:', csvImport.state.previewData[0]?.part_number);
 
 		const invalidRows = csvImport.state.previewData.filter(r => !r.part_number);
 		if (invalidRows.length > 0) {
@@ -312,13 +299,11 @@ export default {
 		showAlert(`Применено "${value}" к ${updatedCount} строкам в поле "${field}"`, 'success');
 	},
 
-	// ✅ НОВЫЙ МЕТОД - обновление строки при изменении Select
 	updateRow: (index, field, value) => {
 		const row = csvImport.state.previewData[index];
 		if (row) {
 			row[field] = value;
 
-			// Если изменили multiplier, unit или number - пересчитываем value_display
 			if (field === 'value_multiplier' || field === 'value_unit' || field === 'value_number') {
 				row.value_display = componentConstants.buildValueDisplay(
 					row.value_number,
@@ -337,79 +322,48 @@ export default {
 			return;
 		}
 
-		// ===== ПРОВЕРКА ОБЯЗАТЕЛЬНЫХ ПОЛЕЙ =====
+		// ===== ВАЛИДАЦИЯ =====
 		const validationErrors = [];
 
 		data.forEach((row, index) => {
 			const rowErrors = [];
 			const rowNum = index + 1;
 
-			// Определяем микросхема ли это
+			// Получаем категорию из БД
 			const categories = getCategories.data || [];
 			const selectedCategory = categories.find(cat => cat.name === row.category_name);
+
+			if (!selectedCategory) {
+				rowErrors.push('Category Name (не найдена в БД)');
+			}
+
 			const isIC = selectedCategory && (
 				selectedCategory.name.toLowerCase().includes('ic') ||
-				selectedCategory.name.toLowerCase().includes('микросхема') ||
-				selectedCategory.altium_designator === 'U' ||
-				selectedCategory.altium_designator === 'IC'
+				selectedCategory.designator_prefix === 'U'
 			);
 
-			// 1. Part Number (обязателен всегда)
+			// 1. Part Number
 			if (!row.part_number || String(row.part_number).trim() === '') {
 				rowErrors.push('Part Number');
 			}
 
-			// 2. Category Name (обязателен всегда)
+			// 2. Category Name
 			if (!row.category_name || String(row.category_name).trim() === '') {
 				rowErrors.push('Category Name');
 			}
 
-			// 3. Library Path (обязателен всегда)
-			if (!row.library_path || String(row.library_path).trim() === '') {
-				rowErrors.push('Library Path');
-			}
-
-			// 4. Library Ref (обязателен всегда)
-			if (!row.library_ref || String(row.library_ref).trim() === '') {
-				rowErrors.push('Library Ref');
-			}
-
-			// 5. Footprint Path (обязателен всегда)
-			if (!row.footprint_path || String(row.footprint_path).trim() === '') {
-				rowErrors.push('Footprint Path');
-			}
-
-			// 6. Footprint Ref (обязателен всегда)
-			if (!row.footprint_ref || String(row.footprint_ref).trim() === '') {
-				rowErrors.push('Footprint Ref');
-			}
-
-			// 7. Value (обязателен если НЕ микросхема)
+			// 3. Value (если НЕ микросхема)
 			if (!isIC) {
 				if (!row.value_number || row.value_number === 0 || row.value_number === '') {
 					rowErrors.push('Value Number');
 				}
-				if (!row.value_multiplier && row.value_multiplier !== 0) {
-					rowErrors.push('Value Multiplier');
-				}
-				if (!row.value_unit || String(row.value_unit).trim() === '') {
-					rowErrors.push('Value Unit');
-				}
 			}
 
-			// 8. Tolerance (обязателен если НЕ микросхема)
-			if (!isIC) {
-				if (row.tolerance_percent === null || row.tolerance_percent === undefined || row.tolerance_percent === '') {
-					rowErrors.push('Tolerance');
-				}
-			}
-
-			// 9. Package (обязателен всегда)
+			// 4. Package
 			if (!row.package || String(row.package).trim() === '') {
 				rowErrors.push('Package');
 			}
 
-			// Если есть ошибки - добавляем в общий список
 			if (rowErrors.length > 0) {
 				validationErrors.push({
 					row: rowNum,
@@ -419,7 +373,6 @@ export default {
 			}
 		});
 
-		// Если есть ошибки валидации - показываем alert и прерываем
 		if (validationErrors.length > 0) {
 			const maxErrorsToShow = 10;
 			const errorsToShow = validationErrors.slice(0, maxErrorsToShow);
@@ -441,7 +394,7 @@ export default {
 			return;
 		}
 
-		// ===== ИМПОРТ ДАННЫХ =====
+		// ===== ИМПОРТ =====
 		let successCount = 0;
 		let errorCount = 0;
 		const errors = [];
@@ -470,6 +423,7 @@ export default {
 		closeModal('modalCSVImport');
 		await getAllComponents.run();
 	},
+
 	reset: () => {
 		csvImport.state.rawData = [];
 		csvImport.state.headers = [];

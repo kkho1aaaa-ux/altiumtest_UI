@@ -5,16 +5,12 @@ export default {
 		const mult = valueMultiplierSelect.selectedOptionValue || '';
 		const unit = valueUnitSelect.selectedOptionValue || '';
 
-		// Преобразуем в число и обратно в строку, чтобы убрать лишние нули
 		const parsedNum = parseFloat(num);
 
-		// Если это валидное число, форматируем его
 		if (!isNaN(parsedNum)) {
-			// Если число целое, убираем десятичную точку
 			if (Number.isInteger(parsedNum)) {
 				num = Math.floor(parsedNum).toString();
 			} else {
-				// Округляем до 6 знаков после запятой (максимум)
 				num = parseFloat(parsedNum.toFixed(6)).toString();
 			}
 		}
@@ -26,7 +22,6 @@ export default {
 	parseValueDisplay: (valueDisplay) => {
 		if (!valueDisplay) return { number: '0', multiplier: '', unit: '' };
 
-		// Регулярное выражение: число + опциональный множитель + единица
 		const regex = /^([\d.]+)\s*([pnumkKMG]?)\s*([a-zA-ZΩ]+)?$/;
 		const match = valueDisplay.trim().match(regex);
 
@@ -108,7 +103,7 @@ export default {
 		showModal(modalAddEditComponent.name);
 	},
 
-	// Автозаполнение при выборе категории (ИЗМЕНЁННЫЙ)
+	// Автозаполнение при выборе категории (ОБНОВЛЕН)
 	onCategoryChange: async () => {
 		const categoryId = categorySelect.selectedOptionValue;
 
@@ -120,28 +115,175 @@ export default {
 
 		if (!selectedCategory) return;
 
-		// Заполняем поля из данных категории
-		const schLib = selectedCategory.schlib_path || 'Passive.SchLib';
-		const pcbLib = selectedCategory.pcblib_path || 'Passive.PcbLib';
-		const designator = selectedCategory.altium_designator || 'X';
+		// Получаем маппинг библиотек из БД
+		const mappings = getCategoryLibraryMappings.data || [];
 
-		// Устанавливаем значения
+		const schLibMapping = mappings.find(m => 
+																				m.category_id == categoryId && 
+																				m.platform === 'altium' && 
+																				m.library_type === 'symbol'
+																			 );
+
+		const pcbLibMapping = mappings.find(m => 
+																				m.category_id == categoryId && 
+																				m.platform === 'altium' && 
+																				m.library_type === 'footprint'
+																			 );
+
+		// Устанавливаем значения из БД
+		const schLib = schLibMapping ? schLibMapping.library_name : '';
+		const pcbLib = pcbLibMapping ? pcbLibMapping.library_name : '';
+		const designator = selectedCategory.designator_prefix || 'X';
+
 		libraryPathInput.setValue(schLib);
 		footprintPathInput.setValue(pcbLib);
 		altiumDesignatorInput.setValue(designator);
 
 		// Автозаполнение library_ref для стандартных случаев
-		if (designator === 'C' && !libraryRefInput.text) {
-			libraryRefInput.setValue('C');
+		if (!libraryRefInput.text) {
+			libraryRefInput.setValue(designator);
 		}
-		if (designator === 'R' && !libraryRefInput.text) {
-			libraryRefInput.setValue('R');
+		if (!footprintRefInput.text) {
+			footprintRefInput.setValue(designator);
 		}
-		if (designator === 'L' && !libraryRefInput.text) {
-			libraryRefInput.setValue('L');
+
+		// Автоматически устанавливаем единицу измерения
+		const unit = componentConstants.getUnitByCategory(selectedCategory.name);
+		if (unit) {
+			valueUnitSelect.setSelectedOption(unit);
 		}
-		if (designator === 'D' && !libraryRefInput.text) {
-			libraryRefInput.setValue('D');
+	},
+
+	// Валидация формы
+	validateForm: () => {
+		const errors = [];
+
+		// 1. Part Number
+		if (!partNumberInput.text || partNumberInput.text.trim() === '') {
+			errors.push('Part Number обязателен');
 		}
+
+		// 2. Category
+		if (!categorySelect.selectedOptionValue) {
+			errors.push('Категория обязательна');
+		}
+
+		// 3. Library Path
+		if (!libraryPathInput.text || libraryPathInput.text.trim() === '') {
+			errors.push('Library Path обязателен');
+		}
+
+		// 4. Library Ref
+		if (!libraryRefInput.text || libraryRefInput.text.trim() === '') {
+			errors.push('Library Ref обязателен');
+		}
+
+		// 5. Footprint Path
+		if (!footprintPathInput.text || footprintPathInput.text.trim() === '') {
+			errors.push('Footprint Path обязателен');
+		}
+
+		// 6. Footprint Ref
+		if (!footprintRefInput.text || footprintRefInput.text.trim() === '') {
+			errors.push('Footprint Ref обязателен');
+		}
+
+		// 7. Value и Tolerance (если это НЕ микросхема)
+		const categoryId = categorySelect.selectedOptionValue;
+		const categories = getCategories.data || [];
+		const selectedCategory = categories.find(cat => cat.id == categoryId);
+		const isIC = selectedCategory && (
+			selectedCategory.name.toLowerCase().includes('ic') ||
+			selectedCategory.designator_prefix === 'U'
+		);
+
+		if (!isIC) {
+			if (!valueNumberInput.value || valueNumberInput.value === 0) {
+				errors.push('Value обязателен');
+			}
+
+			if (!toleranceInput.value || toleranceInput.value === '') {
+				errors.push('Точность (Tolerance) обязательна');
+			}
+		}
+
+		// 8. Package
+		if (!packageSelect.selectedOptionValue) {
+			errors.push('Корпус обязателен');
+		}
+
+		return errors;
+	},
+
+	// Сброс формы
+	resetForm: () => {
+		partNumberInput.setValue('');
+		categorySelect.setSelectedOption('');
+		manufacturerSelect.setSelectedOption('');
+		valueNumberInput.setValue(0);
+		valueMultiplierSelect.setSelectedOption('');
+		valueUnitSelect.setSelectedOption('');
+		valueDisplayInput.setText('');
+		toleranceInput.setValue('');
+		voltageInput.setValue('');
+		tempMinInput.setValue('');
+		tempMaxInput.setValue('');
+		powerRatingInput.setValue('');
+		packageSelect.setSelectedOption('');
+		libraryPathInput.setValue('');
+		libraryRefInput.setValue('');
+		footprintPathInput.setValue('');
+		footprintRefInput.setValue('');
+		datasheetUrlInput.setValue('');
+		spiceModelInput.setValue('');
+		altiumCommentInput.setValue('');
+		altiumDesignatorInput.setValue('');
+		kicadKeywordsInput.setValue('');
+		kicadFpFilterInput.setValue('');
+
+		storeValue('editingComponentId', null);
+	},
+
+	// Подтверждение (добавление или обновление)
+	confirmAction: async () => {
+		const errors = formHandlers.validateForm();
+
+		if (errors.length > 0) {
+			showAlert(
+				'Ошибки валидации:\n\n• ' + errors.join('\n• '),
+				'error'
+			);
+			return;
+		}
+
+		const editingId = appsmith.store.editingComponentId;
+
+		if (editingId) {
+			try {
+				await updateComponent.run();
+				showAlert('Компонент обновлён!', 'success');
+				getAllComponents.run();
+				closeModal(modalAddEditComponent.name);
+				storeValue('editingComponentId', null);
+			} catch (error) {
+				showAlert('Ошибка обновления: ' + error.message, 'error');
+			}
+		} else {
+			try {
+				await addComponent.run();
+				showAlert('Компонент добавлен!', 'success');
+				getAllComponents.run();
+				closeModal(modalAddEditComponent.name);
+				formHandlers.resetForm();
+			} catch (error) {
+				showAlert('Ошибка добавления: ' + error.message, 'error');
+			}
+		}
+	},
+
+	// Отмена и закрытие
+	cancelAction: () => {
+		closeModal(modalAddEditComponent.name);
+		storeValue('editingComponentId', null);
 	}
 }

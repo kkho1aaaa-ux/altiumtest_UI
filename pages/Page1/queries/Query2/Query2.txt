@@ -1,6 +1,0 @@
-INSERT INTO manufacturers (name, website) VALUES
-('Vishay', 'https://www.vishay.com'),
-('Yageo', 'https://www.yageo.com'),
-('Panasonic', 'https://www.panasonic.com'),
-('Murata', 'https://www.murata.com'),
-('TDK', 'https://www.tdk.com');

@@ -1,15 +1,14 @@
 SELECT 
     c.id,
     c.part_number,
+    c.name,
+    c.description,
     c.category_id,
     cat.name as category_name,
+    cat.designator_prefix,
     c.manufacturer_id,
     m.name as manufacturer_name,
-    c.package,
-    c.package_id,
-    ps.name as package_standard_name,
-    c.value_number,
-    c.value_multiplier,
+    c.value_numeric,
     c.value_unit,
     c.value_display,
     c.tolerance_percent,
@@ -17,6 +16,10 @@ SELECT
     c.power_rating_w,
     c.temp_min_c,
     c.temp_max_c,
+    c.resistance_ohm,
+    c.capacitance_pf,
+    c.inductance_uh,
+    c.package,
     c.library_path,
     c.library_ref,
     c.footprint_path,
@@ -26,10 +29,11 @@ SELECT
     c.altium_comment,
     c.altium_designator,
     c.kicad_keywords,
-    c.kicad_fp_filter
+    c.kicad_fp_filter,
+    c.status,
+    c.created_at,
+    c.updated_at
 FROM components c
 LEFT JOIN categories cat ON c.category_id = cat.id
 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
-LEFT JOIN packages pkg ON c.package_id = pkg.id
-LEFT JOIN package_standards ps ON pkg.standard_id = ps.id
-ORDER BY c.id DESC
+ORDER BY c.part_number ASC;
