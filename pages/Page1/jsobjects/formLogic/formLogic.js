@@ -3,43 +3,62 @@ export default {
 	validateForm: () => {
 		const errors = [];
 
-		// Обязательные поля (со звёздочкой *)
+		// ===== ОБЯЗАТЕЛЬНЫЕ ПОЛЯ =====
+
+		// 1. Part Number
 		if (!partNumberInput.text || partNumberInput.text.trim() === '') {
 			errors.push('Part Number обязателен');
 		}
 
-		if (!valueNumberInput.value || valueNumberInput.value === 0) {
-			errors.push('Value обязателен');
-		}
-
-		if (!libraryPathInput.text || libraryPathInput.text.trim() === '') {
-			errors.push('Library Path обязателен');
-		}
-
-		if (!libraryRefInput.text || libraryRefInput.text.trim() === '') {
-			errors.push('Library Ref обязателен');
-		}
-
-		if (!footprintPathInput.text || footprintPathInput.text.trim() === '') {
-			errors.push('Footprint Path обязателен');
-		}
-
-		if (!footprintRefInput.text || footprintRefInput.text.trim() === '') {
-			errors.push('Footprint Ref обязателен');
-		}
-
-		if (!datasheetUrlInput.text || datasheetUrlInput.text.trim() === '') {
-			errors.push('Datasheet URL обязателен');
-		}
-
-		if (!spiceModelInput.text || spiceModelInput.text.trim() === '') {
-			errors.push('SPICE Model Path обязателен');
-		}
-
+		// 2. Category (ОБЯЗАТЕЛЬНА)
 		if (!categorySelect.selectedOptionValue) {
 			errors.push('Категория обязательна');
 		}
 
+		// 3. Library Path
+		if (!libraryPathInput.text || libraryPathInput.text.trim() === '') {
+			errors.push('Library Path обязателен');
+		}
+
+		// 4. Library Ref
+		if (!libraryRefInput.text || libraryRefInput.text.trim() === '') {
+			errors.push('Library Ref обязателен');
+		}
+
+		// 5. Footprint Path
+		if (!footprintPathInput.text || footprintPathInput.text.trim() === '') {
+			errors.push('Footprint Path обязателен');
+		}
+
+		// 6. Footprint Ref
+		if (!footprintRefInput.text || footprintRefInput.text.trim() === '') {
+			errors.push('Footprint Ref обязателен');
+		}
+
+		// 7. Value и Tolerance (если это НЕ микросхема)
+		const categoryId = categorySelect.selectedOptionValue;
+		const categories = getCategories.data || [];
+		const selectedCategory = categories.find(cat => cat.id == categoryId);
+		const isIC = selectedCategory && (
+			selectedCategory.name.toLowerCase().includes('ic') ||
+			selectedCategory.name.toLowerCase().includes('микросхема') ||
+			selectedCategory.altium_designator === 'U' ||
+			selectedCategory.altium_designator === 'IC'
+		);
+
+		if (!isIC) {
+			// Value Number
+			if (!valueNumberInput.value || valueNumberInput.value === 0) {
+				errors.push('Value обязателен');
+			}
+
+			// Tolerance
+			if (!toleranceInput.value || toleranceInput.value === '') {
+				errors.push('Точность (Tolerance) обязательна');
+			}
+		}
+
+		// 8. Package
 		if (!packageSelect.selectedOptionValue) {
 			errors.push('Корпус обязателен');
 		}
@@ -86,7 +105,7 @@ export default {
 				'Ошибки валидации:\n\n• ' + errors.join('\n• '),
 				'error'
 			);
-			return; // Прерываем выполнение
+			return;
 		}
 
 		const editingId = appsmith.store.editingComponentId;

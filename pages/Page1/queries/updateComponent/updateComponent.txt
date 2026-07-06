@@ -1,27 +1,35 @@
 UPDATE components SET
-    part_number = {{partNumberInput.text}},
-    category_id = (SELECT id FROM categories WHERE name = {{categorySelect.selectedOptionValue}}::text LIMIT 1),
-    manufacturer_id = (SELECT id FROM manufacturers WHERE name = {{manufacturerSelect.selectedOptionValue}}::text LIMIT 1),
-    value_number = {{valueNumberInput.text || 0}},
+    part_number = {{partNumberInput.text || ''}},
+
+    -- Оборачиваем в String(), чтобы Prepared Statements точно передали параметр как текст
+    category_id = (SELECT id FROM categories WHERE name = {{ String(categorySelect.selectedOptionValue) || '' }} LIMIT 1),
+    manufacturer_id = (SELECT id FROM manufacturers WHERE name = {{ String(manufacturerSelect.selectedOptionValue) || '' }} LIMIT 1),
+
+    value_number = {{valueNumberInput.text ? parseFloat(valueNumberInput.text) : 0}},
     value_multiplier = {{valueMultiplierSelect.selectedOptionValue || ''}},
     value_unit = {{valueUnitSelect.selectedOptionValue || ''}},
-    value_display = {{formHandlers.buildValueDisplay()}},
-    tolerance_percent = NULLIF({{toleranceInput.text || ''}}, '')::numeric,
-    voltage_rating_v = NULLIF({{voltageInput.text || ''}}, '')::numeric,
-    power_rating_w = NULLIF({{powerRatingInput.text || ''}}, '')::numeric,
-    temp_min_c = NULLIF({{tempMinInput.value || ''}}, '')::numeric,
-    temp_max_c = NULLIF({{tempMaxInput.value || ''}}, '')::numeric,
-    package = {{packageSelect.selectedOptionValue}}::text,
-    package_id = (SELECT id FROM packages WHERE name = {{packageSelect.selectedOptionValue}}::text LIMIT 1),
-    library_path = {{libraryPathInput.text}},
-    library_ref = {{libraryRefInput.text}},
-    footprint_path = {{footprintPathInput.text}},
-    footprint_ref = {{footprintRefInput.text}},
-    datasheet_url = {{datasheetUrlInput.text}},
-    spice_model_path = {{spiceModelInput.text}},
-    altium_comment = {{altiumCommentInput.text}},
-    altium_designator = {{altiumDesignatorInput.text}},
-    kicad_keywords = {{kicadKeywordsInput.text}},
-    kicad_fp_filter = {{kicadFpFilterInput.text}},
+    value_display = {{formHandlers.buildValueDisplay() || ''}},
+
+    tolerance_percent = {{ toleranceInput.text ? parseFloat(toleranceInput.text) : null }},
+    voltage_rating_v = {{ voltageInput.text ? parseFloat(voltageInput.text) : null }},
+    power_rating_w = {{ powerRatingInput.text ? parseFloat(powerRatingInput.text) : null }},
+    temp_min_c = {{ tempMinInput.text ? parseFloat(tempMinInput.text) : null }},
+    temp_max_c = {{ tempMaxInput.text ? parseFloat(tempMaxInput.text) : null }},
+
+    package = {{ String(packageSelect.selectedOptionValue) || '' }},
+    package_id = (SELECT id FROM packages WHERE name = {{ String(packageSelect.selectedOptionValue) || '' }} LIMIT 1),
+
+    library_path = {{libraryPathInput.text || ''}},
+    library_ref = {{libraryRefInput.text || ''}},
+    footprint_path = {{footprintPathInput.text || ''}},
+    footprint_ref = {{footprintRefInput.text || ''}},
+    datasheet_url = {{datasheetUrlInput.text || ''}},
+    spice_model_path = {{spiceModelInput.text || ''}},
+    altium_comment = {{altiumCommentInput.text || ''}},
+    altium_designator = {{altiumDesignatorInput.text || ''}},
+    kicad_keywords = {{kicadKeywordsInput.text || ''}},
+    kicad_fp_filter = {{kicadFpFilterInput.text || ''}},
+
     updated_at = NOW()
-WHERE id = {{appsmith.store.editingComponentId}}::integer;
+
+WHERE id = {{ parseInt(appsmith.store.editingComponentId) || 0 }};

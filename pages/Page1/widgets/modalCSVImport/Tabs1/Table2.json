@@ -47,19 +47,19 @@
     "package",
     "datasheet_url",
     "library_path",
+    "library_ref",
     "footprint_path",
+    "footprint_ref",
     "spice_model_path",
     "category_name",
     "altium_designator",
-    "library_ref",
-    "footprint_ref",
     "altium_comment",
     "kicad_keywords",
     "kicad_fp_filter",
     "_selected",
     "EditActions1"
   ],
-  "columnUpdatedAt": 1783060562056,
+  "columnUpdatedAt": 1783322151509,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -177,6 +177,12 @@
     },
     {
       "key": "primaryColumns.category_name.selectOptions"
+    },
+    {
+      "key": "primaryColumns.value_multiplier.selectOptions"
+    },
+    {
+      "key": "primaryColumns.value_unit.selectOptions"
     }
   ],
   "dynamicPropertyPathList": [
@@ -191,11 +197,17 @@
     },
     {
       "key": "primaryColumns.EditActions1.isDiscardDisabled"
+    },
+    {
+      "key": "primaryColumns.value_multiplier.onOptionChange"
     }
   ],
   "dynamicTriggerPathList": [
     {
       "key": "onRowSelected"
+    },
+    {
+      "key": "primaryColumns.value_multiplier.onOptionChange"
     }
   ],
   "enableClientSideSearch": true,
@@ -213,7 +225,7 @@
   "isVisibleSearch": true,
   "key": "n3651s9iyu",
   "label": "Data",
-  "leftColumn": 0,
+  "leftColumn": 1,
   "minWidth": 450,
   "mobileBottomRow": 38,
   "mobileLeftColumn": 14,
@@ -222,6 +234,8 @@
   "multiRowSelection": true,
   "needsErrorInfo": false,
   "onRowSelected": "{{\n(function() {\n\tconst selectedRows = Table2.selectedRows || [];\n\tconst selectedIds = selectedRows.map(r => r._id);\n\n\tcsvImport.state.previewData.forEach(row => {\n\t\trow._selected = selectedIds.includes(row._id);\n\t});\n})()\n}}",
+  "originalBottomRow": 66,
+  "originalTopRow": 26,
   "parentColumnSpace": 14.037109375,
   "parentId": "u1e9dv2b1e",
   "parentRowSpace": 10,
@@ -689,12 +703,12 @@
       "horizontalAlignment": "LEFT",
       "id": "package",
       "index": 11,
-      "isCellEditable": false,
+      "isCellEditable": true,
       "isCellVisible": true,
       "isDerived": false,
       "isDisabled": false,
       "isDiscardVisible": true,
-      "isEditable": false,
+      "isEditable": true,
       "isSaveVisible": true,
       "isVisible": true,
       "label": "package",
@@ -898,7 +912,7 @@
       "alias": "value_multiplier",
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
-      "columnType": "text",
+      "columnType": "select",
       "computedValue": "{{(() => { const tableData = Table2.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"value_multiplier\"])) : value_multiplier })()}}",
       "currencyCode": "USD",
       "decimals": 0,
@@ -917,7 +931,9 @@
       "isVisible": true,
       "label": "value_multiplier",
       "notation": "standard",
+      "onOptionChange": "{{csvImport.updateRow(currentRow._id, 'value_multiplier', currentValue)}}",
       "originalId": "value_multiplier",
+      "selectOptions": "{{(() => { const tableData = Table2.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (componentConstants.VALUE_MULTIPLIERS)) : componentConstants.VALUE_MULTIPLIERS })()}}",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,
@@ -938,12 +954,12 @@
       "horizontalAlignment": "LEFT",
       "id": "value_number",
       "index": 4,
-      "isCellEditable": false,
+      "isCellEditable": true,
       "isCellVisible": true,
       "isDerived": false,
       "isDisabled": false,
       "isDiscardVisible": true,
-      "isEditable": false,
+      "isEditable": true,
       "isSaveVisible": true,
       "isVisible": true,
       "label": "value_number",
@@ -960,7 +976,7 @@
       "alias": "value_unit",
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
-      "columnType": "text",
+      "columnType": "select",
       "computedValue": "{{(() => { const tableData = Table2.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"value_unit\"])) : value_unit })()}}",
       "currencyCode": "USD",
       "decimals": 0,
@@ -980,6 +996,7 @@
       "label": "value_unit",
       "notation": "standard",
       "originalId": "value_unit",
+      "selectOptions": "{{(() => { const tableData = Table2.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (componentConstants.VALUE_UNITS)) : componentConstants.VALUE_UNITS })()}}",
       "sticky": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,
@@ -1021,7 +1038,7 @@
   },
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 64,
+  "rightColumn": 63,
   "searchKey": "",
   "serverSidePaginationEnabled": false,
   "showInlineEditingOptionDropdown": true,

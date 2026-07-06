@@ -113,13 +113,9 @@ export default {
 	},
 
 	buildMappingUI: () => {
-		// ВСЕ поля БД (и маппируемые, и статические)
 		const allDbFields = [
-			// Обязательные маппируемые
 			{ key: 'part_number', label: 'Part Number', required: true, type: 'mapping' },
 			{ key: 'manufacturer_name', label: 'Manufacturer', required: true, type: 'mapping' },
-
-			// Опциональные маппируемые
 			{ key: 'value_display', label: 'Value Display', required: false, type: 'mapping' },
 			{ key: 'tolerance_percent', label: 'Tolerance %', required: false, type: 'mapping' },
 			{ key: 'voltage_rating_v', label: 'Voltage Rating V', required: false, type: 'mapping' },
@@ -128,8 +124,6 @@ export default {
 			{ key: 'package', label: 'Package', required: false, type: 'mapping' },
 			{ key: 'datasheet_url', label: 'Datasheet URL', required: false, type: 'mapping' },
 			{ key: 'spice_model_path', label: 'Spice Model Path', required: false, type: 'mapping' },
-
-			// Статические поля (можно не маппить, оставить "-")
 			{ key: 'category_name', label: 'Category Name', required: false, type: 'static', default: 'Capacitors' },
 			{ key: 'altium_designator', label: 'Altium Designator', required: false, type: 'static', default: 'C' },
 			{ key: 'altium_comment', label: 'Altium Comment', required: false, type: 'static', default: '' },
@@ -141,7 +135,6 @@ export default {
 		csvImport.state.mapping = {};
 		csvImport.state.staticValues = {};
 
-		// Инициализация статических значений
 		allDbFields.forEach(field => {
 			if (field.type === 'static') {
 				csvImport.state.staticValues[field.key] = field.default || '';
@@ -215,29 +208,21 @@ export default {
 			return false;
 		}
 
-		// 🔍 Отладка - показываем реальные ключи первого объекта
 		const firstRow = csvImport.state.rawData[0];
 		console.log('=== RAW DATA KEYS ===', Object.keys(firstRow));
 		console.log('=== RAW DATA FIRST ROW ===', firstRow);
 		console.log('=== MAPPING ===', mapping);
 
 		csvImport.state.previewData = csvImport.state.rawData.map((row, index) => {
-			// Улучшенная функция получения значения
 			const getFieldValue = (fieldName) => {
 				if (!fieldName) return '';
-
-				// 1. Пробуем получить напрямую
 				let value = row[fieldName];
 
-				// 2. Если не найдено, пробуем варианты с пробелами/кавычками
 				if (value === undefined || value === null) {
 					const normalizedFieldName = fieldName.trim();
-
-					// Ищем совпадение игнорируя регистр и пробелы
 					const matchingKey = Object.keys(row).find(key => 
 																										key.trim().toLowerCase() === normalizedFieldName.toLowerCase()
 																									 );
-
 					if (matchingKey) {
 						value = row[matchingKey];
 						console.log(`Found match: "${fieldName}" -> "${matchingKey}"`);
@@ -250,48 +235,39 @@ export default {
 			const partNumber = getFieldValue(mapping.part_number);
 			const manufacturerName = getFieldValue(mapping.manufacturer_name);
 			const valueDisplayRaw = getFieldValue(mapping.value_display);
-
 			const valueData = csvParser.parseValue(valueDisplayRaw);
 
 			return {
 				_id: index,
 				part_number: partNumber,
 				manufacturer_name: manufacturerName,
-
 				value_display: valueDisplayRaw,
 				value_number: valueData.number,
 				value_multiplier: valueData.multiplier,
 				value_unit: valueData.unit,
-
 				tolerance_percent: mapping.tolerance_percent ? csvParser.parseTolerance(getFieldValue(mapping.tolerance_percent)) : null,
 				voltage_rating_v: mapping.voltage_rating_v ? csvParser.parseVoltage(getFieldValue(mapping.voltage_rating_v)) : null,
 				temp_max_c: mapping.temp_max_c ? csvParser.parseTemperature(getFieldValue(mapping.temp_max_c)) : null,
 				temp_min_c: mapping.temp_min_c ? csvParser.parseTemperature(getFieldValue(mapping.temp_min_c)) : null,
-
 				package: getFieldValue(mapping.package),
 				datasheet_url: getFieldValue(mapping.datasheet_url),
 				spice_model_path: getFieldValue(mapping.spice_model_path),
-
 				library_path: '',
 				library_ref: '',
 				footprint_path: '',
 				footprint_ref: '',
-
 				category_name: mapping.category_name ? (getFieldValue(mapping.category_name) || staticValues.category_name || 'Capacitors') : (staticValues.category_name || 'Capacitors'),
 				altium_designator: mapping.altium_designator ? (getFieldValue(mapping.altium_designator) || staticValues.altium_designator || 'C') : (staticValues.altium_designator || 'C'),
 				altium_comment: mapping.altium_comment ? (getFieldValue(mapping.altium_comment) || staticValues.altium_comment || '') : (staticValues.altium_comment || ''),
 				kicad_keywords: mapping.kicad_keywords ? (getFieldValue(mapping.kicad_keywords) || staticValues.kicad_keywords || '') : (staticValues.kicad_keywords || ''),
 				kicad_fp_filter: mapping.kicad_fp_filter ? (getFieldValue(mapping.kicad_fp_filter) || staticValues.kicad_fp_filter || '') : (staticValues.kicad_fp_filter || ''),
-
 				_selected: false
 			};
 		});
 
-		// 🔍 Проверка результата
 		console.log('=== PREVIEW FIRST ROW ===', csvImport.state.previewData[0]);
 		console.log('Part number from preview:', csvImport.state.previewData[0]?.part_number);
 
-		// Проверка что part_number не пустой
 		const invalidRows = csvImport.state.previewData.filter(r => !r.part_number);
 		if (invalidRows.length > 0) {
 			showAlert(`Warning: ${invalidRows.length} строк без part_number!`, 'warning');
@@ -304,8 +280,6 @@ export default {
 	applyBulkEdit: () => {
 		const field = Select1.selectedOptionValue;
 		const value = Input1.text;
-
-		// Получаем выбранные строки ТОЛЬКО через Table2.selectedRows
 		const selectedRows = Table2.selectedRows || [];
 
 		if (!field) {
@@ -315,23 +289,16 @@ export default {
 
 		if (selectedRows.length === 0) {
 			showAlert('Выберите хотя бы одну строку в таблице (галочки слева)', 'warning');
-			console.log('Table2.selectedRows:', Table2.selectedRows);
-			console.log('Preview data length:', csvImport.state.previewData.length);
 			return;
 		}
 
-		// Собираем ID выбранных строк
 		const selectedIds = new Set(selectedRows.map(r => r._id));
-
-		console.log('Selected IDs:', Array.from(selectedIds));
-		console.log('Field:', field, 'Value:', value);
 
 		let updatedCount = 0;
 		csvImport.state.previewData.forEach(row => {
 			if (selectedIds.has(row._id)) {
 				row[field] = value;
 
-				// Пересчёт value при изменении value_display
 				if (field === 'value_display') {
 					const valueData = csvParser.parseValue(value);
 					row.value_number = valueData.number;
@@ -345,6 +312,22 @@ export default {
 		showAlert(`Применено "${value}" к ${updatedCount} строкам в поле "${field}"`, 'success');
 	},
 
+	// ✅ НОВЫЙ МЕТОД - обновление строки при изменении Select
+	updateRow: (index, field, value) => {
+		const row = csvImport.state.previewData[index];
+		if (row) {
+			row[field] = value;
+
+			// Если изменили multiplier, unit или number - пересчитываем value_display
+			if (field === 'value_multiplier' || field === 'value_unit' || field === 'value_number') {
+				row.value_display = componentConstants.buildValueDisplay(
+					row.value_number,
+					row.value_multiplier,
+					row.value_unit
+				);
+			}
+		}
+	},
 
 	importAll: async () => {
 		const data = csvImport.state.previewData;
@@ -360,8 +343,6 @@ export default {
 
 		for (let i = 0; i < data.length; i++) {
 			const item = data[i];
-
-			// Сохраняем в store для использования в SQL
 			storeValue('importItem', item);
 
 			try {

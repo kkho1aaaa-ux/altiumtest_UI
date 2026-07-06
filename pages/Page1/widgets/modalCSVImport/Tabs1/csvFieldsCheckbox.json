@@ -2,7 +2,7 @@
   "accentColor": "{{appsmith.theme.colors.primaryColor}}",
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 19,
+  "bottomRow": 4,
   "defaultSelectedValues": "{{(appsmith.store.csvFieldOptions || []).map(opt => opt.value)}}",
   "dynamicBindingPathList": [
     {

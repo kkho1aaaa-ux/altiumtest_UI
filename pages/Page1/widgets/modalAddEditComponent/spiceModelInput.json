@@ -20,7 +20,7 @@
   "inputType": "TEXT",
   "isDisabled": false,
   "isLoading": false,
-  "isRequired": true,
+  "isRequired": false,
   "isVisible": true,
   "key": "x6mfef7ajt",
   "label": "SPICE Model Path",

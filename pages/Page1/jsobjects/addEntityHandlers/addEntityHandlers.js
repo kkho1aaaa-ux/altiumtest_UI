@@ -3,6 +3,7 @@ export default {
 	addCategory: async () => {
 		const name = newCategoryNameInput.text;
 
+		// ===== ОБЯЗАТЕЛЬНОЕ ПОЛЕ =====
 		if (!name || name.trim() === '') {
 			showAlert('Введите название категории', 'warning');
 			return;
@@ -33,19 +34,25 @@ export default {
 		const name = newManufacturerNameInput.text;
 		const website = newManufacturerWebSiteInput.text;
 
-		// Проверка названия
+		// ===== ОБЯЗАТЕЛЬНЫЕ ПОЛЯ =====
+
+		// 1. Название производителя
 		if (!name || name.trim() === '') {
 			showAlert('Введите название производителя', 'warning');
 			return;
 		}
 
-		// Проверка вебсайта (если указан)
-		if (website && website.trim() !== '') {
-			const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-			if (!urlPattern.test(website)) {
-				showAlert('Введите корректный URL вебсайта (например: https://example.com)', 'warning');
-				return;
-			}
+		// 2. Сайт (обязателен)
+		if (!website || website.trim() === '') {
+			showAlert('Введите сайт производителя', 'warning');
+			return;
+		}
+
+		// Проверка формата URL (если указан)
+		const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+		if (!urlPattern.test(website)) {
+			showAlert('Введите корректный URL вебсайта (например: https://example.com)', 'warning');
+			return;
 		}
 
 		try {
@@ -70,7 +77,7 @@ export default {
 	addPackage: async () => {
 		const name = newPackageNameInput.text;
 
-		// Проверка названия
+		// ===== ОБЯЗАТЕЛЬНОЕ ПОЛЕ =====
 		if (!name || name.trim() === '') {
 			showAlert('Введите название корпуса', 'warning');
 			return;

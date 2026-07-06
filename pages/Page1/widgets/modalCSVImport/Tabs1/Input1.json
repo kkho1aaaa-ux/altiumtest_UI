@@ -22,8 +22,8 @@
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,
-  "key": "lwjrjt106p",
-  "label": "Заменить значения на",
+  "key": "3vius2q6e2",
+  "label": "Заменить значение на",
   "labelAlignment": "left",
   "labelPosition": "Top",
   "labelStyle": "",
@@ -41,6 +41,7 @@
   "parentColumnSpace": 14.037109375,
   "parentId": "u1e9dv2b1e",
   "parentRowSpace": 10,
+  "placeholderText": "Введите значение",
   "renderMode": "CANVAS",
   "resetOnSubmit": true,
   "responsiveBehavior": "fill",
@@ -49,6 +50,6 @@
   "topRow": 1,
   "type": "INPUT_WIDGET_V2",
   "version": 2,
-  "widgetId": "ohvjkp07tj",
+  "widgetId": "75gksi318x",
   "widgetName": "Input1"
 }
