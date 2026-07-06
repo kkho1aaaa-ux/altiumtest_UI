@@ -337,6 +337,111 @@ export default {
 			return;
 		}
 
+		// ===== ПРОВЕРКА ОБЯЗАТЕЛЬНЫХ ПОЛЕЙ =====
+		const validationErrors = [];
+
+		data.forEach((row, index) => {
+			const rowErrors = [];
+			const rowNum = index + 1;
+
+			// Определяем микросхема ли это
+			const categories = getCategories.data || [];
+			const selectedCategory = categories.find(cat => cat.name === row.category_name);
+			const isIC = selectedCategory && (
+				selectedCategory.name.toLowerCase().includes('ic') ||
+				selectedCategory.name.toLowerCase().includes('микросхема') ||
+				selectedCategory.altium_designator === 'U' ||
+				selectedCategory.altium_designator === 'IC'
+			);
+
+			// 1. Part Number (обязателен всегда)
+			if (!row.part_number || String(row.part_number).trim() === '') {
+				rowErrors.push('Part Number');
+			}
+
+			// 2. Category Name (обязателен всегда)
+			if (!row.category_name || String(row.category_name).trim() === '') {
+				rowErrors.push('Category Name');
+			}
+
+			// 3. Library Path (обязателен всегда)
+			if (!row.library_path || String(row.library_path).trim() === '') {
+				rowErrors.push('Library Path');
+			}
+
+			// 4. Library Ref (обязателен всегда)
+			if (!row.library_ref || String(row.library_ref).trim() === '') {
+				rowErrors.push('Library Ref');
+			}
+
+			// 5. Footprint Path (обязателен всегда)
+			if (!row.footprint_path || String(row.footprint_path).trim() === '') {
+				rowErrors.push('Footprint Path');
+			}
+
+			// 6. Footprint Ref (обязателен всегда)
+			if (!row.footprint_ref || String(row.footprint_ref).trim() === '') {
+				rowErrors.push('Footprint Ref');
+			}
+
+			// 7. Value (обязателен если НЕ микросхема)
+			if (!isIC) {
+				if (!row.value_number || row.value_number === 0 || row.value_number === '') {
+					rowErrors.push('Value Number');
+				}
+				if (!row.value_multiplier && row.value_multiplier !== 0) {
+					rowErrors.push('Value Multiplier');
+				}
+				if (!row.value_unit || String(row.value_unit).trim() === '') {
+					rowErrors.push('Value Unit');
+				}
+			}
+
+			// 8. Tolerance (обязателен если НЕ микросхема)
+			if (!isIC) {
+				if (row.tolerance_percent === null || row.tolerance_percent === undefined || row.tolerance_percent === '') {
+					rowErrors.push('Tolerance');
+				}
+			}
+
+			// 9. Package (обязателен всегда)
+			if (!row.package || String(row.package).trim() === '') {
+				rowErrors.push('Package');
+			}
+
+			// Если есть ошибки - добавляем в общий список
+			if (rowErrors.length > 0) {
+				validationErrors.push({
+					row: rowNum,
+					part_number: row.part_number || `(строка ${rowNum})`,
+					fields: rowErrors
+				});
+			}
+		});
+
+		// Если есть ошибки валидации - показываем alert и прерываем
+		if (validationErrors.length > 0) {
+			const maxErrorsToShow = 10;
+			const errorsToShow = validationErrors.slice(0, maxErrorsToShow);
+
+			let errorMessage = `❌ Найдено ${validationErrors.length} строк с незаполненными обязательными полями:\n\n`;
+
+			errorsToShow.forEach(err => {
+				errorMessage += `📌 Строка ${err.row} (${err.part_number}):\n`;
+				errorMessage += `   • ${err.fields.join(', ')}\n`;
+			});
+
+			if (validationErrors.length > maxErrorsToShow) {
+				errorMessage += `\n... и ещё ${validationErrors.length - maxErrorsToShow} строк`;
+			}
+
+			errorMessage += `\n\n💡 Используйте массовое редактирование для заполнения полей.`;
+
+			showAlert(errorMessage, 'error');
+			return;
+		}
+
+		// ===== ИМПОРТ ДАННЫХ =====
 		let successCount = 0;
 		let errorCount = 0;
 		const errors = [];
@@ -365,7 +470,6 @@ export default {
 		closeModal('modalCSVImport');
 		await getAllComponents.run();
 	},
-
 	reset: () => {
 		csvImport.state.rawData = [];
 		csvImport.state.headers = [];
