@@ -9,11 +9,11 @@
     "variables": [
       {
         "name": "VALUE_MULTIPLIERS",
-        "value": "[{\n  label: '-',\n  value: ''\n}, {\n  label: 'p (pico)',\n  value: 'p'\n}, {\n  label: 'n (nano)',\n  value: 'n'\n}, {\n  label: 'u (micro)',\n  value: 'u'\n}, {\n  label: 'm (milli)',\n  value: 'm'\n}, {\n  label: 'K (kilo)',\n  value: 'K'\n}, {\n  label: 'M (mega)',\n  value: 'M'\n}, {\n  label: 'G (giga)',\n  value: 'G'\n}]"
+        "value": "[{\n  label: '- (без множителя)',\n  value: ''\n}, {\n  label: 'п (пико)',\n  value: 'p'\n}, {\n  label: 'н (нано)',\n  value: 'n'\n}, {\n  label: 'мк (микро)',\n  value: 'u'\n}, {\n  label: 'м (милли)',\n  value: 'm'\n}, {\n  label: 'к (кило)',\n  value: 'K'\n}, {\n  label: 'М (мега)',\n  value: 'M'\n}, {\n  label: 'Г (гига)',\n  value: 'G'\n}]"
       },
       {
         "name": "VALUE_UNITS",
-        "value": "[{\n  label: 'Ω (Ohm)',\n  value: 'Ω'\n}, {\n  label: 'F (Farad)',\n  value: 'F'\n}, {\n  label: 'H (Henry)',\n  value: 'H'\n}, {\n  label: 'V (Volt)',\n  value: 'V'\n}, {\n  label: 'A (Ampere)',\n  value: 'A'\n}, {\n  label: 'W (Watt)',\n  value: 'W'\n}, {\n  label: 'Hz (Hertz)',\n  value: 'Hz'\n}]"
+        "value": "[{\n  label: 'Ω (Ом)',\n  value: 'Ω'\n}, {\n  label: 'F (Фарад)',\n  value: 'F'\n}, {\n  label: 'H (Генри)',\n  value: 'H'\n}, {\n  label: 'V (Вольт)',\n  value: 'V'\n}, {\n  label: 'A (Ампер)',\n  value: 'A'\n}, {\n  label: 'W (Ватт)',\n  value: 'W'\n}, {\n  label: 'Hz (Герц)',\n  value: 'Hz'\n}]"
       },
       {
         "name": "PACKAGE_STANDARDS",

@@ -4,7 +4,7 @@
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "bottomRow": 14,
   "boxShadow": "none",
-  "defaultOptionValue": "GREEN",
+  "defaultOptionValue": "",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -38,7 +38,7 @@
   "key": "7xeibb0ecg",
   "labelAlignment": "left",
   "labelPosition": "Top",
-  "labelText": "Unit",
+  "labelText": "Единицы измерения",
   "labelTextSize": "0.875rem",
   "labelWidth": 5,
   "leftColumn": 31,
@@ -56,7 +56,7 @@
   "parentColumnSpace": 18.8125,
   "parentId": "5ba26oy2oq",
   "parentRowSpace": 10,
-  "placeholderText": "Select option",
+  "placeholderText": "Выберите единицы",
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
   "rightColumn": 39,

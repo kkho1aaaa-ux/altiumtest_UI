@@ -23,7 +23,7 @@
   "isRequired": true,
   "isVisible": true,
   "key": "x6mfef7ajt",
-  "label": "Tolerance, %",
+  "label": "Точность, %",
   "labelAlignment": "left",
   "labelPosition": "Top",
   "labelStyle": "",

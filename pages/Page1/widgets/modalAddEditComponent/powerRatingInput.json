@@ -23,7 +23,7 @@
   "isRequired": false,
   "isVisible": true,
   "key": "x6mfef7ajt",
-  "label": "Power Raiting, W",
+  "label": "Номинальная мощность, W",
   "labelAlignment": "left",
   "labelPosition": "Top",
   "labelStyle": "",

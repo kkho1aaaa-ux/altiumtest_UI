@@ -4,7 +4,7 @@
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "bottomRow": 54,
   "boxShadow": "none",
-  "defaultOptionValue": "GREEN",
+  "defaultOptionValue": "",
   "dynamicBindingPathList": [
     {
       "key": "accentColor"
@@ -31,7 +31,7 @@
   "key": "7xeibb0ecg",
   "labelAlignment": "left",
   "labelPosition": "Top",
-  "labelText": "Manufacturer",
+  "labelText": "Производитель",
   "labelTextSize": "0.875rem",
   "labelWidth": 5,
   "leftColumn": 1,
@@ -48,7 +48,7 @@
   "parentColumnSpace": 18.603125,
   "parentId": "5ba26oy2oq",
   "parentRowSpace": 10,
-  "placeholderText": "Select manufacturer",
+  "placeholderText": "Выберите производителя",
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
   "rightColumn": 15,

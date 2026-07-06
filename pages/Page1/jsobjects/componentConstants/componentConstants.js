@@ -3,27 +3,27 @@ export default {
 	// МНОЖИТЕЛИ ДЛЯ НОМИНАЛОВ
 	// ============================================
 	VALUE_MULTIPLIERS: [
-		{ label: '-', value: '' },
-		{ label: 'p (pico)', value: 'p' },
-		{ label: 'n (nano)', value: 'n' },
-		{ label: 'u (micro)', value: 'u' },
-		{ label: 'm (milli)', value: 'm' },
-		{ label: 'K (kilo)', value: 'K' },
-		{ label: 'M (mega)', value: 'M' },
-		{ label: 'G (giga)', value: 'G' }
+		{ label: '- (без множителя)', value: '' },
+		{ label: 'п (пико)', value: 'p' },
+		{ label: 'н (нано)', value: 'n' },
+		{ label: 'мк (микро)', value: 'u' },
+		{ label: 'м (милли)', value: 'm' },
+		{ label: 'к (кило)', value: 'K' },
+		{ label: 'М (мега)', value: 'M' },
+		{ label: 'Г (гига)', value: 'G' }
 	],
 
 	// ============================================
 	// ЕДИНИЦЫ ИЗМЕРЕНИЯ
 	// ============================================
 	VALUE_UNITS: [
-		{ label: 'Ω (Ohm)', value: 'Ω' },
-		{ label: 'F (Farad)', value: 'F' },
-		{ label: 'H (Henry)', value: 'H' },
-		{ label: 'V (Volt)', value: 'V' },
-		{ label: 'A (Ampere)', value: 'A' },
-		{ label: 'W (Watt)', value: 'W' },
-		{ label: 'Hz (Hertz)', value: 'Hz' }
+		{ label: 'Ω (Ом)', value: 'Ω' },
+		{ label: 'F (Фарад)', value: 'F' },
+		{ label: 'H (Генри)', value: 'H' },
+		{ label: 'V (Вольт)', value: 'V' },
+		{ label: 'A (Ампер)', value: 'A' },
+		{ label: 'W (Ватт)', value: 'W' },
+		{ label: 'Hz (Герц)', value: 'Hz' }
 	],
 
 	// ============================================

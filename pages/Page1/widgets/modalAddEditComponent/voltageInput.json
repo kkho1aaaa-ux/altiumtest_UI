@@ -23,7 +23,7 @@
   "isRequired": false,
   "isVisible": true,
   "key": "x6mfef7ajt",
-  "label": "Voltage Rating, V",
+  "label": "Номинальное напряжение, V",
   "labelAlignment": "left",
   "labelPosition": "Top",
   "labelStyle": "",
