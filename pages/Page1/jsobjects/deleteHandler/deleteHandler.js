@@ -7,24 +7,23 @@ export default {
 			return;
 		}
 
-		const ids = rows.map(row => parseInt(row.id));
-		const count = rows.length;
+		const ids = rows.map(row => parseInt(row.id)).filter(id => !isNaN(id));
 
-		const getPluralForm = (count, one, few, many) => {
-			const lastTwo = count % 100;
-			const lastOne = count % 10;
-			if (lastTwo >= 11 && lastTwo <= 19) return many;
-			if (lastOne === 1) return one;
-			if (lastOne >= 2 && lastOne <= 4) return few;
-			return many;
-		};
+		if (ids.length === 0) {
+			showAlert('Не удалось получить ID компонентов', 'error');
+			return;
+		}
 
-		const word = getPluralForm(count, 'компонент', 'компонента', 'компонентов');
+		const count = ids.length;
+		const word = count === 1 ? 'компонент' : 
+		count >= 2 && count <= 4 ? 'компонента' : 'компонентов';
+
 		const message = `Удалить ${count} ${word}?`;
 
+		// Сохраняем IDs в store
 		await storeValue('deleteTargetIds', ids);
-		await storeValue('deleteMessage', message);
 
-		showModal(confirmDeleteModal.name);
+		// Показываем модалку
+		showModal('confirmDeleteModal');
 	}
 }

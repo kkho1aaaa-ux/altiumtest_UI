@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT \n    id,\n    name,\n    parent_id,\n    designator_prefix,\n    description,\n    is_active_component,\n    sort_order,\n    created_at\nFROM categories\nORDER BY parent_id NULLS FIRST, sort_order, name;",
+      "body": "SELECT \n    *\nFROM categories\nORDER BY parent_id NULLS FIRST, sort_order, name;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [

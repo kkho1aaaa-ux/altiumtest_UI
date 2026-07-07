@@ -53,7 +53,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 15,
   "serverSideFiltering": false,
-  "sourceData": "{{getManufacturers.data.map(m => ({label: m.name, value: m.id}))}}",
+  "sourceData": "{{Array.isArray(getManufacturers.data) ? getManufacturers.data.map(m => ({label: m.name, value: m.id})) : []}}",
   "topRow": 47,
   "type": "SELECT_WIDGET",
   "version": 1,

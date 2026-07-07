@@ -9,7 +9,7 @@
     "variables": [
       {
         "name": "state",
-        "value": "{\n  rawData: [],\n  headers: [],\n  selectedFields: [],\n  mapping: {},\n  previewData: [],\n  staticValues: {},\n  dbFields: [],\n  staticFields: []\n}"
+        "value": "{\n  rawData: [],\n  headers: [],\n  selectedFields: [],\n  mapping: {},\n  previewData: [],\n  staticValues: {},\n  dbFields: [],\n  staticFields: [],\n  userEdits: {}\n}"
       }
     ]
   }

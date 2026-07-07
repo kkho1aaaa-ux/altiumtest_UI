@@ -1,7 +1,5 @@
 export default {
-	// ============================================
-	// МНОЖИТЕЛИ ДЛЯ НОМИНАЛОВ
-	// ============================================
+	// Множители для номиналов
 	VALUE_MULTIPLIERS: [
 		{ label: '- (без множителя)', value: '' },
 		{ label: 'п (пико)', value: 'p' },
@@ -13,9 +11,7 @@ export default {
 		{ label: 'Г (гига)', value: 'G' }
 	],
 
-	// ============================================
-	// ЕДИНИЦЫ ИЗМЕРЕНИЯ
-	// ============================================
+	// Единицы измерения
 	VALUE_UNITS: [
 		{ label: 'Ω (Ом)', value: 'Ω' },
 		{ label: 'F (Фарад)', value: 'F' },
@@ -26,9 +22,7 @@ export default {
 		{ label: 'Hz (Герц)', value: 'Hz' }
 	],
 
-	// ============================================
-	// СТАНДАРТЫ КОРПУСОВ
-	// ============================================
+	// Стандарты корпусов
 	PACKAGE_STANDARDS: [
 		{ label: 'EIA', value: 'EIA' },
 		{ label: 'Metric', value: 'Metric' },
@@ -36,10 +30,6 @@ export default {
 		{ label: 'IPC', value: 'IPC' },
 		{ label: 'Custom', value: 'Custom' }
 	],
-
-	// ============================================
-	// ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
-	// ============================================
 
 	// Собрать номинал из частей
 	buildValueDisplay: (number, multiplier, unit) => {
@@ -73,20 +63,39 @@ export default {
 			'Inductors': 'H',
 			'Diodes': 'V',
 			'Transistors': 'A',
-			'LEDs': 'V'
+			'Thyristors': 'V',
+			'LEDs': 'V',
+			'Generators': 'Hz',
+			'Crystals': 'Hz',
+			'Crystals_Passive': 'Hz',
+			'Ferrites': 'Ω',
+			'Transformers': 'V',
+			'Fuses': 'A',
+			'Relays': 'V',
+			'Switches': 'V',
+			'Connectors': 'V'
 		};
 		return unitMap[categoryName] || '';
 	},
 
-	// Получить специфичное поле для категории
-	getSpecificFieldByCategory: (categoryName) => {
-		const fieldMap = {
-			'Resistors': 'resistance_ohm',
-			'Capacitors': 'capacitance_pf',
-			'Inductors': 'inductance_uh',
-			'Diodes': 'voltage_breakdown_v',
-			'Transistors': 'current_rating_a'
+	// Автогенерация KiCad FP Filter по категории и корпусу
+	generateFpFilter: (categoryName, packageName) => {
+		const prefixMap = {
+			'Resistors': 'R',
+			'Capacitors': 'C',
+			'Inductors': 'L',
+			'Diodes': 'D',
+			'LEDs': 'LED',
+			'Transistors': 'Q',
+			'IC_General': 'U',
+			'Connectors': 'J'
 		};
-		return fieldMap[categoryName] || null;
+		const prefix = prefixMap[categoryName] || '';
+		return packageName ? `${prefix}*${packageName}*` : '';
+	},
+
+	// Автогенерация KiCad Keywords
+	generateKeywords: (categoryName, packageName, valueDisplay) => {
+		return `${categoryName.toLowerCase()} ${packageName} ${valueDisplay || ''}`.trim();
 	}
 }

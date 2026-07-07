@@ -1,6 +1,15 @@
-INSERT INTO packages (name, standard)
-VALUES (
-	{{newPackageNameInput.text}},
-	{{newPackageStandardSelect.selectedOptionValue || 'Custom'}}
-)
-RETURNING id;
+ALTER TABLE components 
+    ALTER COLUMN value_unit TYPE VARCHAR(100),
+    ALTER COLUMN dielectric_type TYPE VARCHAR(100),
+    ALTER COLUMN package_standard TYPE VARCHAR(100),
+    ALTER COLUMN altium_designator TYPE VARCHAR(100),
+    ALTER COLUMN altium_comment TYPE VARCHAR(500),
+    ALTER COLUMN kicad_keywords TYPE VARCHAR(1000),
+    ALTER COLUMN kicad_fp_filter TYPE VARCHAR(1000),
+    ALTER COLUMN package TYPE VARCHAR(200),
+    ALTER COLUMN library_path TYPE VARCHAR(1000),
+    ALTER COLUMN library_ref TYPE VARCHAR(500),
+    ALTER COLUMN footprint_path TYPE VARCHAR(1000),
+    ALTER COLUMN footprint_ref TYPE VARCHAR(500),
+    ALTER COLUMN datasheet_url TYPE VARCHAR(1000),
+    ALTER COLUMN spice_model_path TYPE VARCHAR(1000);

@@ -61,7 +61,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 15,
   "serverSideFiltering": false,
-  "sourceData": "{{getCategories.data.map(c => ({label: c.name, value: c.id}))}}",
+  "sourceData": "{{Array.isArray(getCategories.data) ? getCategories.data\n.filter(c => c.designator_prefix !== null && c.designator_prefix !== '')\n.map(c => ({\n\tlabel: c.name,\n\tvalue: c.id\n})) \n: []}}",
   "topRow": 15,
   "type": "SELECT_WIDGET",
   "version": 1,

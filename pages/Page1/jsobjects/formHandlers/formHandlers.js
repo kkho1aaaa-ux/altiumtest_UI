@@ -103,52 +103,104 @@ export default {
 		showModal(modalAddEditComponent.name);
 	},
 
-	// Автозаполнение при выборе категории (ОБНОВЛЕН)
+	// Автозаполнение при выборе категории (ИСПРАВЛЕН)
 	onCategoryChange: async () => {
 		const categoryId = categorySelect.selectedOptionValue;
 
-		if (!categoryId) return;
+		const packageName = packageSelect.selectedOptionValue || '';
+		const fpFilter = packageName ? `${designator}*${packageName}*` : '';
+		const keywords = `${selectedCategory.name.toLowerCase()} ${packageName}`.trim();
 
-		// Находим категорию в загруженных данных
-		const categories = getCategories.data || [];
+		kicadFpFilterInput.setValue(fpFilter);
+		kicadKeywordsInput.setValue(keywords);
+
+		console.log('=== onCategoryChange TRIGGERED ===');
+		console.log('categoryId:', categoryId);
+
+		if (!categoryId) {
+			console.log('No categoryId, exiting');
+			return;
+		}
+
+		// Безопасная работа с данными
+		const categoriesData = getCategories.data;
+		const categories = Array.isArray(categoriesData) ? categoriesData : [];
+
+		console.log('categoriesData:', categoriesData);
+		console.log('categories count:', categories.length);
+
 		const selectedCategory = categories.find(cat => cat.id == categoryId);
 
-		if (!selectedCategory) return;
+		console.log('selectedCategory:', selectedCategory);
 
-		// Получаем маппинг библиотек из БД
-		const mappings = getCategoryLibraryMappings.data || [];
+		if (!selectedCategory) {
+			console.warn('Category not found:', categoryId);
+			showAlert('Категория не найдена! Обновите страницу.', 'warning');
+			return;
+		}
 
-		const schLibMapping = mappings.find(m => 
-																				m.category_id == categoryId && 
-																				m.platform === 'altium' && 
-																				m.library_type === 'symbol'
-																			 );
+		// Безопасная работа с маппингом
+		const mappingsData = getCategoryLibraryMappings.data;
+		const mappings = Array.isArray(mappingsData) ? mappingsData : [];
 
-		const pcbLibMapping = mappings.find(m => 
-																				m.category_id == categoryId && 
-																				m.platform === 'altium' && 
-																				m.library_type === 'footprint'
-																			 );
+		console.log('mappingsData:', mappingsData);
+		console.log('mappings count:', mappings.length);
 
-		// Устанавливаем значения из БД
+		// ИСПРАВЛЕНИЕ: определяем тип по расширению
+		const schLibMapping = mappings.find(m => {
+			const match = m.category_id == categoryId && 
+						m.platform === 'altium' && 
+						m.library_name && 
+						m.library_name.endsWith('.SchLib');
+			console.log('Checking SchLib:', m.library_name, '-> match:', match);
+			return match;
+		});
+
+		const pcbLibMapping = mappings.find(m => {
+			const match = m.category_id == categoryId && 
+						m.platform === 'altium' && 
+						m.library_name && 
+						m.library_name.endsWith('.PcbLib');
+			console.log('Checking PcbLib:', m.library_name, '-> match:', match);
+			return match;
+		});
+
+		console.log('schLibMapping:', schLibMapping);
+		console.log('pcbLibMapping:', pcbLibMapping);
+
 		const schLib = schLibMapping ? schLibMapping.library_name : '';
 		const pcbLib = pcbLibMapping ? pcbLibMapping.library_name : '';
 		const designator = selectedCategory.designator_prefix || 'X';
 
-		libraryPathInput.setValue(schLib);
-		footprintPathInput.setValue(pcbLib);
-		altiumDesignatorInput.setValue(designator);
+		console.log('Final values:');
+		console.log('- schLib:', schLib);
+		console.log('- pcbLib:', pcbLib);
+		console.log('- designator:', designator);
 
-		// Автозаполнение library_ref для стандартных случаев
-		if (!libraryRefInput.text) {
+		// ===== ЯВНАЯ ОЧИСТКА ПЕРЕД УСТАНОВКОЙ =====
+		libraryPathInput.setValue('');
+		footprintPathInput.setValue('');
+
+		// Небольшая задержка перед установкой новых значений
+		setTimeout(() => {
+			libraryPathInput.setValue(schLib);
+			footprintPathInput.setValue(pcbLib);
+			altiumDesignatorInput.setValue(designator);
+
+			// Всегда обновляем Ref при смене категории
 			libraryRefInput.setValue(designator);
-		}
-		if (!footprintRefInput.text) {
 			footprintRefInput.setValue(designator);
-		}
+
+			console.log('Values SET:');
+			console.log('- libraryPathInput.text:', libraryPathInput.text);
+			console.log('- footprintPathInput.text:', footprintPathInput.text);
+			console.log('- libraryRefInput.text:', libraryRefInput.text);
+			console.log('- footprintRefInput.text:', footprintRefInput.text);
+		}, 100);
 
 		// Автоматически устанавливаем единицу измерения
 		const unit = componentConstants.getUnitByCategory(selectedCategory.name);
+		console.log('unit for', selectedCategory.name, ':', unit);
 		if (unit) {
 			valueUnitSelect.setSelectedOption(unit);
 		}
@@ -246,6 +298,21 @@ export default {
 
 	// Подтверждение (добавление или обновление)
 	confirmAction: async () => {
+		// ВАЛИДАЦИЯ: проверяем обязательные поля
+		const partNumber = partNumberInput.text?.trim();
+
+		if (!partNumber) {
+			showAlert('Part Number обязателен!', 'error');
+			return;
+		}
+
+		const categoryId = categorySelect.selectedOptionValue;
+		if (!categoryId) {
+			showAlert('Выберите категорию!', 'error');
+			return;
+		}
+
+		// Остальная валидация...
 		const errors = formHandlers.validateForm();
 
 		if (errors.length > 0) {
@@ -259,6 +326,7 @@ export default {
 		const editingId = appsmith.store.editingComponentId;
 
 		if (editingId) {
+			// Режим редактирования
 			try {
 				await updateComponent.run();
 				showAlert('Компонент обновлён!', 'success');
@@ -269,6 +337,7 @@ export default {
 				showAlert('Ошибка обновления: ' + error.message, 'error');
 			}
 		} else {
+			// Режим добавления
 			try {
 				await addComponent.run();
 				showAlert('Компонент добавлен!', 'success');
@@ -281,9 +350,4 @@ export default {
 		}
 	},
 
-	// Отмена и закрытие
-	cancelAction: () => {
-		closeModal(modalAddEditComponent.name);
-		storeValue('editingComponentId', null);
-	}
 }
