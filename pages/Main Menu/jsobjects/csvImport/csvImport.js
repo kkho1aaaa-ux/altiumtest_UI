@@ -340,6 +340,40 @@ export default {
 				if (result.temp_max_c) {
 					result.temp_max_c = csvParser.parseTemperature(result.temp_max_c);
 				}
+				if (result.inductance_uh) {
+					result.inductance_uh = parseFloat(result.inductance_uh) || null;
+				}
+				if (result.q_factor) {
+					result.q_factor = parseFloat(result.q_factor) || null;
+				}
+				if (result.forward_voltage_v) {
+					result.forward_voltage_v = parseFloat(result.forward_voltage_v) || null;
+				}
+				if (result.reverse_voltage_v) {
+					result.reverse_voltage_v = parseFloat(result.reverse_voltage_v) || null;
+				}
+				if (result.operating_temp_min_c) {
+					result.operating_temp_min_c = parseFloat(result.operating_temp_min_c) || null;
+				}
+				if (result.operating_temp_max_c) {
+					result.operating_temp_max_c = parseFloat(result.operating_temp_max_c) || null;
+				}
+				if (result.output_voltage_v) {
+					result.output_voltage_v = parseFloat(result.output_voltage_v) || null;
+				}
+				if (result.dropout_voltage_v) {
+					result.dropout_voltage_v = parseFloat(result.dropout_voltage_v) || null;
+				}
+				if (result.pin_count) {
+					result.pin_count = parseInt(result.pin_count) || null;
+				}
+				if (result.pitch_mm) {
+					result.pitch_mm = parseFloat(result.pitch_mm) || null;
+				}
+				if (result.is_polarized !== undefined && result.is_polarized !== null) {
+					const polarizedStr = String(result.is_polarized).toLowerCase().trim();
+					result.is_polarized = polarizedStr === 'true' || polarizedStr === '1' || polarizedStr === 'yes' || polarizedStr === 'да';
+				}
 
 				// ===== ОТЛАДКА =====
 				console.log('=== Library Mapping Debug ===');
@@ -450,7 +484,13 @@ export default {
 					'tolerance_percent', 'voltage_rating_v', 'power_rating_w',
 					'temp_min_c', 'temp_max_c', 'package', 'package_standard',
 					'datasheet_url', 'spice_model_path', 'altium_comment',
-					'altium_designator', 'kicad_keywords', 'kicad_fp_filter', 
+					'altium_designator', 'kicad_keywords', 'kicad_fp_filter',
+					'inductance_uh', 'q_factor',
+					'forward_voltage_v', 'reverse_voltage_v',
+					'operating_temp_min_c', 'operating_temp_max_c',
+					'output_voltage_v', 'dropout_voltage_v',
+					'pin_count', 'pitch_mm',
+					'dielectric_type', 'diode_type', 'transistor_type', 'channel_type'
 				];
 
 				simpleFields.forEach(field => {
@@ -461,6 +501,21 @@ export default {
 						else if (field === 'power_rating_w') parsedValue = parseFloat(parsedValue) || null;
 						else if (field === 'temp_min_c' || field === 'temp_max_c') parsedValue = csvParser.parseTemperature(parsedValue);
 						else if (field === 'package_standard') parsedValue = parsedValue || 'Custom';
+						// ===== НОВЫЕ ПОЛЯ =====
+						else if (field === 'inductance_uh' || field === 'q_factor' || 
+										 field === 'forward_voltage_v' || field === 'reverse_voltage_v' ||
+										 field === 'operating_temp_min_c' || field === 'operating_temp_max_c' ||
+										 field === 'output_voltage_v' || field === 'dropout_voltage_v' ||
+										 field === 'pitch_mm') {
+							parsedValue = parseFloat(parsedValue) || null;
+						}
+						else if (field === 'pin_count') {
+							parsedValue = parseInt(parsedValue) || null;
+						}
+						else if (field === 'is_polarized') {
+							const polarizedStr = String(parsedValue).toLowerCase().trim();
+							parsedValue = polarizedStr === 'true' || polarizedStr === '1' || polarizedStr === 'yes' || polarizedStr === 'да';
+						}
 						updatedRow[field] = parsedValue;
 					}
 				});
@@ -570,6 +625,48 @@ export default {
 			],
 			'kicad_fp_filter': [
 				'kicad_fp_filter', 'fp filter', 'footprint filter', 'фильтр footprint'
+			],
+			'dielectric_type': [
+				'dielectric', 'dielectric_type', 'dielectric type', 'диэлектрик', 'тип диэлектрика'
+			],
+			'inductance_uh': [
+				'inductance', 'inductance_uh', 'inductance value', 'индуктивность'
+			],
+			'q_factor': [
+				'q_factor', 'q factor', 'quality factor', 'добротность'
+			],
+			'diode_type': [
+				'diode_type', 'diode type', 'тип диода'
+			],
+			'forward_voltage_v': [
+				'forward_voltage', 'forward voltage', 'vf', 'прямое напряжение'
+			],
+			'reverse_voltage_v': [
+				'reverse_voltage', 'reverse voltage', 'vr', 'обратное напряжение'
+			],
+			'transistor_type': [
+				'transistor_type', 'transistor type', 'тип транзистора'
+			],
+			'channel_type': [
+				'channel', 'channel_type', 'channel type', 'канал', 'тип канала'
+			],
+			'operating_temp_min_c': [
+				'operating_temp_min', 'min operating temp', 'рабочая температура мин'
+			],
+			'operating_temp_max_c': [
+				'operating_temp_max', 'max operating temp', 'рабочая температура макс'
+			],
+			'output_voltage_v': [
+				'output_voltage', 'output voltage', 'vout', 'выходное напряжение'
+			],
+			'dropout_voltage_v': [
+				'dropout_voltage', 'dropout voltage', 'dropout', 'напряжение падения'
+			],
+			'pin_count': [
+				'pin_count', 'pin count', 'pins', 'количество контактов', 'пины'
+			],
+			'pitch_mm': [
+				'pitch', 'pitch_mm', 'step', 'шаг', 'шаг контактов'
 			]
 		};
 
