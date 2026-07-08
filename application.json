@@ -14,7 +14,7 @@
       "navStyle": "stacked",
       "orientation": "top",
       "position": "static",
-      "showNavbar": true,
+      "showNavbar": false,
       "showSignIn": true
     },
     "themeSetting": {
@@ -30,7 +30,7 @@
   "icon": "hat",
   "pages": [
     {
-      "id": "Page1",
+      "id": "Main Menu",
       "isDefault": true
     }
   ],
@@ -48,7 +48,7 @@
       "navStyle": "stacked",
       "orientation": "top",
       "position": "static",
-      "showNavbar": true,
+      "showNavbar": false,
       "showSignIn": true
     },
     "themeSetting": {

@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "6a44d0f9af138a374389db91_43aa092a-fcc3-4960-8abd-4022bea0b2bd",
+  "id": "Main Menu_csvParser",
+  "unpublishedCollection": {
+    "name": "csvParser",
+    "pageId": "Main Menu",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

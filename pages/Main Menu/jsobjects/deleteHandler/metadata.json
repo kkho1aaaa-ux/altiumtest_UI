@@ -1,0 +1,11 @@
+{
+  "gitSyncId": "6a44d0f9af138a374389db91_c1ba5fd0-1458-4622-a966-f37c9a12842e",
+  "id": "Main Menu_deleteHandler",
+  "unpublishedCollection": {
+    "name": "deleteHandler",
+    "pageId": "Main Menu",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "variables": []
+  }
+}

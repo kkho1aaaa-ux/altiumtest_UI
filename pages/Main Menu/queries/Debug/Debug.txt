@@ -1,0 +1,8 @@
+-- Проверить текущее формирование
+SELECT symbol_name, part_number, category_name 
+FROM v_kicad_capacitors 
+LIMIT 5;
+
+SELECT symbol_name, part_number, category_name 
+FROM v_kicad_resistors 
+LIMIT 5;

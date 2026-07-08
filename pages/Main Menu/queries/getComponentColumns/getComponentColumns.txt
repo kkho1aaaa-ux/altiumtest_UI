@@ -1,0 +1,5 @@
+SELECT column_name 
+FROM information_schema.columns 
+WHERE table_name = 'v_components_full' 
+  AND column_name NOT IN ('id', 'created_at', 'updated_at', 'created_by', 'category_name_ru')
+ORDER BY ordinal_position;
