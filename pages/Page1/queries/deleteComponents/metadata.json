@@ -1,11 +1,11 @@
 {
   "gitSyncId": "6a44d0f9af138a374389db91_c2606a93-e983-4dc0-b82f-6f4ba38c4ba3",
-  "id": "Page1_deleteComponent",
+  "id": "Page1_deleteComponents",
   "pluginId": "postgres-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "DELETE FROM components \nWHERE id IN ({{appsmith.store.deleteTargetIds?.join(',') || '0'}});",
+      "body": "DELETE FROM components \nWHERE id::text IN (\n\tSELECT value::text \n\tFROM jsonb_array_elements_text(\n\t\t'{{JSON.stringify(appsmith.store.deleteTargetIds)}}'::jsonb\n\t)\n)",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -27,7 +27,7 @@
         "key": "body"
       }
     ],
-    "name": "deleteComponent",
+    "name": "deleteComponents",
     "pageId": "Page1",
     "runBehaviour": "MANUAL",
     "userSetOnLoad": false

@@ -18,6 +18,14 @@
       {
         "name": "PACKAGE_STANDARDS",
         "value": "[{\n  label: 'EIA',\n  value: 'EIA'\n}, {\n  label: 'Metric',\n  value: 'Metric'\n}, {\n  label: 'JEDEC',\n  value: 'JEDEC'\n}, {\n  label: 'IPC',\n  value: 'IPC'\n}, {\n  label: 'Custom',\n  value: 'Custom'\n}]"
+      },
+      {
+        "name": "PACKAGE_PATTERNS",
+        "value": "{\n  'EIA': {\n    pattern: /\\b(0201|0402|0603|0805|1206|1210|1812|2010|2512)\\b/gi,\n    priority: 2,\n    format: 'EIA'\n  },\n  'Metric': {\n    pattern: /\\b((?:0603|1005|1608|2012|3216|3225|4532|5020|6432)\\s*mm)\\b/gi,\n    priority: 1,\n    format: 'mm'\n  },\n  'Metric_NoMM': {\n    pattern: /\\b(0603|1005|1608|2012|3216|3225|4532|5020|6432)\\b/gi,\n    priority: 1,\n    format: 'mm'\n  },\n  'JEDEC': {\n    pattern: /\\b(SOD-123|SOD-323|SOT-23|SOT-89|SOT-223|SOIC-8|SOIC-14|SOIC-16|QFN-16|QFN-20|QFN-24|BGA-64|BGA-100)\\b/gi,\n    priority: 3,\n    format: 'JEDEC'\n  },\n  'IPC': {\n    pattern: /\\bIPC-[0-9A-Z-]+\\b/gi,\n    priority: 4,\n    format: 'IPC'\n  }\n}"
+      },
+      {
+        "name": "CATEGORY_TRANSLATIONS",
+        "value": "{\n  'Active Components': 'Активные компоненты',\n  'Passive Components': 'Пассивные компоненты',\n  'Resistors': 'Резисторы',\n  'Capacitors': 'Конденсаторы',\n  'Inductors': 'Индуктивности',\n  'Diodes': 'Диоды',\n  'Transistors': 'Транзисторы',\n  'Thyristors': 'Тиристоры',\n  'LEDs': 'Светодиоды',\n  'Optocouplers': 'Оптопары',\n  'Logic': 'Логические микросхемы',\n  'Memory': 'Микросхемы памяти',\n  'Microcontrollers': 'Микроконтроллеры',\n  'FPGA': 'ПЛИС',\n  'Linear': 'Линейные микросхемы',\n  'Power_Management': 'Микросхемы управления питанием',\n  'Data_Converters': 'АЦП/ЦАП',\n  'IC_General': 'Прочие ИС',\n  'Generators': 'Генераторы',\n  'Crystals': 'Кварцевые резонаторы',\n  'Crystals_Passive': 'Пассивные резонаторы',\n  'Transformers': 'Трансформаторы',\n  'Ferrites': 'Ферриты',\n  'Connectors': 'Разъёмы',\n  'Switches': 'Переключатели',\n  'Relays': 'Реле',\n  'Fuses': 'Предохранители',\n  'Mechanical': 'Механические компоненты',\n  'Displays': 'Дисплеи'\n}"
       }
     ]
   }

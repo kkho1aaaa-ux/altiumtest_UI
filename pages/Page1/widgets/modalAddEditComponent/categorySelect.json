@@ -61,7 +61,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 15,
   "serverSideFiltering": false,
-  "sourceData": "{{Array.isArray(getCategories.data) ? getCategories.data\n.filter(c => c.designator_prefix !== null && c.designator_prefix !== '')\n.map(c => ({\n\tlabel: c.name,\n\tvalue: c.id\n})) \n: []}}",
+  "sourceData": "{{(getCategories.data || [])\n.filter(cat => cat.parent_id !== null)  // Только подкатегории\n.map(cat => ({\n\tlabel: componentConstants.getCategoryRussianName(cat.name),\n\tvalue: cat.id\n}))\n}}",
   "topRow": 15,
   "type": "SELECT_WIDGET",
   "version": 1,

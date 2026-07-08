@@ -4,8 +4,8 @@ SELECT
     clm.platform,
     clm.library_name,
     clm.library_path,
-    clm.is_default,
     cat.name as category_name
 FROM category_library_mapping clm
 LEFT JOIN categories cat ON clm.category_id = cat.id
-ORDER BY clm.category_id, clm.platform;
+WHERE clm.platform = 'altium'
+ORDER BY clm.category_id, clm.library_name;

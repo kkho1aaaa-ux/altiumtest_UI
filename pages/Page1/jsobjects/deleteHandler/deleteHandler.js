@@ -20,10 +20,29 @@ export default {
 
 		const message = `Удалить ${count} ${word}?`;
 
-		// Сохраняем IDs в store
+		await storeValue('deleteMessage', message);
 		await storeValue('deleteTargetIds', ids);
 
-		// Показываем модалку
 		showModal('confirmDeleteModal');
+	},
+
+	// ✅ МЕТОД ДЛЯ КНОПКИ "УДАЛИТЬ" В МОДАЛКЕ
+	confirmDelete: async () => {
+		const ids = appsmith.store.deleteTargetIds;
+
+		if (!ids || ids.length === 0) {
+			showAlert('Нет компонентов для удаления', 'warning');
+			closeModal('confirmDeleteModal');
+			return;
+		}
+
+		try {
+			await deleteComponents.run({ ids: ids });
+			showAlert(`Удалено ${ids.length} компонент(ов)`, 'success');
+			closeModal('confirmDeleteModal');
+			await getAllComponents.run();
+		} catch (error) {
+			showAlert('Ошибка удаления: ' + error.message, 'error');
+		}
 	}
 }

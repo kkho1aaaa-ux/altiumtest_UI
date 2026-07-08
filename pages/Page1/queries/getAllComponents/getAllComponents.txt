@@ -1,25 +1,53 @@
 SELECT 
     c.id,
     c.part_number,
-    c.name,
-    c.description,
     c.category_id,
-    cat.name as category_name,
+    cat.name AS category_name,
+    CASE cat.name
+        WHEN 'Active Components' THEN 'Активные компоненты'
+        WHEN 'Passive Components' THEN 'Пассивные компоненты'
+        WHEN 'Resistors' THEN 'Резисторы'
+        WHEN 'Capacitors' THEN 'Конденсаторы'
+        WHEN 'Inductors' THEN 'Индуктивности'
+        WHEN 'Diodes' THEN 'Диоды'
+        WHEN 'Transistors' THEN 'Транзисторы'
+        WHEN 'Thyristors' THEN 'Тиристоры'
+        WHEN 'LEDs' THEN 'Светодиоды'
+        WHEN 'Optocouplers' THEN 'Оптопары'
+        WHEN 'Logic' THEN 'Логические микросхемы'
+        WHEN 'Memory' THEN 'Микросхемы памяти'
+        WHEN 'Microcontrollers' THEN 'Микроконтроллеры'
+        WHEN 'FPGA' THEN 'ПЛИС'
+        WHEN 'Linear' THEN 'Линейные микросхемы'
+        WHEN 'Power_Management' THEN 'Микросхемы управления питанием'
+        WHEN 'Data_Converters' THEN 'АЦП/ЦАП'
+        WHEN 'IC_General' THEN 'Прочие ИС'
+        WHEN 'Generators' THEN 'Генераторы'
+        WHEN 'Crystals' THEN 'Кварцевые резонаторы'
+        WHEN 'Crystals_Passive' THEN 'Пассивные резонаторы'
+        WHEN 'Transformers' THEN 'Трансформаторы'
+        WHEN 'Ferrites' THEN 'Ферриты'
+        WHEN 'Connectors' THEN 'Разъёмы'
+        WHEN 'Switches' THEN 'Переключатели'
+        WHEN 'Relays' THEN 'Реле'
+        WHEN 'Fuses' THEN 'Предохранители'
+        WHEN 'Mechanical' THEN 'Механические компоненты'
+        WHEN 'Displays' THEN 'Дисплеи'
+        ELSE cat.name
+    END AS category_name_ru,
     cat.designator_prefix,
     c.manufacturer_id,
-    m.name as manufacturer_name,
-    c.value_numeric,
-    c.value_unit,
+    m.name AS manufacturer_name,
     c.value_display,
+    c.value_unit,
+    c.value_numeric,
     c.tolerance_percent,
     c.voltage_rating_v,
     c.power_rating_w,
     c.temp_min_c,
     c.temp_max_c,
-    c.resistance_ohm,
-    c.capacitance_pf,
-    c.inductance_uh,
     c.package,
+    c.package_standard,
     c.library_path,
     c.library_ref,
     c.footprint_path,
@@ -30,7 +58,6 @@ SELECT
     c.altium_designator,
     c.kicad_keywords,
     c.kicad_fp_filter,
-    c.status,
     c.created_at,
     c.updated_at
 FROM components c

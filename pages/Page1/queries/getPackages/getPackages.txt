@@ -1,8 +1,3 @@
-SELECT 
-    id,
-    name,
-    standard,
-    description,
-    created_at
+SELECT id, name, standard
 FROM packages
-ORDER BY standard, name ASC;
+ORDER BY standard, name;

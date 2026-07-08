@@ -1,8 +1,12 @@
 UPDATE components SET
-    part_number = {{componentData.prepareData().part_number}},
-    name = {{componentData.prepareData().part_number}},
     category_id = {{componentData.prepareData().category_id}},
     manufacturer_id = {{componentData.prepareData().manufacturer_id}},
+    library_path = {{componentData.prepareData().library_path}},
+    library_ref = {{componentData.prepareData().library_ref}},
+    footprint_path = {{componentData.prepareData().footprint_path}},
+    footprint_ref = {{componentData.prepareData().footprint_ref}},
+    datasheet_url = {{componentData.prepareData().datasheet_url}},
+    spice_model_path = {{componentData.prepareData().spice_model_path}},
     value_numeric = {{componentData.prepareData().value_numeric}},
     value_unit = {{componentData.prepareData().value_unit}},
     value_display = {{componentData.prepareData().value_display}},
@@ -11,20 +15,12 @@ UPDATE components SET
     power_rating_w = {{componentData.prepareData().power_rating_w}},
     temp_min_c = {{componentData.prepareData().temp_min_c}},
     temp_max_c = {{componentData.prepareData().temp_max_c}},
-    resistance_ohm = {{componentData.prepareData().resistance_ohm}},
-    capacitance_pf = {{componentData.prepareData().capacitance_pf}},
-    inductance_uh = {{componentData.prepareData().inductance_uh}},
     package = {{componentData.prepareData().package}},
-    library_path = {{componentData.prepareData().library_path}},
-    library_ref = {{componentData.prepareData().library_ref}},
-    footprint_path = {{componentData.prepareData().footprint_path}},
-    footprint_ref = {{componentData.prepareData().footprint_ref}},
-    datasheet_url = {{componentData.prepareData().datasheet_url}},
-    spice_model_path = {{componentData.prepareData().spice_model_path}},
+    package_standard = {{componentData.prepareData().package_standard || 'Custom'}},
     altium_comment = {{componentData.prepareData().altium_comment}},
     altium_designator = {{componentData.prepareData().altium_designator}},
     kicad_keywords = {{componentData.prepareData().kicad_keywords}},
     kicad_fp_filter = {{componentData.prepareData().kicad_fp_filter}},
     updated_at = CURRENT_TIMESTAMP
 WHERE id = {{appsmith.store.editingComponentId}}
-RETURNING id;
+RETURNING id, part_number;

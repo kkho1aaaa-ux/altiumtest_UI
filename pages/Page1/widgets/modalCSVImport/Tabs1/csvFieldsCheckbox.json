@@ -56,7 +56,7 @@
   "onSelectionChange": "{{\n(function() {\n\tconst selected = csvFieldsCheckbox.selectedValues || [];\n\tstoreValue('csvFieldSelectedValues', selected);\n})()\n}}",
   "optionAlignment": "unset",
   "options": "{{appsmith.store.csvFieldOptions || []}}",
-  "originalBottomRow": 19,
+  "originalBottomRow": 4,
   "originalTopRow": 0,
   "parentColumnSpace": 5.2421875,
   "parentId": "2h3btle9e4",

@@ -1,0 +1,7 @@
+DELETE FROM components 
+WHERE id::text IN (
+	SELECT value::text 
+	FROM jsonb_array_elements_text(
+		'{{JSON.stringify(appsmith.store.deleteTargetIds)}}'::jsonb
+	)
+)

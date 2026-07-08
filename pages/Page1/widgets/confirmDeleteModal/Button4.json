@@ -34,7 +34,7 @@
   "mobileRightColumn": 63,
   "mobileTopRow": 18,
   "needsErrorInfo": false,
-  "onClick": "{{\n(async () => {\n\tconst ids = appsmith.store.deleteTargetIds || [];\n\n\tif (!ids || ids.length === 0) {\n\t\tshowAlert('Нет ID для удаления', 'error');\n\t\tcloseModal('confirmDeleteModal');\n\t\treturn;\n\t}\n\n\ttry {\n\t\tawait deleteComponent.run({ ids: ids });\n\t\tshowAlert('Удалено успешно', 'success');\n\t\tawait getAllComponents.run();\n\t\tcloseModal('confirmDeleteModal');\n\t} catch (error) {\n\t\tshowAlert('Ошибка: ' + error.message, 'error');\n\t\tcloseModal('confirmDeleteModal');\n\t}\n})()\n}}",
+  "onClick": "{{deleteHandler.confirmDelete()}}",
   "originalBottomRow": 14,
   "originalTopRow": 10,
   "parentId": "cubvetk8jt",
