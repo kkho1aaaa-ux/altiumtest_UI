@@ -119,6 +119,20 @@ export default {
 		const excludedKeys = [
 			'category_name_ru',      // виртуальное поле из VIEW
 			'value_number',          // вспомогательное поле (не в БД)
+			// Скрываем эти поля из UI (Category ID, Manufacturer ID, Value Numeric, Unit, Altium Comment, Altium Designator, Kicad Keywords, Kicad Fp filter)
+			'category_id',
+			'manufacturer_id',
+			'value_numeric',
+			'value_unit',
+			'altium_comment',
+			'altium_designator',
+			'kicad_keywords',
+			'kicad_fp_filter',
+			// Удалены дублирующие поля (Voltage Rating, Power Rating, Operating Temp Min/Max)
+			'voltage_rating_v',
+			'power_rating_w',
+			'operating_temp_min_c',
+			'operating_temp_max_c'
 		];
 
 		// Специальные поля, которые требуют обязательного маппинга
@@ -328,12 +342,6 @@ export default {
 				if (result.tolerance_percent) {
 					result.tolerance_percent = csvParser.parseTolerance(result.tolerance_percent);
 				}
-				if (result.voltage_rating_v) {
-					result.voltage_rating_v = csvParser.parseVoltage(result.voltage_rating_v);
-				}
-				if (result.power_rating_w) {
-					result.power_rating_w = parseFloat(result.power_rating_w) || null;
-				}
 				if (result.temp_min_c) {
 					result.temp_min_c = csvParser.parseTemperature(result.temp_min_c);
 				}
@@ -351,12 +359,6 @@ export default {
 				}
 				if (result.reverse_voltage_v) {
 					result.reverse_voltage_v = parseFloat(result.reverse_voltage_v) || null;
-				}
-				if (result.operating_temp_min_c) {
-					result.operating_temp_min_c = parseFloat(result.operating_temp_min_c) || null;
-				}
-				if (result.operating_temp_max_c) {
-					result.operating_temp_max_c = parseFloat(result.operating_temp_max_c) || null;
 				}
 				if (result.output_voltage_v) {
 					result.output_voltage_v = parseFloat(result.output_voltage_v) || null;
@@ -481,13 +483,13 @@ export default {
 				});
 
 				const simpleFields = [
-					'tolerance_percent', 'voltage_rating_v', 'power_rating_w',
+					'tolerance_percent',
 					'temp_min_c', 'temp_max_c', 'package', 'package_standard',
-					'datasheet_url', 'spice_model_path', 'altium_comment',
+					'datasheet_url', 'spice_model_path',
+					'altium_comment',
 					'altium_designator', 'kicad_keywords', 'kicad_fp_filter',
 					'inductance_uh', 'q_factor',
 					'forward_voltage_v', 'reverse_voltage_v',
-					'operating_temp_min_c', 'operating_temp_max_c',
 					'output_voltage_v', 'dropout_voltage_v',
 					'pin_count', 'pitch_mm',
 					'dielectric_type', 'diode_type', 'transistor_type', 'channel_type'
