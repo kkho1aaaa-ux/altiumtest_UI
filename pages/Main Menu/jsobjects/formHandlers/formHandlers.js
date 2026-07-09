@@ -1,4 +1,86 @@
 export default {
+	// ===== НОВЫЕ ФУНКЦИИ ДЛЯ УПРАВЛЕНИЯ UI =====
+
+	getComponentType: () => {
+		const categoryId = categorySelect?.selectedOptionValue;
+		if (!categoryId) return 'unknown';
+
+		const categories = getCategories.data || [];
+		const category = categories.find(c => c.id == categoryId);
+		const prefix = category?.designator_prefix || '';
+
+		if (['R', 'C', 'L'].includes(prefix)) return 'passive';
+		if (prefix === 'D' || prefix === 'TH') return 'diode';
+		if (prefix === 'Q') return 'transistor';
+		if (prefix === 'U') return 'ic';
+		if (prefix === 'J') return 'connector';
+		if (prefix === 'T') return 'transformer';
+		if (prefix === 'K') return 'relay';
+		if (prefix === 'F') return 'fuse';
+		if (prefix === 'Y') return 'crystal';
+		if (prefix === 'LED') return 'led';
+
+		return 'other';
+	},
+
+	getDesignatorPrefix: () => {
+		const categoryId = categorySelect?.selectedOptionValue;
+		if (!categoryId) return '';
+		const categories = getCategories.data || [];
+		const category = categories.find(c => c.id == categoryId);
+		return category?.designator_prefix || '';
+	},
+
+	isNominalDisabled: () => {
+		return formHandlers.getComponentType() !== 'passive';
+	},
+
+	isToleranceDisabled: () => {
+		return formHandlers.getComponentType() !== 'passive';
+	},
+
+	isCapacitor: () => formHandlers.getDesignatorPrefix() === 'C',
+	isInductor: () => formHandlers.getDesignatorPrefix() === 'L',
+	isDiode: () => formHandlers.getComponentType() === 'diode',
+	isTransistor: () => formHandlers.getComponentType() === 'transistor',
+	isIC: () => formHandlers.getComponentType() === 'ic',
+	isConnector: () => formHandlers.getComponentType() === 'connector',
+
+	getSpecTabLabel: () => {
+		const type = formHandlers.getComponentType();
+		const labels = {
+			'passive': 'Спец поля',
+			'diode': 'Параметры диода',
+			'transistor': 'Параметры транзистора',
+			'ic': 'Параметры ИС',
+			'connector': 'Параметры разъёма',
+			'unknown': 'Спец поля'
+		};
+		return labels[type] || 'Спец поля';
+	},
+
+	clearSpecFields: () => {
+		if (typeof dielectricSelect !== 'undefined') dielectricSelect.clearSelectedOption();
+		if (typeof polarizedCheckbox !== 'undefined') {
+			if (typeof polarizedCheckbox.setChecked === 'function') {
+				polarizedCheckbox.setChecked(false);
+			} else if (typeof polarizedCheckbox.setValue === 'function') {
+				polarizedCheckbox.setValue(false);
+			}
+		}
+		if (typeof qFactorInput !== 'undefined') qFactorInput.setValue('');
+		if (typeof forwardVoltageInput !== 'undefined') forwardVoltageInput.setValue('');
+		if (typeof reverseVoltageInput !== 'undefined') reverseVoltageInput.setValue('');
+		if (typeof transistorTypeSelect !== 'undefined') transistorTypeSelect.clearSelectedOption();
+		if (typeof channelTypeSelect !== 'undefined') channelTypeSelect.clearSelectedOption();
+		if (typeof outputVoltageInput !== 'undefined') outputVoltageInput.setValue('');
+		if (typeof dropoutVoltageInput !== 'undefined') dropoutVoltageInput.setValue('');
+		if (typeof pinCountInput !== 'undefined') pinCountInput.setValue('');
+		if (typeof pitchInput !== 'undefined') pitchInput.setValue('');
+	},
+
+	// ===== СУЩЕСТВУЮЩИЕ ФУНКЦИИ =====
+
 	buildValueDisplay: () => {
 		let num = valueNumberInput.text || '0';
 		const mult = valueMultiplierSelect.selectedOptionValue || '';
@@ -117,8 +199,6 @@ export default {
 			return;
 		}
 
-		// ❌ УДАЛЕНО: const russianName = componentConstants.getCategoryRussianName(selectedCategory.name);
-
 		const mappingsData = getCategoryLibraryMappings.data;
 		const mappings = Array.isArray(mappingsData) ? mappingsData : [];
 
@@ -149,7 +229,6 @@ export default {
 		const packageName = packageSelect.selectedOptionValue || '';
 		const fpFilter = packageName ? `${designator}*${packageName}*` : '';
 
-		// ✅ ИСПОЛЬЗУЕМ АНГЛИЙСКОЕ НАЗВАНИЕ (оригинальное)
 		const keywords = `${selectedCategory.name.toLowerCase()} ${packageName}`.trim();
 
 		kicadFpFilterInput.setValue(fpFilter);
@@ -159,6 +238,9 @@ export default {
 		if (unit) {
 			valueUnitSelect.setSelectedOption(unit);
 		}
+
+		// ===== ОЧИСТКА СПЕЦ ПОЛЕЙ ПРИ СМЕНЕ КАТЕГОРИИ =====
+		formHandlers.clearSpecFields();
 	},
 
 	validateForm: () => {
@@ -188,15 +270,8 @@ export default {
 			errors.push('Footprint Ref обязателен');
 		}
 
-		const categoryId = categorySelect.selectedOptionValue;
-		const categories = getCategories.data || [];
-		const selectedCategory = categories.find(cat => cat.id == categoryId);
-		const isIC = selectedCategory && (
-			selectedCategory.name.toLowerCase().includes('ic') ||
-			selectedCategory.designator_prefix === 'U'
-		);
-
-		if (!isIC) {
+		// Проверяем номинал и допуск только для пассивных компонентов
+		if (formHandlers.getComponentType() === 'passive') {
 			if (!valueNumberInput.value || valueNumberInput.value === 0) {
 				errors.push('Value обязателен');
 			}

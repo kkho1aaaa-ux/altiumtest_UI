@@ -53,7 +53,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 21,
   "serverSideFiltering": false,
-  "sourceData": "{{\n(csvImport.state.previewData[0] ? \n Object.keys(csvImport.state.previewData[0])\n .filter(key => !key.startsWith('_')) // \n .map(key => ({\n\tlabel: key\n\t.replace(/_/g, ' ')\n\t.replace(/\\b\\w/g, l => l.toUpperCase()),\n\tvalue: key\n}))\n .sort((a, b) => a.label.localeCompare(b.label))\n : [])\n}}",
+  "sourceData": "{{\n(() => {\n\tconst excludedKeys = [\n\t\t// Служебные поля\n\t\t'category_name_ru',\n\t\t'value_number',\n\t\t'value_multiplier',\n\t\t// Скрытые из UI (ID и технические)\n\t\t'category_id',\n\t\t'manufacturer_id',\n\t\t'value_numeric',\n\t\t'value_unit',\n\t];\n\n\tif (!csvImport.state.previewData[0]) return [];\n\n\treturn Object.keys(csvImport.state.previewData[0])\n\t\t.filter(key => !key.startsWith('_') && !excludedKeys.includes(key))\n\t\t.map(key => ({\n\t\tlabel: key\n\t\t.replace(/_/g, ' ')\n\t\t.replace(/\\b\\w/g, l => l.toUpperCase()),\n\t\tvalue: key\n\t}))\n\t\t.sort((a, b) => a.label.localeCompare(b.label));\n})()\n}}",
   "topRow": 1,
   "type": "SELECT_WIDGET",
   "version": 1,

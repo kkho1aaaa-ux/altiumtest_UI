@@ -111,15 +111,12 @@ export default {
 	},
 
 	buildMappingUI: () => {
-		// ===== ДИНАМИЧЕСКАЯ ГЕНЕРАЦИЯ ПОЛЕЙ ИЗ СХЕМЫ БД =====
 		const columnsData = getComponentColumns.data || [];
 		const allKeys = columnsData.map(row => row.column_name);
 
-		// Исключаем виртуальные/служебные/вспомогательные поля
 		const excludedKeys = [
-			'category_name_ru',      // виртуальное поле из VIEW
-			'value_number',          // вспомогательное поле (не в БД)
-			// Скрываем эти поля из UI (Category ID, Manufacturer ID, Value Numeric, Unit, Altium Comment, Altium Designator, Kicad Keywords, Kicad Fp filter)
+			'category_name_ru',
+			'value_number',
 			'category_id',
 			'manufacturer_id',
 			'value_numeric',
@@ -128,14 +125,12 @@ export default {
 			'altium_designator',
 			'kicad_keywords',
 			'kicad_fp_filter',
-			// Удалены дублирующие поля (Voltage Rating, Power Rating, Operating Temp Min/Max)
 			'voltage_rating_v',
 			'power_rating_w',
 			'operating_temp_min_c',
 			'operating_temp_max_c'
 		];
 
-		// Специальные поля, которые требуют обязательного маппинга
 		const requiredKeys = ['part_number'];
 
 		const allDbFields = allKeys
@@ -183,7 +178,6 @@ export default {
 			return false;
 		}
 
-		// ===== ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ — ОПРЕДЕЛЯЕМ СРАЗУ! =====
 		const getFieldValue = (row, fieldName) => {
 			if (!fieldName) return '';
 			let value = row[fieldName];
@@ -197,7 +191,6 @@ export default {
 			return value !== undefined && value !== null ? String(value).trim() : '';
 		};
 
-		// ===== ОПРЕДЕЛЯЕМ ЧТО ИЗМЕНИЛОСЬ В МАППИНГЕ =====
 		const previousMapping = this.state._lastAppliedMapping || {};
 		const changedFields = [];
 
@@ -220,7 +213,6 @@ export default {
 		const manufacturersData = getManufacturers.data || [];
 		const mappingsData = getCategoryLibraryMappings.data || [];
 
-		// ❌ УБРАНЫ специфичные поля из зависимостей
 		const dependentFields = {
 			'category_name': ['category_id', 'altium_designator'],
 			'value_display': ['value_unit', 'value_numeric'],
@@ -236,27 +228,49 @@ export default {
 
 		const packagesData = getPackages.data || [];
 
-		// ===== АВТОГЕНЕРАЦИЯ KICAD ПОЛЕЙ =====
-		const generateKiCadFields = (categoryName, packageName) => {
+		// ===== ИСПРАВЛЕННАЯ ГЕНЕРАЦИЯ KICAD ПОЛЕЙ =====
+		const generateKiCadFields = (categoryName, packageName, designator) => {
 			const prefixMap = {
 				'Resistors': 'R', 'Capacitors': 'C', 'Inductors': 'L',
 				'Diodes': 'D', 'LEDs': 'LED', 'Transistors': 'Q',
-				'IC_General': 'U', 'Microcontrollers': 'U', 'Connectors': 'J',
-				'Transformers': 'T', 'Relays': 'K', 'Fuses': 'F',
-				'Crystals': 'Y', 'Generators': 'Y'
+				'IC_General': 'U', 'Microcontrollers': 'U', 'Power_Management': 'U',
+				'Data_Converters': 'U', 'Linear': 'U', 'Logic': 'U',
+				'Memory': 'U', 'FPGA': 'U',
+				'Connectors': 'J', 'Transformers': 'T', 'Relays': 'K',
+				'Fuses': 'F', 'Crystals': 'Y', 'Generators': 'X',
+				'Crystals_Passive': 'Y', 'Ferrites': 'FB',
+				'Thyristors': 'TH', 'Optocouplers': 'U', 'Displays': 'DS',
+				'Switches': 'S'
 			};
-			const prefix = prefixMap[categoryName] || 'X';
+
+			// Используем categoryName, если есть, иначе designator
+			let prefix = prefixMap[categoryName];
+			if (!prefix && designator) {
+				prefix = designator;
+			}
+			if (!prefix) {
+				prefix = 'X';
+			}
+
 			const fpFilter = packageName ? `${prefix}*${packageName}*` : '';
-			const keywords = `${categoryName.toLowerCase()} ${packageName}`.trim();
+			const keywords = categoryName ? `${categoryName.toLowerCase()} ${packageName || ''}`.trim() : '';
 			return { fpFilter, keywords };
 		};
 
 		if (this.state.previewData.length === 0) {
 			this.state.previewData = this.state.rawData.map((row, index) => {
-				// ===== БАЗОВЫЙ ОБЪЕКТ — КОПИРУЕМ ВСЕ ЗАМАПЛЕННЫЕ ПОЛЯ =====
 				const result = {
 					_id: index,
-					_selected: false
+					_selected: false,
+					// ===== ДОБАВЛЕНО: Инициализация по умолчанию =====
+					is_polarized: false,
+					kicad_keywords: '',
+					kicad_fp_filter: '',
+					category_id: null,
+					manufacturer_id: null,
+					value_numeric: null,
+					value_unit: '',
+					package_standard: 'Custom'
 				};
 
 				// Копируем все замапленные поля из CSV
@@ -265,9 +279,6 @@ export default {
 						result[field.key] = getFieldValue(row, this.state.mapping[field.key]);
 					}
 				});
-
-				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Part Number =====
-				const partNumber = result.part_number || '';
 
 				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Category =====
 				const categoryNameRaw = result.category_name || '';
@@ -286,14 +297,9 @@ export default {
 
 				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Value =====
 				const valueDisplayRaw = result.value_display || '';
-
-				// Извлекаем число из value_display БЕЗ преобразования через multiplier
 				const valueData = csvParser.parseValue(valueDisplayRaw);
-
-				// Используем число как есть (без умножения на множитель)
 				result.value_numeric = valueData.number;
 				result.value_unit = valueData.unit || componentConstants.getUnitByCategory(categoryName);
-
 
 				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Package =====
 				const packageRaw = result.package || '';
@@ -301,7 +307,7 @@ export default {
 				result.package = componentConstants.getStandardPackage(extractedPackage, packagesData);
 				if (!result.package_standard) result.package_standard = 'Custom';
 
-				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Библиотеки (авто-заполнение если не замаплены) =====
+				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Библиотеки =====
 				const schLibMapping = mappingsData.find(m =>
 																								m.category_id === categoryId &&
 																								m.platform === 'altium' &&
@@ -329,8 +335,8 @@ export default {
 					result.altium_designator = designator;
 				}
 
-				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: KiCad (автогенерация если не замаплены) =====
-				const { fpFilter, keywords } = generateKiCadFields(categoryName, result.package);
+				// ===== ИСПРАВЛЕНО: Передаём designator как fallback =====
+				const { fpFilter, keywords } = generateKiCadFields(categoryName, result.package, designator);
 				if (!this.state.mapping.kicad_keywords) {
 					result.kicad_keywords = keywords;
 				}
@@ -372,17 +378,14 @@ export default {
 				if (result.pitch_mm) {
 					result.pitch_mm = parseFloat(result.pitch_mm) || null;
 				}
-				if (result.is_polarized !== undefined && result.is_polarized !== null) {
+
+				// ===== ИСПРАВЛЕНО: Всегда инициализируем is_polarized =====
+				if (result.is_polarized !== undefined && result.is_polarized !== null && result.is_polarized !== '') {
 					const polarizedStr = String(result.is_polarized).toLowerCase().trim();
 					result.is_polarized = polarizedStr === 'true' || polarizedStr === '1' || polarizedStr === 'yes' || polarizedStr === 'да';
+				} else {
+					result.is_polarized = false;
 				}
-
-				// ===== ОТЛАДКА =====
-				console.log('=== Library Mapping Debug ===');
-				console.log('categoryId:', categoryId);
-				console.log('categoryName:', categoryName);
-				console.log('schLibMapping:', schLibMapping);
-				console.log('pcbLibMapping:', pcbLibMapping);
 
 				return result;
 			});
@@ -393,7 +396,6 @@ export default {
 				const userEditsForRow = this.state.userEdits[index] || {};
 
 				if (fieldsToUpdate.has('category_name')) {
-					// ✅ КОНВЕРТАЦИЯ: русское → английское
 					const categoryNameRaw = getFieldValue(rawRow, mapping.category_name) || '';
 					const categoryName = componentConstants.getEnglishCategoryName(categoryNameRaw);
 
@@ -435,37 +437,44 @@ export default {
 					if (!userEditsForRow.altium_designator) {
 						updatedRow.altium_designator = getFieldValue(rawRow, mapping.altium_designator) || designator;
 					}
-				}
 
-				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Value =====
-				if (fieldsToUpdate.has('value_display')) {
-					const valueData = csvParser.parseValue(updatedRow.value_display);
-					updatedRow.value_number = valueData.number;
-					updatedRow.value_multiplier = valueData.multiplier;
-					updatedRow.value_unit = valueData.unit;
-
-					// Пересчитываем только если value_numeric не замаплен отдельно
-					if (!this.state.mapping.value_numeric) {
-						updatedRow.value_numeric = csvParser.calculateBaseValue(valueData.number, valueData.multiplier);
+					// ===== ИСПРАВЛЕНО: Обновляем KiCad поля при смене категории =====
+					if (!userEditsForRow.kicad_keywords && !mapping.kicad_keywords) {
+						const { keywords } = generateKiCadFields(categoryName, updatedRow.package, designator);
+						updatedRow.kicad_keywords = keywords;
+					}
+					if (!userEditsForRow.kicad_fp_filter && !mapping.kicad_fp_filter) {
+						const { fpFilter } = generateKiCadFields(categoryName, updatedRow.package, designator);
+						updatedRow.kicad_fp_filter = fpFilter;
 					}
 				}
 
-				// Если value_numeric замаплен отдельно — обновляем его напрямую
+				if (fieldsToUpdate.has('value_display')) {
+					const valueData = csvParser.parseValue(updatedRow.value_display);
+					updatedRow.value_unit = valueData.unit;
+
+					if (!this.state.mapping.value_numeric) {
+						updatedRow.value_numeric = valueData.number;
+					}
+				}
+
 				if (fieldsToUpdate.has('value_numeric')) {
 					updatedRow.value_numeric = parseFloat(updatedRow.value_numeric) || null;
 				}
-				// ===== ОБНОВЛЕНИЕ PACKAGE =====
+
 				if (fieldsToUpdate.has('package')) {
 					const packageRaw = getFieldValue(rawRow, mapping.package) || '';
 					const extractedPackage = componentConstants.extractPackage(packageRaw, packagesData);
 					updatedRow.package = componentConstants.getStandardPackage(extractedPackage, packagesData);
 				}
 
-				// ===== ОБНОВЛЕНИЕ KICAD ПОЛЕЙ =====
 				if (fieldsToUpdate.has('category_name') || fieldsToUpdate.has('package')) {
+					const category = categoriesData.find(cat => cat.name === updatedRow.category_name);
+					const designator = category?.designator_prefix || 'X';
 					const { fpFilter, keywords } = generateKiCadFields(
 						updatedRow.category_name,
-						updatedRow.package
+						updatedRow.package,
+						designator
 					);
 					if (!userEditsForRow.kicad_keywords) {
 						updatedRow.kicad_keywords = keywords;
@@ -482,6 +491,7 @@ export default {
 					}
 				});
 
+				// ===== ИСПРАВЛЕНО: Добавлен is_polarized =====
 				const simpleFields = [
 					'tolerance_percent',
 					'temp_min_c', 'temp_max_c', 'package', 'package_standard',
@@ -492,21 +502,18 @@ export default {
 					'forward_voltage_v', 'reverse_voltage_v',
 					'output_voltage_v', 'dropout_voltage_v',
 					'pin_count', 'pitch_mm',
-					'dielectric_type', 'diode_type', 'transistor_type', 'channel_type'
+					'dielectric_type', 'diode_type', 'transistor_type', 'channel_type',
+					'is_polarized'
 				];
 
 				simpleFields.forEach(field => {
 					if (fieldsToUpdate.has(field) && mapping[field]) {
 						let parsedValue = getFieldValue(rawRow, mapping[field]);
 						if (field === 'tolerance_percent') parsedValue = csvParser.parseTolerance(parsedValue);
-						else if (field === 'voltage_rating_v') parsedValue = csvParser.parseVoltage(parsedValue);
-						else if (field === 'power_rating_w') parsedValue = parseFloat(parsedValue) || null;
 						else if (field === 'temp_min_c' || field === 'temp_max_c') parsedValue = csvParser.parseTemperature(parsedValue);
 						else if (field === 'package_standard') parsedValue = parsedValue || 'Custom';
-						// ===== НОВЫЕ ПОЛЯ =====
 						else if (field === 'inductance_uh' || field === 'q_factor' || 
 										 field === 'forward_voltage_v' || field === 'reverse_voltage_v' ||
-										 field === 'operating_temp_min_c' || field === 'operating_temp_max_c' ||
 										 field === 'output_voltage_v' || field === 'dropout_voltage_v' ||
 										 field === 'pitch_mm') {
 							parsedValue = parseFloat(parsedValue) || null;
@@ -566,14 +573,6 @@ export default {
 			'tolerance_percent': [
 				'tolerance', 'tol', 'accuracy', 'precision', 'допуск', 'точность',
 				'tolerance %', 'tol %'
-			],
-			'voltage_rating_v': [
-				'voltage', 'voltage_rating', 'rated voltage', 'working voltage',
-				'vdc', 'vac', 'напряжение', 'вольтаж'
-			],
-			'power_rating_w': [
-				'power', 'power_rating', 'rated power', 'wattage', 'dissipation',
-				'мощность', 'ватт'
 			],
 			'temp_min_c': [
 				'temp. min.', 'temp. min', 'temp min.', 'temp min',
@@ -651,12 +650,6 @@ export default {
 			],
 			'channel_type': [
 				'channel', 'channel_type', 'channel type', 'канал', 'тип канала'
-			],
-			'operating_temp_min_c': [
-				'operating_temp_min', 'min operating temp', 'рабочая температура мин'
-			],
-			'operating_temp_max_c': [
-				'operating_temp_max', 'max operating temp', 'рабочая температура макс'
 			],
 			'output_voltage_v': [
 				'output_voltage', 'output voltage', 'vout', 'выходное напряжение'
@@ -765,12 +758,6 @@ export default {
 						row.category_name = englishName;
 						row.altium_designator = category.designator_prefix || 'X';
 
-						// ===== ИНИЦИАЛИЗАЦИЯ userEdits =====
-						if (!this.state.userEdits[row._id]) {
-							this.state.userEdits[row._id] = {};
-						}
-
-						// Обновляем библиотеки
 						const mappingsData = getCategoryLibraryMappings.data || [];
 						const schLib = mappingsData.find(m =>
 																						 m.category_id === category.id &&
@@ -783,7 +770,6 @@ export default {
 																						 m.library_name?.endsWith('.PcbLib')
 																						);
 
-						// ===== ПРОВЕРКА: обновляем только если не редактировалось вручную =====
 						if (!this.state.userEdits[row._id].library_path) {
 							row.library_path = schLib?.library_name || '';
 							this.state.userEdits[row._id].library_path = row.library_path;
@@ -809,7 +795,7 @@ export default {
 				if (field === 'value_display') {
 					const valueData = csvParser.parseValue(value);
 					row.value_unit = valueData.unit;
-					row.value_numeric = csvParser.calculateBaseValue(valueData.number, valueData.multiplier);
+					row.value_numeric = valueData.number;
 
 					this.state.userEdits[row._id].value_unit = valueData.unit;
 					this.state.userEdits[row._id].value_numeric = row.value_numeric;
@@ -845,17 +831,13 @@ export default {
 			const rowNum = index + 1;
 
 			const categories = getCategories.data || [];
-
 			const selectedCategory = categories.find(cat => cat.name === row.category_name);
 
 			if (!selectedCategory) {
 				rowErrors.push('Category Name (не найдена в БД)');
 			}
 
-			const isIC = selectedCategory && (
-				selectedCategory.name.toLowerCase().includes('ic') ||
-				selectedCategory.designator_prefix === 'U'
-			);
+			const isPassive = selectedCategory && ['R', 'C', 'L'].includes(selectedCategory.designator_prefix);
 
 			if (!row.part_number || String(row.part_number).trim() === '') {
 				rowErrors.push('Part Number');
@@ -865,8 +847,7 @@ export default {
 				rowErrors.push('Category Name');
 			}
 
-			if (!isIC) {
-				// Проверяем value_numeric (основное поле) или value_display (альтернатива)
+			if (isPassive) {
 				const hasValue = (row.value_numeric !== null && row.value_numeric !== undefined && row.value_numeric !== 0) ||
 							(row.value_display && String(row.value_display).trim() !== '');
 				if (!hasValue) {

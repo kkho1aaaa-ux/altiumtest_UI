@@ -5,8 +5,6 @@ export default {
 		const packageVal = packageSelect.selectedOptionValue;
 
 		const toleranceVal = toleranceInput.text;
-		const voltageVal = voltageInput.text;
-		const powerVal = powerRatingInput.text;
 		const tempMinVal = tempMinInput.text;
 		const tempMaxVal = tempMaxInput.text;
 		const forwardVoltageVal = forwardVoltageInput.text;
@@ -65,8 +63,6 @@ export default {
 			value_unit: parsedValue.unit || componentConstants.getUnitByCategory(categoryName),
 			value_display: valueDisplay,
 			tolerance_percent: (toleranceVal && toleranceVal !== 'null' && toleranceVal !== '') ? parseFloat(toleranceVal) : null,
-			voltage_rating_v: (voltageVal && voltageVal !== 'null' && voltageVal !== '') ? parseFloat(voltageVal) : null,
-			power_rating_w: (powerVal && powerVal !== 'null' && powerVal !== '') ? parseFloat(powerVal) : null,
 			temp_min_c: (tempMinVal && tempMinVal !== 'null' && tempMinVal !== '') ? parseFloat(tempMinVal) : null,
 			temp_max_c: (tempMaxVal && tempMaxVal !== 'null' && tempMaxVal !== '') ? parseFloat(tempMaxVal) : null,
 			forward_voltage_v: (forwardVoltageVal && forwardVoltageVal !== 'null' && forwardVoltageVal !== '') ? parseNumeric(forwardVoltageVal) : null,
