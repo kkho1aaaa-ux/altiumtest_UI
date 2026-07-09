@@ -1,0 +1,55 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "alignWidget": "LEFT",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 9,
+  "defaultCheckedState": true,
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "isDisabled": "{{formHandlers.isCapacitor()}}",
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "cpx0pbq70g",
+  "label": "Полярный",
+  "labelPosition": "Left",
+  "leftColumn": 1,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 11,
+  "mobileLeftColumn": 21,
+  "mobileRightColumn": 33,
+  "mobileTopRow": 7,
+  "needsErrorInfo": false,
+  "originalBottomRow": 11,
+  "originalTopRow": 7,
+  "parentColumnSpace": 17.912109375,
+  "parentId": "a45jymvj1a",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 8,
+  "topRow": 5,
+  "type": "CHECKBOX_WIDGET",
+  "version": 1,
+  "widgetId": "zlc6xw9v5d",
+  "widgetName": "polarizedCheckbox"
+}

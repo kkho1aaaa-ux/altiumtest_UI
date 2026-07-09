@@ -1,9 +1,7 @@
 {
   "animateLoading": true,
-  "borderColor": "green",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "borderWidth": "1",
-  "bottomRow": 13,
+  "bottomRow": 4,
   "dynamicBindingPathList": [
     {
       "key": "truncateButtonColor"
@@ -13,9 +11,6 @@
     },
     {
       "key": "borderRadius"
-    },
-    {
-      "key": "text"
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
@@ -25,33 +20,31 @@
   "fontStyle": "BOLD",
   "isLoading": false,
   "isVisible": true,
-  "key": "orbzrcfriz",
-  "leftColumn": 41,
+  "key": "ztgrsik2ep",
+  "leftColumn": 33,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
-  "mobileBottomRow": 56,
-  "mobileLeftColumn": 18,
-  "mobileRightColumn": 34,
-  "mobileTopRow": 52,
+  "mobileBottomRow": 30,
+  "mobileLeftColumn": 0,
+  "mobileRightColumn": 16,
+  "mobileTopRow": 26,
   "needsErrorInfo": false,
-  "originalBottomRow": 13,
-  "originalTopRow": 9,
   "overflow": "NONE",
-  "parentColumnSpace": 18.8125,
-  "parentId": "5ba26oy2oq",
+  "parentColumnSpace": 17.912109375,
+  "parentId": "a45jymvj1a",
   "parentRowSpace": 10,
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 45,
+  "rightColumn": 49,
   "shouldTruncate": false,
-  "text": "{{formHandlers.buildValueDisplay()}}",
-  "textAlign": "CENTER",
+  "text": "Индуктивности",
+  "textAlign": "LEFT",
   "textColor": "#231F20",
-  "topRow": 9,
+  "topRow": 0,
   "truncateButtonColor": "{{appsmith.theme.colors.primaryColor}}",
   "type": "TEXT_WIDGET",
   "version": 1,
-  "widgetId": "hvog2b8mbq",
-  "widgetName": "valueDisplayInput"
+  "widgetId": "ojyivx8tcp",
+  "widgetName": "Text6"
 }

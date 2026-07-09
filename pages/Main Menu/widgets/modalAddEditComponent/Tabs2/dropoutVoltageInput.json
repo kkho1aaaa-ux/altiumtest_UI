@@ -1,0 +1,62 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "autoFocus": false,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 40,
+  "boxShadow": "none",
+  "defaultText": "",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "iconAlign": "left",
+  "inputType": "TEXT",
+  "isDisabled": "{{formHandlers.isIC()}}",
+  "isLoading": false,
+  "isRequired": false,
+  "isVisible": true,
+  "key": "77zpao1d8j",
+  "label": "Dropout voltage (V)",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelStyle": "",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 13,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 40,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 21,
+  "mobileTopRow": 33,
+  "needsErrorInfo": false,
+  "parentColumnSpace": 17.912109375,
+  "parentId": "a45jymvj1a",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "resetOnSubmit": true,
+  "responsiveBehavior": "fill",
+  "rightColumn": 24,
+  "showStepArrows": false,
+  "topRow": 33,
+  "type": "INPUT_WIDGET_V2",
+  "version": 2,
+  "widgetId": "aqlnsfben5",
+  "widgetName": "dropoutVoltageInput"
+}

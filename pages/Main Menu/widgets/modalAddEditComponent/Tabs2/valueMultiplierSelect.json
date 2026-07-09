@@ -1,0 +1,84 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 39,
+  "boxShadow": "none",
+  "defaultOptionValue": "",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "sourceData"
+    },
+    {
+      "key": "isRequired"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "sourceData"
+    },
+    {
+      "key": "onOptionChange"
+    },
+    {
+      "key": "isRequired"
+    },
+    {
+      "key": "isDisabled"
+    }
+  ],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onOptionChange"
+    }
+  ],
+  "isDisabled": "{{formHandlers.isNominalDisabled()}}",
+  "isFilterable": true,
+  "isLoading": false,
+  "isRequired": "{{formHandlers.isNominalDisabled()}}",
+  "isVisible": true,
+  "key": "7xeibb0ecg",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelText": "Множитель",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 23,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 68,
+  "mobileLeftColumn": 23,
+  "mobileRightColumn": 43,
+  "mobileTopRow": 61,
+  "needsErrorInfo": false,
+  "onOptionChange": "{{formHandlers.buildValueDisplay()}}",
+  "optionLabel": "label",
+  "optionValue": "value",
+  "originalBottomRow": 68,
+  "originalTopRow": 61,
+  "parentColumnSpace": 18.8125,
+  "parentId": "la96ewm21v",
+  "parentRowSpace": 10,
+  "placeholderText": "Select option",
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 30,
+  "serverSideFiltering": false,
+  "sourceData": "{{componentConstants.VALUE_MULTIPLIERS}}",
+  "topRow": 32,
+  "type": "SELECT_WIDGET",
+  "version": 1,
+  "widgetId": "lmhaidwov7",
+  "widgetName": "valueMultiplierSelect"
+}

@@ -3,7 +3,7 @@
   "animateLoading": true,
   "autoFocus": false,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 14,
+  "bottomRow": 16,
   "boxShadow": "none",
   "defaultText": "",
   "dynamicBindingPathList": [
@@ -15,24 +15,15 @@
     }
   ],
   "dynamicHeight": "FIXED",
-  "dynamicPropertyPathList": [
-    {
-      "key": "onTextChanged"
-    }
-  ],
-  "dynamicTriggerPathList": [
-    {
-      "key": "onTextChanged"
-    }
-  ],
+  "dynamicTriggerPathList": [],
   "iconAlign": "left",
-  "inputType": "NUMBER",
+  "inputType": "TEXT",
   "isDisabled": false,
   "isLoading": false,
   "isRequired": true,
   "isVisible": true,
   "key": "x6mfef7ajt",
-  "label": "Значение",
+  "label": "Footprint Path (PcbLib)",
   "labelAlignment": "left",
   "labelPosition": "Top",
   "labelStyle": "",
@@ -47,20 +38,18 @@
   "mobileRightColumn": 26,
   "mobileTopRow": 7,
   "needsErrorInfo": false,
-  "onTextChanged": "{{formHandlers.buildValueDisplay()}}",
   "parentColumnSpace": 6.9375,
-  "parentId": "5ba26oy2oq",
+  "parentId": "la96ewm21v",
   "parentRowSpace": 10,
-  "placeholderText": "10",
+  "placeholderText": "Resistors.PcbLib",
   "renderMode": "CANVAS",
   "resetOnSubmit": true,
   "responsiveBehavior": "fill",
-  "rightColumn": 22,
-  "shouldAllowAutofill": false,
-  "showStepArrows": true,
-  "topRow": 7,
+  "rightColumn": 30,
+  "showStepArrows": false,
+  "topRow": 9,
   "type": "INPUT_WIDGET_V2",
   "version": 2,
-  "widgetId": "lpat5bh84v",
-  "widgetName": "valueNumberInput"
+  "widgetId": "pfdlcqw9xz",
+  "widgetName": "footprintPathInput"
 }

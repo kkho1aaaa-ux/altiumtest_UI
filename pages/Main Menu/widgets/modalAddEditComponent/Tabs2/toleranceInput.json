@@ -1,0 +1,69 @@
+{
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "autoFocus": false,
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "bottomRow": 32,
+  "boxShadow": "none",
+  "defaultText": "",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "isDisabled"
+    },
+    {
+      "key": "isRequired"
+    }
+  ],
+  "dynamicHeight": "FIXED",
+  "dynamicPropertyPathList": [
+    {
+      "key": "isDisabled"
+    },
+    {
+      "key": "isRequired"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "iconAlign": "left",
+  "inputType": "NUMBER",
+  "isDisabled": "{{formHandlers.isToleranceDisabled()}}",
+  "isLoading": false,
+  "isRequired": "{{!formHandlers.isToleranceDisabled()}}",
+  "isVisible": true,
+  "key": "x6mfef7ajt",
+  "label": "Точность, %",
+  "labelAlignment": "left",
+  "labelPosition": "Top",
+  "labelStyle": "",
+  "labelTextSize": "0.875rem",
+  "labelWidth": 5,
+  "leftColumn": 1,
+  "maxDynamicHeight": 9000,
+  "minDynamicHeight": 4,
+  "minWidth": 450,
+  "mobileBottomRow": 46,
+  "mobileLeftColumn": 1,
+  "mobileRightColumn": 21,
+  "mobileTopRow": 39,
+  "needsErrorInfo": false,
+  "parentColumnSpace": 13.375,
+  "parentId": "la96ewm21v",
+  "parentRowSpace": 10,
+  "renderMode": "CANVAS",
+  "resetOnSubmit": true,
+  "responsiveBehavior": "fill",
+  "rightColumn": 15,
+  "shouldAllowAutofill": false,
+  "showStepArrows": false,
+  "topRow": 25,
+  "type": "INPUT_WIDGET_V2",
+  "version": 2,
+  "widgetId": "mf50xe2jlu",
+  "widgetName": "toleranceInput"
+}

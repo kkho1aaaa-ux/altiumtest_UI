@@ -2,7 +2,7 @@
   "accentColor": "{{appsmith.theme.colors.primaryColor}}",
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 14,
+  "bottomRow": 39,
   "boxShadow": "none",
   "defaultOptionValue": "",
   "dynamicBindingPathList": [
@@ -14,6 +14,12 @@
     },
     {
       "key": "sourceData"
+    },
+    {
+      "key": "isRequired"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicHeight": "FIXED",
@@ -23,6 +29,12 @@
     },
     {
       "key": "onOptionChange"
+    },
+    {
+      "key": "isRequired"
+    },
+    {
+      "key": "isDisabled"
     }
   ],
   "dynamicTriggerPathList": [
@@ -30,10 +42,10 @@
       "key": "onOptionChange"
     }
   ],
-  "isDisabled": false,
+  "isDisabled": "{{formHandlers.isNominalDisabled()}}",
   "isFilterable": true,
   "isLoading": false,
-  "isRequired": true,
+  "isRequired": "{{formHandlers.isNominalDisabled()}}",
   "isVisible": true,
   "key": "7xeibb0ecg",
   "labelAlignment": "left",
@@ -41,7 +53,7 @@
   "labelText": "Единицы измерения",
   "labelTextSize": "0.875rem",
   "labelWidth": 5,
-  "leftColumn": 31,
+  "leftColumn": 30,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 4,
   "minWidth": 450,
@@ -53,16 +65,18 @@
   "onOptionChange": "{{formHandlers.buildValueDisplay()}}",
   "optionLabel": "label",
   "optionValue": "value",
+  "originalBottomRow": 68,
+  "originalTopRow": 61,
   "parentColumnSpace": 18.8125,
-  "parentId": "5ba26oy2oq",
+  "parentId": "la96ewm21v",
   "parentRowSpace": 10,
   "placeholderText": "Выберите единицы",
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 39,
+  "rightColumn": 38,
   "serverSideFiltering": false,
   "sourceData": "{{componentConstants.VALUE_UNITS}}",
-  "topRow": 7,
+  "topRow": 32,
   "type": "SELECT_WIDGET",
   "version": 1,
   "widgetId": "sexpljhu8e",
