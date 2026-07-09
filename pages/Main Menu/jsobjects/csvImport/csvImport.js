@@ -790,6 +790,33 @@ export default {
 						this.state.userEdits[row._id].category_id = category.id;
 						this.state.userEdits[row._id].category_name = englishName;
 						this.state.userEdits[row._id].altium_designator = category.designator_prefix || 'X';
+
+						// ===== ДОБАВЛЕНО: Обновляем KiCad поля при смене категории =====
+						const prefixMap = {
+							'Resistors': 'R', 'Capacitors': 'C', 'Inductors': 'L',
+							'Diodes': 'D', 'LEDs': 'LED', 'Transistors': 'Q',
+							'IC_General': 'U', 'Microcontrollers': 'U', 'Power_Management': 'U',
+							'Data_Converters': 'U', 'Linear': 'U', 'Logic': 'U',
+							'Memory': 'U', 'FPGA': 'U',
+							'Connectors': 'J', 'Transformers': 'T', 'Relays': 'K',
+							'Fuses': 'F', 'Crystals': 'Y', 'Generators': 'X',
+							'Crystals_Passive': 'Y', 'Ferrites': 'FB',
+							'Thyristors': 'TH', 'Optocouplers': 'U', 'Displays': 'DS',
+							'Switches': 'S'
+						};
+
+						const designator = category.designator_prefix || 'X';
+						let prefix = prefixMap[englishName] || designator || 'X';
+						const packageName = row.package || '';
+
+						if (!this.state.userEdits[row._id].kicad_fp_filter) {
+							row.kicad_fp_filter = packageName ? `${prefix}*${packageName}*` : '';
+							this.state.userEdits[row._id].kicad_fp_filter = row.kicad_fp_filter;
+						}
+						if (!this.state.userEdits[row._id].kicad_keywords) {
+							row.kicad_keywords = `${englishName.toLowerCase()} ${packageName}`.trim();
+							this.state.userEdits[row._id].kicad_keywords = row.kicad_keywords;
+						}
 					}
 				}
 				if (field === 'value_display') {
