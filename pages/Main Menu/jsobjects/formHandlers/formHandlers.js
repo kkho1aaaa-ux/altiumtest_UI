@@ -46,6 +46,23 @@ export default {
 		tempMinInput.setValue(row.temp_min_c || '');
 		tempMaxInput.setValue(row.temp_max_c || '');
 		powerRatingInput.setValue(row.power_rating_w || '');
+		forwardVoltageInput.setValue(row.forward_voltage_v || '');
+		reverseVoltageInput.setValue(row.reverse_voltage_v || '');
+		outputVoltageInput.setValue(row.output_voltage_v || '');
+		dropoutVoltageInput.setValue(row.dropout_voltage_v || '');
+		pinCountInput.setValue(row.pin_count || '');
+		pitchInput.setValue(row.pitch_mm || '');
+		qFactorInput.setValue(row.q_factor || '');
+		dielectricSelect.setSelectedOption(row.dielectric_type || '');
+		transistorTypeSelect.setSelectedOption(row.transistor_type || '');
+		channelTypeSelect.setSelectedOption(row.channel_type || '');
+		if (typeof polarizedCheckbox.setChecked === 'function') {
+			polarizedCheckbox.setChecked(Boolean(row.is_polarized));
+		} else if (typeof polarizedCheckbox.setValue === 'function') {
+			polarizedCheckbox.setValue(Boolean(row.is_polarized));
+		} else {
+			polarizedCheckbox.isChecked = Boolean(row.is_polarized);
+		}
 
 		libraryPathInput.setValue(row.library_path || '');
 		libraryRefInput.setValue(row.library_ref || '');
@@ -210,6 +227,23 @@ export default {
 		tempMinInput.setValue('');
 		tempMaxInput.setValue('');
 		powerRatingInput.setValue('');
+		forwardVoltageInput.setValue('');
+		reverseVoltageInput.setValue('');
+		outputVoltageInput.setValue('');
+		dropoutVoltageInput.setValue('');
+		pinCountInput.setValue('');
+		pitchInput.setValue('');
+		qFactorInput.setValue('');
+		dielectricSelect.setSelectedOption('');
+		transistorTypeSelect.setSelectedOption('');
+		channelTypeSelect.setSelectedOption('');
+		if (typeof polarizedCheckbox.setChecked === 'function') {
+			polarizedCheckbox.setChecked(false);
+		} else if (typeof polarizedCheckbox.setValue === 'function') {
+			polarizedCheckbox.setValue(false);
+		} else {
+			polarizedCheckbox.isChecked = false;
+		}
 		packageSelect.setSelectedOption('');
 		libraryPathInput.setValue('');
 		libraryRefInput.setValue('');
