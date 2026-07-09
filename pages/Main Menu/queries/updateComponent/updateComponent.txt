@@ -11,8 +11,6 @@ UPDATE components SET
     value_unit = {{componentData.prepareData().value_unit}},
     value_display = {{componentData.prepareData().value_display}},
     tolerance_percent = {{componentData.prepareData().tolerance_percent}},
-    voltage_rating_v = {{componentData.prepareData().voltage_rating_v}},
-    power_rating_w = {{componentData.prepareData().power_rating_w}},
     temp_min_c = {{componentData.prepareData().temp_min_c}},
     temp_max_c = {{componentData.prepareData().temp_max_c}},
     forward_voltage_v = {{componentData.prepareData().forward_voltage_v}},

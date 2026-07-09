@@ -42,10 +42,8 @@ export default {
 
 		partNumberInput.setValue(row.part_number || '');
 		toleranceInput.setValue(row.tolerance_percent || '');
-		voltageInput.setValue(row.voltage_rating_v || '');
 		tempMinInput.setValue(row.temp_min_c || '');
 		tempMaxInput.setValue(row.temp_max_c || '');
-		powerRatingInput.setValue(row.power_rating_w || '');
 		forwardVoltageInput.setValue(row.forward_voltage_v || '');
 		reverseVoltageInput.setValue(row.reverse_voltage_v || '');
 		outputVoltageInput.setValue(row.output_voltage_v || '');
@@ -223,10 +221,8 @@ export default {
 		valueUnitSelect.setSelectedOption('');
 		valueDisplayInput.setText('');
 		toleranceInput.setValue('');
-		voltageInput.setValue('');
 		tempMinInput.setValue('');
 		tempMaxInput.setValue('');
-		powerRatingInput.setValue('');
 		forwardVoltageInput.setValue('');
 		reverseVoltageInput.setValue('');
 		outputVoltageInput.setValue('');
