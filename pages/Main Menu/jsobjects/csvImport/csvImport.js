@@ -442,6 +442,75 @@ export default {
 					result.is_polarized = false;
 				}
 
+				// ===== АВТОМАТИЧЕСКОЕ ОПРЕДЕЛЕНИЕ ПАРАМЕТРОВ ПО ТИПАМ =====
+				// Диоды и Светодиоды
+				if ((designator === 'D' || designator === 'LED') && !result.diode_type) {
+					const style = result['Style'] || result.style || '';
+					if (style.toLowerCase().includes('schottky') || style.toLowerCase().includes('шотки')) {
+						result.diode_type = 'Schottky';
+					} else if (style.toLowerCase().includes('zener') || style.toLowerCase().includes('зенер')) {
+						result.diode_type = 'Zener';
+					} else if (style.toLowerCase().includes('led') || style.toLowerCase().includes('светодиод')) {
+						result.diode_type = 'LED';
+					} else if (style.toLowerCase().includes('tvs') || style.toLowerCase().includes('твс')) {
+						result.diode_type = 'TVS';
+					} else {
+						result.diode_type = 'Standard';
+					}
+				}
+
+				// Транзисторы
+				if (designator === 'Q' && !result.transistor_type) {
+					const style = result['Style'] || result.style || '';
+					if (style.toLowerCase().includes('bjt') || style.toLowerCase().includes('биполярный')) {
+						result.transistor_type = 'BJT';
+					} else if (style.toLowerCase().includes('mosfet') || style.toLowerCase().includes('полевой')) {
+						result.transistor_type = 'MOSFET';
+					} else if (style.toLowerCase().includes('fet')) {
+						result.transistor_type = 'FET';
+					} else if (style.toLowerCase().includes('igbt')) {
+						result.transistor_type = 'IGBT';
+					}
+				}
+
+				if (designator === 'Q' && !result.channel_type) {
+					const style = result['Style'] || result.style || '';
+					if (style.toLowerCase().includes('n-') || style.toLowerCase().includes('n channel')) {
+						result.channel_type = 'N';
+					} else if (style.toLowerCase().includes('p-') || style.toLowerCase().includes('p channel')) {
+						result.channel_type = 'P';
+					}
+				}
+
+				// Разъёмы
+				if (designator === 'J' && !result.pin_count) {
+					const pins = result['Pins'] || result.pins || result['Pin Count'] || result.pin_count || '';
+					result.pin_count = parseInt(pins) || null;
+				}
+
+				if (designator === 'J' && !result.pitch_mm) {
+					const pitch = result['Pitch'] || result.pitch || result['Lead Spacing'] || result.lead_spacing || '';
+					const parsedPitch = parseFloat(String(pitch).replace(',', '.'));
+					result.pitch_mm = !isNaN(parsedPitch) ? parsedPitch : null;
+				}
+
+				// Микросхемы
+				if (designator === 'U' && !result.output_voltage_v) {
+					const vout = result['Output Voltage'] || result.output_voltage || result['Vout'] || '';
+					result.output_voltage_v = parseFloat(vout) || null;
+				}
+
+				if (designator === 'U' && !result.dropout_voltage_v) {
+					const dropout = result['Dropout Voltage'] || result.dropout_voltage || '';
+					result.dropout_voltage_v = parseFloat(dropout) || null;
+				}
+
+				// Индуктивности
+				if (designator === 'L' && !result.q_factor) {
+					const q = result['Q Factor'] || result.q_factor || result['Quality Factor'] || '';
+					result.q_factor = parseFloat(q) || null;
+				}
+
 				return result;
 			});
 		} else {
@@ -1067,9 +1136,9 @@ export default {
 
 			try {
 				const result = await importComponent.run();
-				if (result && result.length > 0) {
-					successCount++;
-				}
+				// INSERT ... ON CONFLICT DO UPDATE всегда возвращает строку
+				// даже если это обновление существующей записи
+				successCount++;
 			} catch (error) {
 				errorCount++;
 				errors.push(`${item.part_number}: ${error.message}`);
