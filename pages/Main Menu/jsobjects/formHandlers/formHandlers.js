@@ -55,7 +55,7 @@ export default {
 	},
 
 	clearSpecFields: () => {
-		if (typeof dielectricSelect !== 'undefined') dielectricSelect.setSelectedOptionValue('');
+		if (typeof dielectricSelect !== 'undefined') dielectricSelect.setSelectedOption('');
 		if (typeof polarizedCheckbox !== 'undefined') {
 			if (typeof polarizedCheckbox.setValue === 'function') {
 				polarizedCheckbox.setValue(false);
@@ -64,9 +64,9 @@ export default {
 		if (typeof qFactorInput !== 'undefined') qFactorInput.setValue('');
 		if (typeof forwardVoltageInput !== 'undefined') forwardVoltageInput.setValue('');
 		if (typeof reverseVoltageInput !== 'undefined') reverseVoltageInput.setValue('');
-		if (typeof diodeTypeSelect !== 'undefined') diodeTypeSelect.setSelectedOptionValue('');
-		if (typeof transistorTypeSelect !== 'undefined') transistorTypeSelect.setSelectedOptionValue('');
-		if (typeof channelTypeSelect !== 'undefined') channelTypeSelect.setSelectedOptionValue('');
+		if (typeof diodeTypeSelect !== 'undefined') diodeTypeSelect.setSelectedOption('');
+		if (typeof transistorTypeSelect !== 'undefined') transistorTypeSelect.setSelectedOption('');
+		if (typeof channelTypeSelect !== 'undefined') channelTypeSelect.setSelectedOption('');
 		if (typeof outputVoltageInput !== 'undefined') outputVoltageInput.setValue('');
 		if (typeof dropoutVoltageInput !== 'undefined') dropoutVoltageInput.setValue('');
 		if (typeof pinCountInput !== 'undefined') pinCountInput.setValue('');
@@ -127,10 +127,10 @@ export default {
 		pinCountInput.setValue(row.pin_count || '');
 		pitchInput.setValue(row.pitch_mm || '');
 		qFactorInput.setValue(row.q_factor || '');
-		dielectricSelect.setSelectedOptionValue(row.dielectric_type || '');
-		transistorTypeSelect.setSelectedOptionValue(row.transistor_type || '');
-		channelTypeSelect.setSelectedOptionValue(row.channel_type || '');
-		if (typeof diodeTypeSelect !== 'undefined') diodeTypeSelect.setSelectedOptionValue(row.diode_type || '');
+		dielectricSelect.setSelectedOption(row.dielectric_type || '');
+		transistorTypeSelect.setSelectedOption(row.transistor_type || '');
+		channelTypeSelect.setSelectedOption(row.channel_type || '');
+		if (typeof diodeTypeSelect !== 'undefined') diodeTypeSelect.setSelectedOption(row.diode_type || '');
 		if (typeof polarizedCheckbox.setValue === 'function') {
 			polarizedCheckbox.setValue(Boolean(row.is_polarized));
 		}
