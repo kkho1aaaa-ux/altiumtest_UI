@@ -40,16 +40,14 @@ export default {
 
 		const generateFpFilter = (categoryName, packageName) => {
 			const prefixMap = {
-				'Resistors': 'R', 'Capacitors': 'C', 'Inductors': 'L',
-				'Diodes': 'D', 'LEDs': 'LED', 'Transistors': 'Q',
-				'IC_General': 'U', 'Microcontrollers': 'U', 'Power_Management': 'U',
-				'Data_Converters': 'U', 'Linear': 'U', 'Logic': 'U',
-				'Memory': 'U', 'FPGA': 'U',
-				'Connectors': 'J', 'Transformers': 'T', 'Relays': 'K',
-				'Fuses': 'F', 'Crystals': 'Y', 'Generators': 'X',
-				'Crystals_Passive': 'Y', 'Ferrites': 'FB',
-				'Thyristors': 'TH', 'Optocouplers': 'U', 'Displays': 'DS',
-				'Switches': 'S'
+				'Resistors': 'R',
+				'Capacitors': 'C',
+				'Inductors': 'L',
+				'Diodes': 'D',
+				'LEDs': 'LED',
+				'Transistors': 'Q',
+				'ICs': 'U',
+				'Connectors': 'J'
 			};
 			const designator = selectedCategory?.designator_prefix || '';
 			let prefix = prefixMap[categoryName] || designator || '';

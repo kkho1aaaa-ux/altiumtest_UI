@@ -57,15 +57,15 @@
     "manufacturer_id",
     "manufacturer_name",
     "tolerance_percent",
+    "pitch_mm",
+    "is_polarized",
     "forward_voltage_v",
     "reverse_voltage_v",
     "output_voltage_v",
     "dropout_voltage_v",
-    "pitch_mm",
-    "is_polarized",
     "EditActions1"
   ],
-  "columnUpdatedAt": 1783596995684,
+  "columnUpdatedAt": 1783672883799,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -185,6 +185,12 @@
       "key": "primaryColumns.tolerance_percent.computedValue"
     },
     {
+      "key": "primaryColumns.pitch_mm.computedValue"
+    },
+    {
+      "key": "primaryColumns.is_polarized.computedValue"
+    },
+    {
       "key": "primaryColumns.forward_voltage_v.computedValue"
     },
     {
@@ -195,12 +201,6 @@
     },
     {
       "key": "primaryColumns.dropout_voltage_v.computedValue"
-    },
-    {
-      "key": "primaryColumns.pitch_mm.computedValue"
-    },
-    {
-      "key": "primaryColumns.is_polarized.computedValue"
     }
   ],
   "dynamicPropertyPathList": [
@@ -503,7 +503,7 @@
       "fontStyle": "",
       "horizontalAlignment": "LEFT",
       "id": "dropout_voltage_v",
-      "index": 19,
+      "index": 25,
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": false,
@@ -605,7 +605,7 @@
       "fontStyle": "",
       "horizontalAlignment": "LEFT",
       "id": "forward_voltage_v",
-      "index": 14,
+      "index": 22,
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": false,
@@ -871,7 +871,7 @@
       "fontStyle": "",
       "horizontalAlignment": "LEFT",
       "id": "output_voltage_v",
-      "index": 18,
+      "index": 24,
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": false,
@@ -1036,7 +1036,7 @@
       "fontStyle": "",
       "horizontalAlignment": "LEFT",
       "id": "reverse_voltage_v",
-      "index": 15,
+      "index": 23,
       "isCellEditable": false,
       "isCellVisible": true,
       "isDerived": false,

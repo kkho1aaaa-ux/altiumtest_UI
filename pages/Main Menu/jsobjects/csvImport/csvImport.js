@@ -231,16 +231,14 @@ export default {
 		// ===== ИСПРАВЛЕННАЯ ГЕНЕРАЦИЯ KICAD ПОЛЕЙ =====
 		const generateKiCadFields = (categoryName, packageName, designator) => {
 			const prefixMap = {
-				'Resistors': 'R', 'Capacitors': 'C', 'Inductors': 'L',
-				'Diodes': 'D', 'LEDs': 'LED', 'Transistors': 'Q',
-				'IC_General': 'U', 'Microcontrollers': 'U', 'Power_Management': 'U',
-				'Data_Converters': 'U', 'Linear': 'U', 'Logic': 'U',
-				'Memory': 'U', 'FPGA': 'U',
-				'Connectors': 'J', 'Transformers': 'T', 'Relays': 'K',
-				'Fuses': 'F', 'Crystals': 'Y', 'Generators': 'X',
-				'Crystals_Passive': 'Y', 'Ferrites': 'FB',
-				'Thyristors': 'TH', 'Optocouplers': 'U', 'Displays': 'DS',
-				'Switches': 'S'
+				'Resistors': 'R',
+				'Capacitors': 'C',
+				'Inductors': 'L',
+				'Diodes': 'D',
+				'LEDs': 'LED',
+				'Transistors': 'Q',
+				'ICs': 'U',
+				'Connectors': 'J'
 			};
 
 			// Используем categoryName, если есть, иначе designator
@@ -791,18 +789,15 @@ export default {
 						this.state.userEdits[row._id].category_name = englishName;
 						this.state.userEdits[row._id].altium_designator = category.designator_prefix || 'X';
 
-						// ===== ДОБАВЛЕНО: Обновляем KiCad поля при смене категории =====
 						const prefixMap = {
-							'Resistors': 'R', 'Capacitors': 'C', 'Inductors': 'L',
-							'Diodes': 'D', 'LEDs': 'LED', 'Transistors': 'Q',
-							'IC_General': 'U', 'Microcontrollers': 'U', 'Power_Management': 'U',
-							'Data_Converters': 'U', 'Linear': 'U', 'Logic': 'U',
-							'Memory': 'U', 'FPGA': 'U',
-							'Connectors': 'J', 'Transformers': 'T', 'Relays': 'K',
-							'Fuses': 'F', 'Crystals': 'Y', 'Generators': 'X',
-							'Crystals_Passive': 'Y', 'Ferrites': 'FB',
-							'Thyristors': 'TH', 'Optocouplers': 'U', 'Displays': 'DS',
-							'Switches': 'S'
+							'Resistors': 'R',
+							'Capacitors': 'C',
+							'Inductors': 'L',
+							'Diodes': 'D',
+							'LEDs': 'LED',
+							'Transistors': 'Q',
+							'ICs': 'U',
+							'Connectors': 'J'
 						};
 
 						const designator = category.designator_prefix || 'X';

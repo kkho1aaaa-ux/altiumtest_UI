@@ -39,7 +39,6 @@
     "package",
     "temp_min_c",
     "temp_max_c",
-    "power_rating_w",
     "library_path",
     "library_ref",
     "footprint_path",
@@ -51,7 +50,6 @@
     "category_name",
     "manufacturer_name",
     "value_unit",
-    "voltage_rating_v",
     "kicad_keywords",
     "kicad_fp_filter",
     "id",
@@ -75,7 +73,7 @@
     "channel_type",
     "is_polarized"
   ],
-  "columnUpdatedAt": 1783583477560,
+  "columnUpdatedAt": 1783671281184,
   "columnWidthMap": {},
   "customIsLoading": false,
   "customIsLoadingValue": "",
@@ -112,9 +110,6 @@
     },
     {
       "key": "primaryColumns.temp_max_c.computedValue"
-    },
-    {
-      "key": "primaryColumns.power_rating_w.computedValue"
     },
     {
       "key": "primaryColumns.id.computedValue"
@@ -154,9 +149,6 @@
     },
     {
       "key": "primaryColumns.value_unit.computedValue"
-    },
-    {
-      "key": "primaryColumns.voltage_rating_v.computedValue"
     },
     {
       "key": "primaryColumns.kicad_keywords.computedValue"
@@ -1216,38 +1208,6 @@
       "verticalAlignment": "CENTER",
       "width": 150
     },
-    "power_rating_w": {
-      "alias": "power_rating_w",
-      "allowCellWrapping": false,
-      "allowSameOptionsInNewRow": true,
-      "columnType": "number",
-      "computedValue": "{{(() => { const tableData = Table1.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"power_rating_w\"])) : power_rating_w })()}}",
-      "currencyCode": "USD",
-      "decimals": 0,
-      "enableFilter": true,
-      "enableSort": true,
-      "fontStyle": "",
-      "horizontalAlignment": "LEFT",
-      "id": "power_rating_w",
-      "index": 6,
-      "isCellEditable": false,
-      "isCellVisible": true,
-      "isDerived": false,
-      "isDisabled": false,
-      "isDiscardVisible": true,
-      "isEditable": false,
-      "isSaveVisible": true,
-      "isVisible": true,
-      "label": "power_rating_w",
-      "notation": "standard",
-      "originalId": "power_rating_w",
-      "sticky": "",
-      "textSize": "0.875rem",
-      "thousandSeparator": true,
-      "validation": {},
-      "verticalAlignment": "CENTER",
-      "width": 150
-    },
     "q_factor": {
       "alias": "q_factor",
       "allowCellWrapping": false,
@@ -1606,40 +1566,6 @@
       "label": "value_unit",
       "notation": "standard",
       "originalId": "value_unit",
-      "sticky": "",
-      "textColor": "",
-      "textSize": "0.875rem",
-      "thousandSeparator": true,
-      "validation": {},
-      "verticalAlignment": "CENTER",
-      "width": 150
-    },
-    "voltage_rating_v": {
-      "alias": "voltage_rating_v",
-      "allowCellWrapping": false,
-      "allowSameOptionsInNewRow": true,
-      "cellBackground": "",
-      "columnType": "number",
-      "computedValue": "{{(() => { const tableData = Table1.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"voltage_rating_v\"])) : voltage_rating_v })()}}",
-      "currencyCode": "USD",
-      "decimals": 0,
-      "enableFilter": true,
-      "enableSort": true,
-      "fontStyle": "",
-      "horizontalAlignment": "LEFT",
-      "id": "voltage_rating_v",
-      "index": 7,
-      "isCellEditable": false,
-      "isCellVisible": true,
-      "isDerived": false,
-      "isDisabled": false,
-      "isDiscardVisible": true,
-      "isEditable": false,
-      "isSaveVisible": true,
-      "isVisible": true,
-      "label": "voltage_rating_v",
-      "notation": "standard",
-      "originalId": "voltage_rating_v",
       "sticky": "",
       "textColor": "",
       "textSize": "0.875rem",
