@@ -4,9 +4,10 @@
 --   Резисторы: Resistors/{package}/{part_number}
 --   Конденсаторы: Capacitors/{dielectric_type}/{package}/{part_number}
 --   Индуктивности: Inductors/{package}/{part_number}
---   Диоды: Diodes/{part_number} (без подтипов)
+--   Диоды: Diodes/{part_number}
+--   Светодиоды: Diodes/{part_number}
 --   Транзисторы: Transistors/{transistor_type}/{part_number}
---   ИС: ICs/{part_number}
+--   Микросхемы: ICs/{part_number}
 --   Разъёмы: Connectors/{pitch_mm}mm/{pin_count}pin/{part_number}
 
 -- ===== 1. ПОЛНЫЙ VIEW ДЛЯ ГЛАВНОЙ ТАБЛИЦЫ =====
@@ -17,35 +18,14 @@ SELECT
     c.category_id,
     cat.name AS category_name,
     CASE cat.name
-        WHEN 'Active Components' THEN 'Активные компоненты'
-        WHEN 'Passive Components' THEN 'Пассивные компоненты'
         WHEN 'Resistors' THEN 'Резисторы'
         WHEN 'Capacitors' THEN 'Конденсаторы'
         WHEN 'Inductors' THEN 'Индуктивности'
         WHEN 'Diodes' THEN 'Диоды'
-        WHEN 'Transistors' THEN 'Транзисторы'
-        WHEN 'Thyristors' THEN 'Тиристоры'
         WHEN 'LEDs' THEN 'Светодиоды'
-        WHEN 'Optocouplers' THEN 'Оптопары'
-        WHEN 'Logic' THEN 'Логические микросхемы'
-        WHEN 'Memory' THEN 'Микросхемы памяти'
-        WHEN 'Microcontrollers' THEN 'Микроконтроллеры'
-        WHEN 'FPGA' THEN 'ПЛИС'
-        WHEN 'Linear' THEN 'Линейные микросхемы'
-        WHEN 'Power_Management' THEN 'Микросхемы управления питанием'
-        WHEN 'Data_Converters' THEN 'АЦП/ЦАП'
-        WHEN 'IC_General' THEN 'Прочие ИС'
-        WHEN 'Generators' THEN 'Генераторы'
-        WHEN 'Crystals' THEN 'Кварцевые резонаторы'
-        WHEN 'Crystals_Passive' THEN 'Пассивные резонаторы'
-        WHEN 'Transformers' THEN 'Трансформаторы'
-        WHEN 'Ferrites' THEN 'Ферриты'
+        WHEN 'Transistors' THEN 'Транзисторы'
+        WHEN 'ICs' THEN 'Микросхемы'
         WHEN 'Connectors' THEN 'Разъёмы'
-        WHEN 'Switches' THEN 'Переключатели'
-        WHEN 'Relays' THEN 'Реле'
-        WHEN 'Fuses' THEN 'Предохранители'
-        WHEN 'Mechanical' THEN 'Механические компоненты'
-        WHEN 'Displays' THEN 'Дисплеи'
         ELSE cat.name
     END AS category_name_ru,
     cat.designator_prefix,
@@ -178,8 +158,8 @@ LEFT JOIN categories cat ON c.category_id = cat.id
 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
 WHERE cat.designator_prefix = 'L';
 
--- ===== 5. VIEW ДЛЯ KiCad - ДИОДЫ =====
--- Иерархия: Diodes/{part_number} (без подтипов, как договорились)
+-- ===== 5. VIEW ДЛЯ KiCad - ДИОДЫ И СВЕТОДИОДЫ =====
+-- Иерархия: Diodes/{part_number}
 CREATE OR REPLACE VIEW v_kicad_diodes AS
 SELECT 
     c.id,
@@ -203,7 +183,7 @@ SELECT
 FROM components c
 LEFT JOIN categories cat ON c.category_id = cat.id
 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
-WHERE cat.designator_prefix IN ('D', 'TH');
+WHERE cat.designator_prefix IN ('D', 'LED');
 
 -- ===== 6. VIEW ДЛЯ KiCad - ТРАНЗИСТОРЫ =====
 -- Иерархия: Transistors/{transistor_type}/{part_number}
