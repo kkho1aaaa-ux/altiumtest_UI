@@ -10,15 +10,10 @@ export default {
 		const prefix = category?.designator_prefix || '';
 
 		if (['R', 'C', 'L'].includes(prefix)) return 'passive';
-		if (prefix === 'D' || prefix === 'TH') return 'diode';
+		if (prefix === 'D' || prefix === 'LED') return 'diode';
 		if (prefix === 'Q') return 'transistor';
 		if (prefix === 'U') return 'ic';
 		if (prefix === 'J') return 'connector';
-		if (prefix === 'T') return 'transformer';
-		if (prefix === 'K') return 'relay';
-		if (prefix === 'F') return 'fuse';
-		if (prefix === 'Y') return 'crystal';
-		if (prefix === 'LED') return 'led';
 
 		return 'other';
 	},
