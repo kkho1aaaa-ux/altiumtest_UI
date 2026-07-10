@@ -320,18 +320,11 @@ export default {
 						if (valueData.unit === 'Ω' || valueData.unit === 'ohm') {
 							result.resistance_ohm = num;
 						} else if (valueData.unit === 'F' || valueData.unit === 'farad' || valueData.unit === 'pF' || valueData.unit === 'µF' || valueData.unit === 'nF') {
-							// Конвертируем в пикофарады
-							let pf = num;
-							if (valueData.unit === 'F') pf = num * 1e12;
-							else if (valueData.unit === 'µF') pf = num * 1e6;
-							else if (valueData.unit === 'nF') pf = num * 1e3;
-							result.capacitance_pf = pf;
+							// capacitance_pf = value_display (без конвертации)
+							result.capacitance_pf = num;
 						} else if (valueData.unit === 'H' || valueData.unit === 'henry' || valueData.unit === 'µH' || valueData.unit === 'mH') {
-							// Конвертируем в микрегенри
-							let uh = num;
-							if (valueData.unit === 'H') uh = num * 1e6;
-							else if (valueData.unit === 'mH') uh = num * 1e3;
-							result.inductance_uh = uh;
+							// inductance_uh = value_display (без конвертации)
+							result.inductance_uh = num;
 						}
 					}
 				}
@@ -368,6 +361,31 @@ export default {
 				}
 				if (!this.state.mapping.altium_designator) {
 					result.altium_designator = designator;
+				}
+
+				// ===== АВТОМАТИЧЕСКОЕ ОПРЕДЕЛЕНИЕ DIELECTRIC ДЛЯ КОНДЕНСАТОРОВ =====
+				if (designator === 'C' && !this.state.mapping.dielectric_type) {
+					// Определяем тип диэлектрика из Temp. Coefficient или других полей
+					const tempCoeff = result['Temp. Coefficient'] || result.temp_coefficient || '';
+					if (tempCoeff.toLowerCase().includes('c0g') || tempCoeff.toLowerCase().includes('npo')) {
+						result.dielectric_type = 'Ceramic';
+					} else if (tempCoeff.toLowerCase().includes('x5r') || tempCoeff.toLowerCase().includes('x7r')) {
+						result.dielectric_type = 'Ceramic';
+					} else if (tempCoeff.toLowerCase().includes('tantalum') || tempCoeff.toLowerCase().includes('tantal')) {
+						result.dielectric_type = 'Tantalum';
+					} else if (tempCoeff.toLowerCase().includes('electrolytic') || tempCoeff.toLowerCase().includes('al')) {
+						result.dielectric_type = 'Electrolytic';
+					}
+				}
+
+				// Автоматическое определение is_polarized для конденсаторов
+				if (designator === 'C' && result.is_polarized === undefined) {
+					// Электролитические и тантальные конденсаторы полярные
+					const tempCoeff = result['Temp. Coefficient'] || result.temp_coefficient || '';
+					const isElectrolytic = tempCoeff.toLowerCase().includes('electrolytic') || 
+																tempCoeff.toLowerCase().includes('tantalum') ||
+																tempCoeff.toLowerCase().includes('al');
+					result.is_polarized = isElectrolytic;
 				}
 
 				// ===== ИСПРАВЛЕНО: Передаём designator как fallback =====
@@ -420,6 +438,75 @@ export default {
 					result.is_polarized = polarizedStr === 'true' || polarizedStr === '1' || polarizedStr === 'yes' || polarizedStr === 'да';
 				} else {
 					result.is_polarized = false;
+				}
+
+				// ===== АВТОМАТИЧЕСКОЕ ОПРЕДЕЛЕНИЕ ПАРАМЕТРОВ ПО ТИПАМ =====
+				// Диоды и Светодиоды
+				if ((designator === 'D' || designator === 'LED') && !result.diode_type) {
+					const style = result['Style'] || result.style || '';
+					if (style.toLowerCase().includes('schottky') || style.toLowerCase().includes('шотки')) {
+						result.diode_type = 'Schottky';
+					} else if (style.toLowerCase().includes('zener') || style.toLowerCase().includes('зенер')) {
+						result.diode_type = 'Zener';
+					} else if (style.toLowerCase().includes('led') || style.toLowerCase().includes('светодиод')) {
+						result.diode_type = 'LED';
+					} else if (style.toLowerCase().includes('tvs') || style.toLowerCase().includes('твс')) {
+						result.diode_type = 'TVS';
+					} else {
+						result.diode_type = 'Standard';
+					}
+				}
+
+				// Транзисторы
+				if (designator === 'Q' && !result.transistor_type) {
+					const style = result['Style'] || result.style || '';
+					if (style.toLowerCase().includes('bjt') || style.toLowerCase().includes('биполярный')) {
+						result.transistor_type = 'BJT';
+					} else if (style.toLowerCase().includes('mosfet') || style.toLowerCase().includes('полевой')) {
+						result.transistor_type = 'MOSFET';
+					} else if (style.toLowerCase().includes('fet')) {
+						result.transistor_type = 'FET';
+					} else if (style.toLowerCase().includes('igbt')) {
+						result.transistor_type = 'IGBT';
+					}
+				}
+
+				if (designator === 'Q' && !result.channel_type) {
+					const style = result['Style'] || result.style || '';
+					if (style.toLowerCase().includes('n-') || style.toLowerCase().includes('n channel')) {
+						result.channel_type = 'N';
+					} else if (style.toLowerCase().includes('p-') || style.toLowerCase().includes('p channel')) {
+						result.channel_type = 'P';
+					}
+				}
+
+				// Разъёмы
+				if (designator === 'J' && !result.pin_count) {
+					const pins = result['Pins'] || result.pins || result['Pin Count'] || result.pin_count || '';
+					result.pin_count = parseInt(pins) || null;
+				}
+
+				if (designator === 'J' && !result.pitch_mm) {
+					const pitch = result['Pitch'] || result.pitch || result['Lead Spacing'] || result.lead_spacing || '';
+					const parsedPitch = parseFloat(String(pitch).replace(',', '.'));
+					result.pitch_mm = !isNaN(parsedPitch) ? parsedPitch : null;
+				}
+
+				// Микросхемы
+				if (designator === 'U' && !result.output_voltage_v) {
+					const vout = result['Output Voltage'] || result.output_voltage || result['Vout'] || '';
+					result.output_voltage_v = parseFloat(vout) || null;
+				}
+
+				if (designator === 'U' && !result.dropout_voltage_v) {
+					const dropout = result['Dropout Voltage'] || result.dropout_voltage || '';
+					result.dropout_voltage_v = parseFloat(dropout) || null;
+				}
+
+				// Индуктивности
+				if (designator === 'L' && !result.q_factor) {
+					const q = result['Q Factor'] || result.q_factor || result['Quality Factor'] || '';
+					result.q_factor = parseFloat(q) || null;
 				}
 
 				return result;
@@ -1047,9 +1134,9 @@ export default {
 
 			try {
 				const result = await importComponent.run();
-				if (result && result.length > 0) {
-					successCount++;
-				}
+				// INSERT ... ON CONFLICT DO UPDATE всегда возвращает строку
+				// даже если это обновление существующей записи
+				successCount++;
 			} catch (error) {
 				errorCount++;
 				errors.push(`${item.part_number}: ${error.message}`);
