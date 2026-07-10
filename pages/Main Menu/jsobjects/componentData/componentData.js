@@ -17,6 +17,7 @@ export default {
 		const dielectricVal = dielectricSelect.selectedOptionValue;
 		const transistorTypeVal = transistorTypeSelect.selectedOptionValue;
 		const channelTypeVal = channelTypeSelect.selectedOptionValue;
+		const diodeTypeVal = diodeTypeSelect?.selectedOptionValue;
 		const polarizedVal = polarizedCheckbox.isChecked;
 
 		const categoriesData = getCategories.data;
@@ -40,17 +41,12 @@ export default {
 
 		const generateFpFilter = (categoryName, packageName) => {
 			const prefixMap = {
-<<<<<<< HEAD
-				'Resistors': 'R', 'Capacitors': 'C', 'Inductors': 'L',
-				'Diodes': 'D', 'LEDs': 'LED', 'Transistors': 'Q',
-=======
 				'Resistors': 'R',
 				'Capacitors': 'C',
 				'Inductors': 'L',
 				'Diodes': 'D',
 				'LEDs': 'LED',
 				'Transistors': 'Q',
->>>>>>> ab10cc7a9b5e723b5f694beb49eb6c09213c528b
 				'ICs': 'U',
 				'Connectors': 'J'
 			};
@@ -67,6 +63,31 @@ export default {
 		const keywords = generateKeywords(categoryName, packageVal, valueDisplay);
 		const isPolarized = polarizedVal === true || polarizedVal === 'true' || polarizedVal === 1 || polarizedVal === '1';
 
+		// ===== СИНХРОНИЗАЦИЯ НОМИНАЛОВ СО СПЕЦИАЛЬНЫМИ ПОЛЯМИ =====
+		let resistance_ohm = null;
+		let capacitance_pf = null;
+		let inductance_uh = null;
+
+		if (baseValue && parsedValue.unit) {
+			const num = parseFloat(baseValue);
+			if (!isNaN(num)) {
+				if (parsedValue.unit === 'Ω' || parsedValue.unit === 'ohm') {
+					resistance_ohm = num;
+				} else if (parsedValue.unit === 'F' || parsedValue.unit === 'farad' || parsedValue.unit === 'pF' || parsedValue.unit === 'µF' || parsedValue.unit === 'nF') {
+					let pf = num;
+					if (parsedValue.unit === 'F') pf = num * 1e12;
+					else if (parsedValue.unit === 'µF') pf = num * 1e6;
+					else if (parsedValue.unit === 'nF') pf = num * 1e3;
+					capacitance_pf = pf;
+				} else if (parsedValue.unit === 'H' || parsedValue.unit === 'henry' || parsedValue.unit === 'µH' || parsedValue.unit === 'mH') {
+					let uh = num;
+					if (parsedValue.unit === 'H') uh = num * 1e6;
+					else if (parsedValue.unit === 'mH') uh = num * 1e3;
+					inductance_uh = uh;
+				}
+			}
+		}
+
 		return {
 			part_number: partNumberInput.text?.trim() || '',
 			category_id: (categoryVal && categoryVal !== 'null' && categoryVal !== '') ? parseInt(categoryVal) : null,
@@ -74,6 +95,9 @@ export default {
 			value_numeric: baseValue || null,
 			value_unit: parsedValue.unit || componentConstants.getUnitByCategory(categoryName),
 			value_display: valueDisplay,
+			resistance_ohm: resistance_ohm,
+			capacitance_pf: capacitance_pf,
+			inductance_uh: inductance_uh,
 			tolerance_percent: (toleranceVal && toleranceVal !== 'null' && toleranceVal !== '') ? parseFloat(toleranceVal) : null,
 			temp_min_c: (tempMinVal && tempMinVal !== 'null' && tempMinVal !== '') ? parseFloat(tempMinVal) : null,
 			temp_max_c: (tempMaxVal && tempMaxVal !== 'null' && tempMaxVal !== '') ? parseFloat(tempMaxVal) : null,
@@ -85,6 +109,7 @@ export default {
 			pitch_mm: (pitchVal && pitchVal !== 'null' && pitchVal !== '') ? parseNumeric(pitchVal) : null,
 			q_factor: (qFactorVal && qFactorVal !== 'null' && qFactorVal !== '') ? parseNumeric(qFactorVal) : null,
 			dielectric_type: dielectricVal || '',
+			diode_type: diodeTypeVal || '',
 			transistor_type: transistorTypeVal || '',
 			channel_type: channelTypeVal || '',
 			is_polarized: isPolarized,
