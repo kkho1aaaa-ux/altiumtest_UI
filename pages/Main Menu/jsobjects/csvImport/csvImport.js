@@ -314,6 +314,30 @@ export default {
 				result.value_numeric = valueData.number;
 				result.value_unit = valueData.unit || componentConstants.getUnitByCategory(categoryName);
 
+				// ===== АВТОМАТИЧЕСКАЯ СИНХРОНИЗАЦИЯ НОМИНАЛОВ =====
+				// Для пассивных компонентов: value_display → resistance_ohm/capacitance_pf/inductance_uh
+				if (valueData.number && valueData.unit) {
+					const num = parseFloat(valueData.number);
+					if (!isNaN(num)) {
+						if (valueData.unit === 'Ω' || valueData.unit === 'ohm') {
+							result.resistance_ohm = num;
+						} else if (valueData.unit === 'F' || valueData.unit === 'farad' || valueData.unit === 'pF' || valueData.unit === 'µF' || valueData.unit === 'nF') {
+							// Конвертируем в пикофарады
+							let pf = num;
+							if (valueData.unit === 'F') pf = num * 1e12;
+							else if (valueData.unit === 'µF') pf = num * 1e6;
+							else if (valueData.unit === 'nF') pf = num * 1e3;
+							result.capacitance_pf = pf;
+						} else if (valueData.unit === 'H' || valueData.unit === 'henry' || valueData.unit === 'µH' || valueData.unit === 'mH') {
+							// Конвертируем в микрегенри
+							let uh = num;
+							if (valueData.unit === 'H') uh = num * 1e6;
+							else if (valueData.unit === 'mH') uh = num * 1e3;
+							result.inductance_uh = uh;
+						}
+					}
+				}
+
 				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Package =====
 				const packageRaw = result.package || '';
 				const extractedPackage = componentConstants.extractPackage(packageRaw, packagesData);
@@ -469,6 +493,27 @@ export default {
 					if (!this.state.mapping.value_numeric) {
 						updatedRow.value_numeric = valueData.number;
 					}
+
+					// ===== СИНХРОНИЗАЦИЯ НОМИНАЛОВ СО СПЕЦИАЛЬНЫМИ ПОЛЯМИ =====
+					if (valueData.number && valueData.unit) {
+						const num = parseFloat(valueData.number);
+						if (!isNaN(num)) {
+							if (valueData.unit === 'Ω' || valueData.unit === 'ohm') {
+								updatedRow.resistance_ohm = num;
+							} else if (valueData.unit === 'F' || valueData.unit === 'farad' || valueData.unit === 'pF' || valueData.unit === 'µF' || valueData.unit === 'nF') {
+								let pf = num;
+								if (valueData.unit === 'F') pf = num * 1e12;
+								else if (valueData.unit === 'µF') pf = num * 1e6;
+								else if (valueData.unit === 'nF') pf = num * 1e3;
+								updatedRow.capacitance_pf = pf;
+							} else if (valueData.unit === 'H' || valueData.unit === 'henry' || valueData.unit === 'µH' || valueData.unit === 'mH') {
+								let uh = num;
+								if (valueData.unit === 'H') uh = num * 1e6;
+								else if (valueData.unit === 'mH') uh = num * 1e3;
+								updatedRow.inductance_uh = uh;
+							}
+						}
+					}
 				}
 
 				if (fieldsToUpdate.has('value_numeric')) {
@@ -479,9 +524,8 @@ export default {
 					const packageRaw = getFieldValue(rawRow, mapping.package) || '';
 					const extractedPackage = componentConstants.extractPackage(packageRaw, packagesData);
 					updatedRow.package = componentConstants.getStandardPackage(extractedPackage, packagesData);
-				}
 
-				if (fieldsToUpdate.has('category_name') || fieldsToUpdate.has('package')) {
+					// ===== ОБНОВЛЯЕМ KICAD ПОЛЯ ПРИ ИЗМЕНЕНИИ PACKAGE =====
 					const category = categoriesData.find(cat => cat.name === updatedRow.category_name);
 					const designator = category?.designator_prefix || 'X';
 					const { fpFilter, keywords } = generateKiCadFields(
@@ -489,12 +533,18 @@ export default {
 						updatedRow.package,
 						designator
 					);
-					if (!userEditsForRow.kicad_keywords) {
-						updatedRow.kicad_keywords = keywords;
-					}
 					if (!userEditsForRow.kicad_fp_filter) {
 						updatedRow.kicad_fp_filter = fpFilter;
 					}
+					if (!userEditsForRow.kicad_keywords) {
+						updatedRow.kicad_keywords = keywords;
+					}
+				}
+
+				if (fieldsToUpdate.has('category_name')) {
+					const category = categoriesData.find(cat => cat.name === updatedRow.category_name);
+					const designator = category?.designator_prefix || 'X';
+					// KiCad поля обновляются в блоке package выше
 				}
 
 				const libraryFields = ['library_path', 'library_ref', 'footprint_path', 'footprint_ref'];
