@@ -28,6 +28,35 @@ export default {
 		{ label: 'Custom', value: 'Custom' }
 	],
 
+	// ===== КОНСТАНТЫ ДЛЯ SELECT-ПОЛЕЙ =====
+	DIELECTRIC_TYPES: [
+		{ label: 'Ceramic (Керамика)', value: 'Ceramic' },
+		{ label: 'Electrolytic (Электролит)', value: 'Electrolytic' },
+		{ label: 'Tantalum (Тантал)', value: 'Tantalum' },
+		{ label: 'Film (Плёнка)', value: 'Film' },
+		{ label: 'Polymer (Полимер)', value: 'Polymer' }
+	],
+
+	TRANSISTOR_TYPES: [
+		{ label: 'BJT (Биполярный)', value: 'BJT' },
+		{ label: 'FET (Полевой)', value: 'FET' },
+		{ label: 'MOSFET', value: 'MOSFET' },
+		{ label: 'IGBT', value: 'IGBT' }
+	],
+
+	CHANNEL_TYPES: [
+		{ label: 'N-channel', value: 'N' },
+		{ label: 'P-channel', value: 'P' }
+	],
+
+	DIODE_TYPES: [
+		{ label: 'Standard (Стандартный)', value: 'Standard' },
+		{ label: 'Schottky (Шотки)', value: 'Schottky' },
+		{ label: 'Zener (Зенер)', value: 'Zener' },
+		{ label: 'LED', value: 'LED' },
+		{ label: 'TVS', value: 'TVS' }
+	],
+
 	// ===== ПАТТЕРНЫ КОРПУСОВ ПО СТАНДАРТАМ =====
 	PACKAGE_PATTERNS: {
 		// EIA (Imperial) - 4 цифры

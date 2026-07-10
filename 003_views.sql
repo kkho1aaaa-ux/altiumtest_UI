@@ -1,5 +1,13 @@
 -- ===== МИГРАЦИЯ 003: VIEW'Ы ДЛЯ ЭКСПОРТА И ОТОБРАЖЕНИЯ =====
 -- Создает представления (VIEW) для главной таблицы и для экспорта в различные САПР
+-- Иерархия в KiCad:
+--   Резисторы: Resistors/{package}/{part_number}
+--   Конденсаторы: Capacitors/{dielectric_type}/{package}/{part_number}
+--   Индуктивности: Inductors/{package}/{part_number}
+--   Диоды: Diodes/{part_number} (без подтипов)
+--   Транзисторы: Transistors/{transistor_type}/{part_number}
+--   ИС: ICs/{part_number}
+--   Разъёмы: Connectors/{pitch_mm}mm/{pin_count}pin/{part_number}
 
 -- ===== 1. ПОЛНЫЙ VIEW ДЛЯ ГЛАВНОЙ ТАБЛИЦЫ =====
 CREATE OR REPLACE VIEW v_components_full AS
@@ -56,8 +64,6 @@ SELECT
     c.capacitance_pf,
     c.inductance_uh,
     c.tolerance_percent,
-    c.voltage_rating_v,
-    c.power_rating_w,
     c.temp_min_c,
     c.temp_max_c,
     c.package,
@@ -70,8 +76,6 @@ SELECT
     c.reverse_voltage_v,
     c.transistor_type,
     c.channel_type,
-    c.operating_temp_min_c,
-    c.operating_temp_max_c,
     c.output_voltage_v,
     c.dropout_voltage_v,
     c.pin_count,
@@ -87,18 +91,18 @@ LEFT JOIN categories cat ON c.category_id = cat.id
 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id;
 
 -- ===== 2. VIEW ДЛЯ KiCad - РЕЗИСТОРЫ =====
+-- Иерархия: Resistors/{package}/{part_number}
 CREATE OR REPLACE VIEW v_kicad_resistors AS
 SELECT 
     c.id,
     c.part_number,
-    CONCAT('Resistors/', c.package, '/', c.part_number) AS symbol_name,
+    CONCAT('Resistors/', COALESCE(c.package, 'Unknown'), '/', c.part_number) AS symbol_name,
     c.package,
     c.value_display,
     c.value_numeric,
     c.value_unit,
     c.resistance_ohm,
     c.tolerance_percent,
-    c.power_rating_w,
     c.temp_min_c,
     c.temp_max_c,
     m.name AS manufacturer_name,
@@ -115,11 +119,13 @@ LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
 WHERE cat.designator_prefix = 'R';
 
 -- ===== 3. VIEW ДЛЯ KiCad - КОНДЕНСАТОРЫ =====
+-- Иерархия: Capacitors/{dielectric_type}/{package}/{part_number}
 CREATE OR REPLACE VIEW v_kicad_capacitors AS
 SELECT 
     c.id,
     c.part_number,
-    CONCAT('Capacitors/', COALESCE(c.dielectric_type, 'Unknown'), '/', c.package, '/', c.part_number) AS symbol_name,
+    CONCAT('Capacitors/', COALESCE(c.dielectric_type, 'Unknown'), '/', 
+           COALESCE(c.package, 'Unknown'), '/', c.part_number) AS symbol_name,
     c.dielectric_type,
     c.is_polarized,
     c.package,
@@ -128,7 +134,6 @@ SELECT
     c.value_unit,
     c.capacitance_pf,
     c.tolerance_percent,
-    c.voltage_rating_v,
     c.temp_min_c,
     c.temp_max_c,
     m.name AS manufacturer_name,
@@ -145,11 +150,12 @@ LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
 WHERE cat.designator_prefix = 'C';
 
 -- ===== 4. VIEW ДЛЯ KiCad - ИНДУКТИВНОСТИ =====
+-- Иерархия: Inductors/{package}/{part_number}
 CREATE OR REPLACE VIEW v_kicad_inductors AS
 SELECT 
     c.id,
     c.part_number,
-    CONCAT('Inductors/', c.package, '/', c.part_number) AS symbol_name,
+    CONCAT('Inductors/', COALESCE(c.package, 'Unknown'), '/', c.part_number) AS symbol_name,
     c.package,
     c.value_display,
     c.value_numeric,
@@ -173,17 +179,17 @@ LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
 WHERE cat.designator_prefix = 'L';
 
 -- ===== 5. VIEW ДЛЯ KiCad - ДИОДЫ =====
+-- Иерархия: Diodes/{part_number} (без подтипов, как договорились)
 CREATE OR REPLACE VIEW v_kicad_diodes AS
 SELECT 
     c.id,
     c.part_number,
     CONCAT('Diodes/', c.part_number) AS symbol_name,
+    c.diode_type,
     c.forward_voltage_v,
     c.reverse_voltage_v,
     c.package,
     c.value_display,
-    c.voltage_rating_v,
-    c.power_rating_w,
     c.temp_min_c,
     c.temp_max_c,
     m.name AS manufacturer_name,
@@ -200,6 +206,7 @@ LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
 WHERE cat.designator_prefix IN ('D', 'TH');
 
 -- ===== 6. VIEW ДЛЯ KiCad - ТРАНЗИСТОРЫ =====
+-- Иерархия: Transistors/{transistor_type}/{part_number}
 CREATE OR REPLACE VIEW v_kicad_transistors AS
 SELECT 
     c.id,
@@ -209,8 +216,6 @@ SELECT
     c.channel_type,
     c.package,
     c.value_display,
-    c.voltage_rating_v,
-    c.power_rating_w,
     c.temp_min_c,
     c.temp_max_c,
     m.name AS manufacturer_name,
@@ -227,19 +232,16 @@ LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
 WHERE cat.designator_prefix = 'Q';
 
 -- ===== 7. VIEW ДЛЯ KiCad - МИКРОСХЕМЫ =====
+-- Иерархия: ICs/{part_number}
 CREATE OR REPLACE VIEW v_kicad_ic AS
 SELECT 
     c.id,
     c.part_number,
     CONCAT('ICs/', c.part_number) AS symbol_name,
     c.package,
-    c.operating_temp_min_c,
-    c.operating_temp_max_c,
     c.output_voltage_v,
     c.dropout_voltage_v,
     c.value_display,
-    c.voltage_rating_v,
-    c.power_rating_w,
     c.temp_min_c,
     c.temp_max_c,
     m.name AS manufacturer_name,
@@ -256,6 +258,7 @@ LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
 WHERE cat.designator_prefix = 'U';
 
 -- ===== 8. VIEW ДЛЯ KiCad - РАЗЪЁМЫ =====
+-- Иерархия: Connectors/{pitch_mm}mm/{pin_count}pin/{part_number}
 CREATE OR REPLACE VIEW v_kicad_connectors AS
 SELECT 
     c.id,
@@ -268,8 +271,6 @@ SELECT
     c.pin_count,
     c.package,
     c.value_display,
-    c.voltage_rating_v,
-    c.power_rating_w,
     c.temp_min_c,
     c.temp_max_c,
     m.name AS manufacturer_name,

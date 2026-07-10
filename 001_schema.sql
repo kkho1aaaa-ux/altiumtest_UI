@@ -1,5 +1,6 @@
 -- ===== МИГРАЦИЯ 001: СТРУКТУРА БД =====
 -- Создает таблицы, функции, триггеры и индексы
+-- Версия: 2.0 (с учетом новых требований)
 
 -- ===== 1. СПРАВОЧНИКИ =====
 
@@ -54,7 +55,7 @@ CREATE TABLE IF NOT EXISTS packages (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ===== 2. ТРИГГЕР ДЛЯ ОБНОВЛЕНИЯ updated_at =====
+-- ===== 2. ФУНКЦИЯ ДЛЯ ОБНОВЛЕНИЯ updated_at =====
 
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -84,51 +85,50 @@ CREATE TABLE IF NOT EXISTS components (
     datasheet_url VARCHAR(1000),
     spice_model_path VARCHAR(1000),
     
-    -- ===== УНИВЕРСАЛЬНЫЙ НОМИНАЛ =====
+    -- ===== УНИВЕРСАЛЬНЫЙ НОМИНАЛ (для пассивных R, C, L) =====
     value_display VARCHAR(100),
     value_numeric DECIMAL(15, 6),
     value_unit VARCHAR(100),
     
-    -- ===== ОСНОВНЫЕ ПАРАМЕТРЫ (связаны с value_display) =====
+    -- ===== ДУБЛИРУЮЩИЕ ПОЛЯ ДЛЯ БЫСТРОГО ПОИСКА =====
+    -- Заполняются автоматически триггером на основе value_unit
     resistance_ohm DECIMAL(15, 6),
     capacitance_pf DECIMAL(15, 6),
     inductance_uh DECIMAL(15, 6),
     
     -- ===== УНИВЕРСАЛЬНЫЕ ПАРАМЕТРЫ =====
     tolerance_percent DECIMAL(5, 2),
-    voltage_rating_v DECIMAL(10, 2),
-    power_rating_w DECIMAL(10, 4),
     temp_min_c DECIMAL(5, 1),
     temp_max_c DECIMAL(5, 1),
     
     -- ===== КОРПУС =====
     package VARCHAR(200),
+
     package_standard VARCHAR(100),
     
     -- ===== СПЕЦИФИЧНЫЕ ПОЛЯ ПО ТИПАМ КОМПОНЕНТОВ =====
-    -- Конденсаторы
+    
+    -- Конденсаторы (C)
     dielectric_type VARCHAR(50),
     is_polarized BOOLEAN DEFAULT FALSE,
     
-    -- Индуктивности
+    -- Индуктивности (L)
     q_factor DECIMAL(10, 2),
     
-    -- Диоды
+    -- Диоды (D, TH) - value_display НЕ связан с forward_voltage_v
     diode_type VARCHAR(50),
     forward_voltage_v DECIMAL(10, 3),
     reverse_voltage_v DECIMAL(10, 2),
     
-    -- Транзисторы
+    -- Транзисторы (Q)
     transistor_type VARCHAR(10),
     channel_type VARCHAR(10),
     
-    -- Микросхемы
-    operating_temp_min_c DECIMAL(5, 1),
-    operating_temp_max_c DECIMAL(5, 1),
+    -- Микросхемы (U)
     output_voltage_v DECIMAL(10, 2),
     dropout_voltage_v DECIMAL(10, 3),
     
-    -- Разъёмы
+    -- Разъёмы (J)
     pin_count INTEGER,
     pitch_mm DECIMAL(10, 3),
     
@@ -144,9 +144,7 @@ CREATE TABLE IF NOT EXISTS components (
     
     -- ===== ОГРАНИЧЕНИЯ =====
     CONSTRAINT valid_temp_range CHECK (temp_min_c <= temp_max_c),
-    CONSTRAINT valid_tolerance CHECK (tolerance_percent >= 0),
-    CONSTRAINT valid_voltage CHECK (voltage_rating_v >= 0),
-    CONSTRAINT valid_power CHECK (power_rating_w >= 0)
+    CONSTRAINT valid_tolerance CHECK (tolerance_percent >= 0)
 );
 
 -- ===== 4. ИНДЕКСЫ НА СПРАВОЧНИКИ =====
@@ -166,33 +164,35 @@ CREATE INDEX IF NOT EXISTS idx_packages_standard ON packages(standard);
 
 -- ===== 5. ИНДЕКСЫ НА ТАБЛИЦУ КОМПОНЕНТОВ =====
 
+-- Основные поля
 CREATE INDEX IF NOT EXISTS idx_components_part_number ON components(part_number);
 CREATE INDEX IF NOT EXISTS idx_components_category ON components(category_id);
 CREATE INDEX IF NOT EXISTS idx_components_manufacturer ON components(manufacturer_id);
+CREATE INDEX IF NOT EXISTS idx_components_package ON components(package);
+
+-- Номиналы (для быстрого поиска)
 CREATE INDEX IF NOT EXISTS idx_components_value_numeric ON components(value_numeric);
 CREATE INDEX IF NOT EXISTS idx_components_resistance ON components(resistance_ohm);
 CREATE INDEX IF NOT EXISTS idx_components_capacitance ON components(capacitance_pf);
 CREATE INDEX IF NOT EXISTS idx_components_inductance ON components(inductance_uh);
+
+-- Универсальные параметры
 CREATE INDEX IF NOT EXISTS idx_components_tolerance ON components(tolerance_percent);
-CREATE INDEX IF NOT EXISTS idx_components_voltage ON components(voltage_rating_v);
-CREATE INDEX IF NOT EXISTS idx_components_power ON components(power_rating_w);
-CREATE INDEX IF NOT EXISTS idx_components_temp_min ON components(temp_min_c);
-CREATE INDEX IF NOT EXISTS idx_components_temp_max ON components(temp_max_c);
-CREATE INDEX IF NOT EXISTS idx_components_package ON components(package);
+CREATE INDEX IF NOT EXISTS idx_components_temp ON components(temp_min_c, temp_max_c);
+
+-- Специфичные поля по типам
 CREATE INDEX IF NOT EXISTS idx_components_dielectric_type ON components(dielectric_type);
 CREATE INDEX IF NOT EXISTS idx_components_is_polarized ON components(is_polarized);
+CREATE INDEX IF NOT EXISTS idx_components_q_factor ON components(q_factor);
 CREATE INDEX IF NOT EXISTS idx_components_diode_type ON components(diode_type);
 CREATE INDEX IF NOT EXISTS idx_components_transistor_type ON components(transistor_type);
 CREATE INDEX IF NOT EXISTS idx_components_channel_type ON components(channel_type);
+CREATE INDEX IF NOT EXISTS idx_components_output_voltage ON components(output_voltage_v);
+CREATE INDEX IF NOT EXISTS idx_components_dropout_voltage ON components(dropout_voltage_v);
 CREATE INDEX IF NOT EXISTS idx_components_pin_count ON components(pin_count);
 CREATE INDEX IF NOT EXISTS idx_components_pitch_mm ON components(pitch_mm);
-CREATE INDEX IF NOT EXISTS idx_components_forward_voltage_v ON components(forward_voltage_v);
-CREATE INDEX IF NOT EXISTS idx_components_reverse_voltage_v ON components(reverse_voltage_v);
-CREATE INDEX IF NOT EXISTS idx_components_operating_temp_min_c ON components(operating_temp_min_c);
-CREATE INDEX IF NOT EXISTS idx_components_operating_temp_max_c ON components(operating_temp_max_c);
-CREATE INDEX IF NOT EXISTS idx_components_output_voltage_v ON components(output_voltage_v);
-CREATE INDEX IF NOT EXISTS idx_components_dropout_voltage_v ON components(dropout_voltage_v);
-CREATE INDEX IF NOT EXISTS idx_components_q_factor ON components(q_factor);
+CREATE INDEX IF NOT EXISTS idx_components_forward_voltage ON components(forward_voltage_v);
+CREATE INDEX IF NOT EXISTS idx_components_reverse_voltage ON components(reverse_voltage_v);
 
 -- ===== 6. ТРИГГЕРЫ =====
 
@@ -208,24 +208,20 @@ CREATE TRIGGER update_packages_updated_at
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
 
--- Триггер синхронизации value_display со специфичными полями по категориям
+-- Триггер синхронизации value_numeric со специфичными полями
+-- Работает ТОЛЬКО в одну сторону: value_numeric → resistance_ohm/capacitance_pf/inductance_uh
 CREATE OR REPLACE FUNCTION sync_value_with_category_params()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.value_unit = 'Ω' THEN
-        NEW.resistance_ohm := NEW.value_numeric;
-    ELSIF NEW.value_unit = 'pF' THEN
-        NEW.capacitance_pf := NEW.value_numeric;
-    ELSIF NEW.value_unit = 'µH' OR NEW.value_unit = 'uH' THEN
-        NEW.inductance_uh := NEW.value_numeric;
-    END IF;
-    
-    IF NEW.resistance_ohm IS NOT NULL AND NEW.value_unit = 'Ω' THEN
-        NEW.value_numeric := NEW.resistance_ohm;
-    ELSIF NEW.capacitance_pf IS NOT NULL AND NEW.value_unit = 'pF' THEN
-        NEW.value_numeric := NEW.capacitance_pf;
-    ELSIF NEW.inductance_uh IS NOT NULL AND (NEW.value_unit = 'µH' OR NEW.value_unit = 'uH') THEN
-        NEW.value_numeric := NEW.inductance_uh;
+    -- Синхронизируем только если value_numeric изменился
+    IF NEW.value_numeric IS NOT NULL AND NEW.value_unit IS NOT NULL THEN
+        IF NEW.value_unit = 'Ω' THEN
+            NEW.resistance_ohm := NEW.value_numeric;
+        ELSIF NEW.value_unit = 'pF' THEN
+            NEW.capacitance_pf := NEW.value_numeric;
+        ELSIF NEW.value_unit IN ('µH', 'uH', 'H') THEN
+            NEW.inductance_uh := NEW.value_numeric;
+        END IF;
     END IF;
     
     RETURN NEW;
@@ -234,6 +230,6 @@ $$ LANGUAGE 'plpgsql';
 
 DROP TRIGGER IF EXISTS trg_sync_value_with_category_params ON components;
 CREATE TRIGGER trg_sync_value_with_category_params
-    BEFORE INSERT OR UPDATE ON components
+    BEFORE INSERT OR UPDATE OF value_numeric, value_unit ON components
     FOR EACH ROW
     EXECUTE FUNCTION sync_value_with_category_params();
