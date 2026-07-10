@@ -1,13 +1,11 @@
 -- ===== МИГРАЦИЯ 001: СТРУКТУРА БД =====
 -- Создает таблицы, функции, триггеры и индексы
--- Версия: 2.0 (с учетом новых требований)
 
 -- ===== 1. СПРАВОЧНИКИ =====
 
 CREATE TABLE IF NOT EXISTS categories (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE,
-    parent_id INTEGER REFERENCES categories(id) ON DELETE SET NULL,
     description TEXT,
     designator_prefix VARCHAR(10),
     is_active_component BOOLEAN DEFAULT TRUE,
@@ -91,7 +89,6 @@ CREATE TABLE IF NOT EXISTS components (
     value_unit VARCHAR(100),
     
     -- ===== ДУБЛИРУЮЩИЕ ПОЛЯ ДЛЯ БЫСТРОГО ПОИСКА =====
-    -- Заполняются автоматически триггером на основе value_unit
     resistance_ohm DECIMAL(15, 6),
     capacitance_pf DECIMAL(15, 6),
     inductance_uh DECIMAL(15, 6),
@@ -103,7 +100,6 @@ CREATE TABLE IF NOT EXISTS components (
     
     -- ===== КОРПУС =====
     package VARCHAR(200),
-
     package_standard VARCHAR(100),
     
     -- ===== СПЕЦИФИЧНЫЕ ПОЛЯ ПО ТИПАМ КОМПОНЕНТОВ =====
@@ -115,7 +111,7 @@ CREATE TABLE IF NOT EXISTS components (
     -- Индуктивности (L)
     q_factor DECIMAL(10, 2),
     
-    -- Диоды (D, TH) - value_display НЕ связан с forward_voltage_v
+    -- Диоды (D, LED)
     diode_type VARCHAR(50),
     forward_voltage_v DECIMAL(10, 3),
     reverse_voltage_v DECIMAL(10, 2),
@@ -149,7 +145,6 @@ CREATE TABLE IF NOT EXISTS components (
 
 -- ===== 4. ИНДЕКСЫ НА СПРАВОЧНИКИ =====
 
-CREATE INDEX IF NOT EXISTS idx_categories_parent ON categories(parent_id);
 CREATE INDEX IF NOT EXISTS idx_categories_designator ON categories(designator_prefix);
 CREATE INDEX IF NOT EXISTS idx_categories_active ON categories(is_active_component);
 
@@ -209,11 +204,9 @@ CREATE TRIGGER update_packages_updated_at
     EXECUTE FUNCTION update_updated_at_column();
 
 -- Триггер синхронизации value_numeric со специфичными полями
--- Работает ТОЛЬКО в одну сторону: value_numeric → resistance_ohm/capacitance_pf/inductance_uh
 CREATE OR REPLACE FUNCTION sync_value_with_category_params()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Синхронизируем только если value_numeric изменился
     IF NEW.value_numeric IS NOT NULL AND NEW.value_unit IS NOT NULL THEN
         IF NEW.value_unit = 'Ω' THEN
             NEW.resistance_ohm := NEW.value_numeric;

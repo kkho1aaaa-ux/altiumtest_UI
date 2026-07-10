@@ -1,4 +1,10 @@
 SELECT 
-    *
+    id,
+    name,
+    description,
+    designator_prefix,
+    is_active_component,
+    sort_order,
+    created_at
 FROM categories
-ORDER BY parent_id NULLS FIRST, sort_order, name;
+ORDER BY sort_order, name;

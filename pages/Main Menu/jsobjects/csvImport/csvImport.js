@@ -231,16 +231,14 @@ export default {
 		// ===== ИСПРАВЛЕННАЯ ГЕНЕРАЦИЯ KICAD ПОЛЕЙ =====
 		const generateKiCadFields = (categoryName, packageName, designator) => {
 			const prefixMap = {
-				'Resistors': 'R', 'Capacitors': 'C', 'Inductors': 'L',
-				'Diodes': 'D', 'LEDs': 'LED', 'Transistors': 'Q',
-				'IC_General': 'U', 'Microcontrollers': 'U', 'Power_Management': 'U',
-				'Data_Converters': 'U', 'Linear': 'U', 'Logic': 'U',
-				'Memory': 'U', 'FPGA': 'U',
-				'Connectors': 'J', 'Transformers': 'T', 'Relays': 'K',
-				'Fuses': 'F', 'Crystals': 'Y', 'Generators': 'X',
-				'Crystals_Passive': 'Y', 'Ferrites': 'FB',
-				'Thyristors': 'TH', 'Optocouplers': 'U', 'Displays': 'DS',
-				'Switches': 'S'
+				'Resistors': 'R',
+				'Capacitors': 'C',
+				'Inductors': 'L',
+				'Diodes': 'D',
+				'LEDs': 'LED',
+				'Transistors': 'Q',
+				'ICs': 'U',
+				'Connectors': 'J'
 			};
 
 			// Используем categoryName, если есть, иначе designator
@@ -258,27 +256,40 @@ export default {
 		};
 
 		if (this.state.previewData.length === 0) {
-			this.state.previewData = this.state.rawData.map((row, index) => {
-				const result = {
-					_id: index,
-					_selected: false,
-					// ===== ДОБАВЛЕНО: Инициализация по умолчанию =====
-					is_polarized: false,
-					kicad_keywords: '',
-					kicad_fp_filter: '',
-					category_id: null,
-					manufacturer_id: null,
-					value_numeric: null,
-					value_unit: '',
-					package_standard: 'Custom'
-				};
+    this.state.previewData = this.state.rawData.map((row, index) => {
+        const result = {
+            _id: index,
+            _selected: false
+        };
 
-				// Копируем все замапленные поля из CSV
-				this.state.dbFields.forEach(field => {
-					if (field.type === 'mapping' && this.state.mapping[field.key]) {
-						result[field.key] = getFieldValue(row, this.state.mapping[field.key]);
-					}
-				});
+        // ===== ИНИЦИАЛИЗАЦИЯ ВСЕХ ПОЛЕЙ ИЗ dbFields =====
+        // Это гарантирует что все колонки появятся в таблице,
+        // даже если поле не замаплено
+        this.state.dbFields.forEach(field => {
+            if (field.type === 'mapping') {
+                result[field.key] = null;  // значение по умолчанию
+            }
+        });
+
+        // ===== ДОПОЛНИТЕЛЬНЫЕ ПОЛЯ ДЛЯ ОТОБРАЖЕНИЯ =====
+        // Эти поля не в dbFields, но нужны для UI
+        result.category_name = '';
+        result.manufacturer_name = '';
+        result.is_polarized = false;
+        result.kicad_keywords = '';
+        result.kicad_fp_filter = '';
+        result.category_id = null;
+        result.manufacturer_id = null;
+        result.value_numeric = null;
+        result.value_unit = '';
+        result.package_standard = 'Custom';
+
+        // Копируем все замапленные поля из CSV
+        this.state.dbFields.forEach(field => {
+            if (field.type === 'mapping' && this.state.mapping[field.key]) {
+                result[field.key] = getFieldValue(row, this.state.mapping[field.key]);
+            }
+        });
 
 				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Category =====
 				const categoryNameRaw = result.category_name || '';
@@ -791,18 +802,15 @@ export default {
 						this.state.userEdits[row._id].category_name = englishName;
 						this.state.userEdits[row._id].altium_designator = category.designator_prefix || 'X';
 
-						// ===== ДОБАВЛЕНО: Обновляем KiCad поля при смене категории =====
 						const prefixMap = {
-							'Resistors': 'R', 'Capacitors': 'C', 'Inductors': 'L',
-							'Diodes': 'D', 'LEDs': 'LED', 'Transistors': 'Q',
-							'IC_General': 'U', 'Microcontrollers': 'U', 'Power_Management': 'U',
-							'Data_Converters': 'U', 'Linear': 'U', 'Logic': 'U',
-							'Memory': 'U', 'FPGA': 'U',
-							'Connectors': 'J', 'Transformers': 'T', 'Relays': 'K',
-							'Fuses': 'F', 'Crystals': 'Y', 'Generators': 'X',
-							'Crystals_Passive': 'Y', 'Ferrites': 'FB',
-							'Thyristors': 'TH', 'Optocouplers': 'U', 'Displays': 'DS',
-							'Switches': 'S'
+							'Resistors': 'R',
+							'Capacitors': 'C',
+							'Inductors': 'L',
+							'Diodes': 'D',
+							'LEDs': 'LED',
+							'Transistors': 'Q',
+							'ICs': 'U',
+							'Connectors': 'J'
 						};
 
 						const designator = category.designator_prefix || 'X';

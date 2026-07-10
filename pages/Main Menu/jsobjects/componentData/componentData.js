@@ -40,8 +40,17 @@ export default {
 
 		const generateFpFilter = (categoryName, packageName) => {
 			const prefixMap = {
+<<<<<<< HEAD
 				'Resistors': 'R', 'Capacitors': 'C', 'Inductors': 'L',
 				'Diodes': 'D', 'LEDs': 'LED', 'Transistors': 'Q',
+=======
+				'Resistors': 'R',
+				'Capacitors': 'C',
+				'Inductors': 'L',
+				'Diodes': 'D',
+				'LEDs': 'LED',
+				'Transistors': 'Q',
+>>>>>>> ab10cc7a9b5e723b5f694beb49eb6c09213c528b
 				'ICs': 'U',
 				'Connectors': 'J'
 			};

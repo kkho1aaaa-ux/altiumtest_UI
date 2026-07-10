@@ -2,18 +2,18 @@
 -- Заполняет справочные таблицы категориями, производителями, обозначениями, 
 -- маппингами библиотек и стандартными корпусами
 
--- ===== 1. КАТЕГОРИИ (ОСТАВЛЯЕМ ТОЛЬКО ОСНОВНЫЕ) =====
-INSERT INTO categories (name, parent_id, description, designator_prefix, is_active_component, sort_order) VALUES
+-- ===== 1. КАТЕГОРИИ =====
+INSERT INTO categories (name, description, designator_prefix, is_active_component, sort_order) VALUES
 -- Пассивные
-('Resistors', NULL, 'Резисторы', 'R', TRUE, 10),
-('Capacitors', NULL, 'Конденсаторы', 'C', TRUE, 11),
-('Inductors', NULL, 'Индуктивности', 'L', TRUE, 12),
+('Resistors', 'Резисторы', 'R', TRUE, 10),
+('Capacitors', 'Конденсаторы', 'C', TRUE, 11),
+('Inductors', 'Индуктивности', 'L', TRUE, 12),
 -- Активные
-('Diodes', NULL, 'Диоды', 'D', TRUE, 20),
-('LEDs', NULL, 'Светодиоды', 'LED', TRUE, 21),
-('Transistors', NULL, 'Транзисторы', 'Q', TRUE, 22),
-('ICs', NULL, 'Микросхемы', 'U', TRUE, 23),
-('Connectors', NULL, 'Разъёмы', 'J', TRUE, 24)
+('Diodes', 'Диоды', 'D', TRUE, 20),
+('LEDs', 'Светодиоды', 'LED', TRUE, 21),
+('Transistors', 'Транзисторы', 'Q', TRUE, 22),
+('ICs', 'Микросхемы', 'U', TRUE, 23),
+('Connectors', 'Разъёмы', 'J', TRUE, 24)
 ON CONFLICT (name) DO NOTHING;
 
 -- ===== 2. ТАБЛИЦА DESIGNATORS =====
