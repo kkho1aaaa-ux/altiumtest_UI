@@ -26,7 +26,7 @@
   "dynamicTriggerPathList": [],
   "iconAlign": "left",
   "inputType": "TEXT",
-  "isDisabled": "{{formHandlers.isInductor()}}",
+  "isDisabled": "{{!formHandlers.isInductor()}}",
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,

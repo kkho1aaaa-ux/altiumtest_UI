@@ -60,10 +60,10 @@ export default {
 	},
 
 	clearSpecFields: () => {
-		if (typeof dielectricSelect !== 'undefined') dielectricSelect.clearSelectedOption();
+		if (typeof dielectricSelect !== 'undefined') dielectricSelect.setSelectedOption('');
 		if (typeof polarizedCheckbox !== 'undefined') {
-			if (typeof polarizedCheckbox.setChecked === 'function') {
-				polarizedCheckbox.setChecked(false);
+			if (typeof polarizedCheckbox.setValue() === 'function') {
+				polarizedCheckbox.setValue(false);
 			} else if (typeof polarizedCheckbox.setValue === 'function') {
 				polarizedCheckbox.setValue(false);
 			}
@@ -71,8 +71,8 @@ export default {
 		if (typeof qFactorInput !== 'undefined') qFactorInput.setValue('');
 		if (typeof forwardVoltageInput !== 'undefined') forwardVoltageInput.setValue('');
 		if (typeof reverseVoltageInput !== 'undefined') reverseVoltageInput.setValue('');
-		if (typeof transistorTypeSelect !== 'undefined') transistorTypeSelect.clearSelectedOption();
-		if (typeof channelTypeSelect !== 'undefined') channelTypeSelect.clearSelectedOption();
+		if (typeof transistorTypeSelect !== 'undefined') transistorTypeSelect.setSelectedOption('');
+		if (typeof channelTypeSelect !== 'undefined') channelTypeSelect.setSelectedOption('');
 		if (typeof outputVoltageInput !== 'undefined') outputVoltageInput.setValue('');
 		if (typeof dropoutVoltageInput !== 'undefined') dropoutVoltageInput.setValue('');
 		if (typeof pinCountInput !== 'undefined') pinCountInput.setValue('');
@@ -136,12 +136,12 @@ export default {
 		dielectricSelect.setSelectedOption(row.dielectric_type || '');
 		transistorTypeSelect.setSelectedOption(row.transistor_type || '');
 		channelTypeSelect.setSelectedOption(row.channel_type || '');
-		if (typeof polarizedCheckbox.setChecked === 'function') {
-			polarizedCheckbox.setChecked(Boolean(row.is_polarized));
+		if (typeof polarizedCheckbox.setValue === 'function') {
+			polarizedCheckbox.setValue(Boolean(row.is_polarized));
 		} else if (typeof polarizedCheckbox.setValue === 'function') {
 			polarizedCheckbox.setValue(Boolean(row.is_polarized));
 		} else {
-			polarizedCheckbox.isChecked = Boolean(row.is_polarized);
+			polarizedCheckbox.isChecked(Boolean(row.is_polarized));
 		}
 
 		libraryPathInput.setValue(row.library_path || '');
@@ -308,12 +308,12 @@ export default {
 		dielectricSelect.setSelectedOption('');
 		transistorTypeSelect.setSelectedOption('');
 		channelTypeSelect.setSelectedOption('');
-		if (typeof polarizedCheckbox.setChecked === 'function') {
-			polarizedCheckbox.setChecked(false);
+		if (typeof polarizedCheckbox.setValue === 'function') {
+			polarizedCheckbox.setValue(false);
 		} else if (typeof polarizedCheckbox.setValue === 'function') {
 			polarizedCheckbox.setValue(false);
 		} else {
-			polarizedCheckbox.isChecked = false;
+			polarizedCheckbox.isChecked(false);
 		}
 		packageSelect.setSelectedOption('');
 		libraryPathInput.setValue('');
