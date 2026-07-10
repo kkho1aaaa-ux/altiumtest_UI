@@ -56,7 +56,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 24,
   "serverSideFiltering": false,
-  "sourceData": "{{componentConstants.DIELECTRIC_TYPES.map(u => ({ name: u.label, code: u.value }))}}",
+  "sourceData": "[\n  {\n    \"name\": \"Blue\",\n    \"code\": \"BLUE\"\n  },\n  {\n    \"name\": \"Green\",\n    \"code\": \"GREEN\"\n  },\n  {\n    \"name\": \"Red\",\n    \"code\": \"RED\"\n  }\n]",
   "topRow": 5,
   "type": "SELECT_WIDGET",
   "version": 1,
