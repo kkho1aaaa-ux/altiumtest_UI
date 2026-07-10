@@ -26,7 +26,7 @@
   "dynamicTriggerPathList": [],
   "iconAlign": "left",
   "inputType": "TEXT",
-  "isDisabled": "{{formHandlers.isDiode()}}",
+  "isDisabled": "{{!formHandlers.isDiode()}}",
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,

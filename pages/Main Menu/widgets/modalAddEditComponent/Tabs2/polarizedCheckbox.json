@@ -23,7 +23,7 @@
     }
   ],
   "dynamicTriggerPathList": [],
-  "isDisabled": "{{formHandlers.isCapacitor()}}",
+  "isDisabled": "{{!formHandlers.isCapacitor()}}",
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,

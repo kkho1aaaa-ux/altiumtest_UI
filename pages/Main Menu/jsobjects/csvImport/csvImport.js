@@ -125,6 +125,10 @@ export default {
 			'altium_designator',
 			'kicad_keywords',
 			'kicad_fp_filter',
+			'voltage_rating_v',
+			'power_rating_w',
+			'operating_temp_min_c',
+			'operating_temp_max_c'
 		];
 
 		const requiredKeys = ['part_number'];
