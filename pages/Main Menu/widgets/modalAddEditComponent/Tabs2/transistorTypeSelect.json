@@ -56,7 +56,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 48,
   "serverSideFiltering": false,
-  "sourceData": "[\n  {\n    \"name\": \"Blue\",\n    \"code\": \"BLUE\"\n  },\n  {\n    \"name\": \"Green\",\n    \"code\": \"GREEN\"\n  },\n  {\n    \"name\": \"Red\",\n    \"code\": \"RED\"\n  }\n]",
+  "sourceData": "{{componentConstants.TRANSISTOR_TYPES.map(u => ({ name: u.label, code: u.value }))}}",
   "topRow": 19,
   "type": "SELECT_WIDGET",
   "version": 1,
