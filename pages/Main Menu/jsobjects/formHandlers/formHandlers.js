@@ -55,19 +55,18 @@ export default {
 	},
 
 	clearSpecFields: () => {
-		if (typeof dielectricSelect !== 'undefined') dielectricSelect.setSelectedOption('');
+		if (typeof dielectricSelect !== 'undefined') dielectricSelect.setSelectedOptionValue('');
 		if (typeof polarizedCheckbox !== 'undefined') {
-			if (typeof polarizedCheckbox.setValue() === 'function') {
-				polarizedCheckbox.setValue(false);
-			} else if (typeof polarizedCheckbox.setValue === 'function') {
+			if (typeof polarizedCheckbox.setValue === 'function') {
 				polarizedCheckbox.setValue(false);
 			}
 		}
 		if (typeof qFactorInput !== 'undefined') qFactorInput.setValue('');
 		if (typeof forwardVoltageInput !== 'undefined') forwardVoltageInput.setValue('');
 		if (typeof reverseVoltageInput !== 'undefined') reverseVoltageInput.setValue('');
-		if (typeof transistorTypeSelect !== 'undefined') transistorTypeSelect.clearSelectedOption();
-		if (typeof channelTypeSelect !== 'undefined') channelTypeSelect.clearSelectedOption();
+		if (typeof diodeTypeSelect !== 'undefined') diodeTypeSelect.setSelectedOptionValue('');
+		if (typeof transistorTypeSelect !== 'undefined') transistorTypeSelect.setSelectedOptionValue('');
+		if (typeof channelTypeSelect !== 'undefined') channelTypeSelect.setSelectedOptionValue('');
 		if (typeof outputVoltageInput !== 'undefined') outputVoltageInput.setValue('');
 		if (typeof dropoutVoltageInput !== 'undefined') dropoutVoltageInput.setValue('');
 		if (typeof pinCountInput !== 'undefined') pinCountInput.setValue('');
@@ -128,15 +127,12 @@ export default {
 		pinCountInput.setValue(row.pin_count || '');
 		pitchInput.setValue(row.pitch_mm || '');
 		qFactorInput.setValue(row.q_factor || '');
-		dielectricSelect.setSelectedOption(row.dielectric_type || '');
-		transistorTypeSelect.setSelectedOption(row.transistor_type || '');
-		channelTypeSelect.setSelectedOption(row.channel_type || '');
+		dielectricSelect.setSelectedOptionValue(row.dielectric_type || '');
+		transistorTypeSelect.setSelectedOptionValue(row.transistor_type || '');
+		channelTypeSelect.setSelectedOptionValue(row.channel_type || '');
+		if (typeof diodeTypeSelect !== 'undefined') diodeTypeSelect.setSelectedOptionValue(row.diode_type || '');
 		if (typeof polarizedCheckbox.setValue === 'function') {
 			polarizedCheckbox.setValue(Boolean(row.is_polarized));
-		} else if (typeof polarizedCheckbox.setValue === 'function') {
-			polarizedCheckbox.setValue(Boolean(row.is_polarized));
-		} else {
-			polarizedCheckbox.isChecked(Boolean(row.is_polarized));
 		}
 
 		libraryPathInput.setValue(row.library_path || '');
@@ -265,18 +261,58 @@ export default {
 			errors.push('Footprint Ref обязателен');
 		}
 
-		// Проверяем номинал и допуск только для пассивных компонентов
-		if (formHandlers.getComponentType() === 'passive') {
+		if (!packageSelect.selectedOptionValue) {
+			errors.push('Корпус обязателен');
+		}
+
+		// ===== СПЕЦИФИЧЕСКАЯ ВАЛИДАЦИЯ ПО ТИПАМ =====
+		const type = formHandlers.getComponentType();
+		const prefix = formHandlers.getDesignatorPrefix();
+
+		if (type === 'passive') {
 			if (!valueNumberInput.value || valueNumberInput.value === 0) {
-				errors.push('Value обязателен');
+				errors.push('Value (номинал) обязателен');
 			}
 			if (!toleranceInput.value || toleranceInput.value === '') {
-				errors.push('Точность (Tolerance) обязательна');
+				errors.push('Tolerance (допуск) обязателен');
 			}
 		}
 
-		if (!packageSelect.selectedOptionValue) {
-			errors.push('Корпус обязателен');
+		if (prefix === 'C') {
+			// Конденсаторы
+			if (!dielectricSelect.selectedOptionValue) {
+				errors.push('Dielectric Type (тип диэлектрика) обязателен');
+			}
+		}
+
+		if (prefix === 'D' || prefix === 'LED') {
+			// Диоды
+			if (!forwardVoltageInput.text || forwardVoltageInput.text.trim() === '') {
+				errors.push('Forward Voltage (прямое напряжение) обязателен');
+			}
+			if (!diodeTypeSelect.selectedOptionValue) {
+				errors.push('Diode Type (тип диода) обязателен');
+			}
+		}
+
+		if (prefix === 'Q') {
+			// Транзисторы
+			if (!transistorTypeSelect.selectedOptionValue) {
+				errors.push('Transistor Type (тип транзистора) обязателен');
+			}
+			if (!channelTypeSelect.selectedOptionValue) {
+				errors.push('Channel Type (тип канала) обязателен');
+			}
+		}
+
+		if (prefix === 'J') {
+			// Разъёмы
+			if (!pinCountInput.text || pinCountInput.text.trim() === '') {
+				errors.push('Pin Count (количество контактов) обязателен');
+			}
+			if (!pitchInput.text || pitchInput.text.trim() === '') {
+				errors.push('Pitch (шаг контактов) обязателен');
+			}
 		}
 
 		return errors;

@@ -872,8 +872,9 @@ export default {
 				rowErrors.push('Category Name (не найдена в БД)');
 			}
 
-			const isPassive = selectedCategory && ['R', 'C', 'L'].includes(selectedCategory.designator_prefix);
+			const prefix = selectedCategory?.designator_prefix || '';
 
+			// ===== ОБЯЗАТЕЛЬНЫЕ ПОЛЯ ДЛЯ ВСЕХ КОМПОНЕНТОВ =====
 			if (!row.part_number || String(row.part_number).trim() === '') {
 				rowErrors.push('Part Number');
 			}
@@ -882,16 +883,78 @@ export default {
 				rowErrors.push('Category Name');
 			}
 
-			if (isPassive) {
-				const hasValue = (row.value_numeric !== null && row.value_numeric !== undefined && row.value_numeric !== 0) ||
-							(row.value_display && String(row.value_display).trim() !== '');
-				if (!hasValue) {
-					rowErrors.push('Value');
+			if (!row.package || String(row.package).trim() === '') {
+				rowErrors.push('Package');
+			}
+
+			if (!row.library_path || String(row.library_path).trim() === '') {
+				rowErrors.push('Library Path');
+			}
+
+			if (!row.library_ref || String(row.library_ref).trim() === '') {
+				rowErrors.push('Library Ref');
+			}
+
+			if (!row.footprint_path || String(row.footprint_path).trim() === '') {
+				rowErrors.push('Footprint Path');
+			}
+
+			if (!row.footprint_ref || String(row.footprint_ref).trim() === '') {
+				rowErrors.push('Footprint Ref');
+			}
+
+			// ===== СПЕЦИФИЧЕСКИЕ ПОЛЯ ПО ТИПАМ =====
+			if (prefix === 'C') {
+				// Конденсаторы: is_polarized, dielectric_type
+				if (row.is_polarized === undefined || row.is_polarized === null || row.is_polarized === '') {
+					rowErrors.push('is_polarized (для конденсаторов)');
+				}
+				if (!row.dielectric_type || String(row.dielectric_type).trim() === '') {
+					rowErrors.push('dielectric_type (для конденсаторов)');
 				}
 			}
 
-			if (!row.package || String(row.package).trim() === '') {
-				rowErrors.push('Package');
+			if (prefix === 'D' || prefix === 'LED') {
+				// Диоды: forward_voltage_v, diode_type
+				if (!row.forward_voltage_v || row.forward_voltage_v === '') {
+					rowErrors.push('forward_voltage_v (для диодов)');
+				}
+				if (!row.diode_type || String(row.diode_type).trim() === '') {
+					rowErrors.push('diode_type (для диодов)');
+				}
+			}
+
+			if (prefix === 'Q') {
+				// Транзисторы: transistor_type, channel_type
+				if (!row.transistor_type || String(row.transistor_type).trim() === '') {
+					rowErrors.push('transistor_type (для транзисторов)');
+				}
+				if (!row.channel_type || String(row.channel_type).trim() === '') {
+					rowErrors.push('channel_type (для транзисторов)');
+				}
+			}
+
+			if (prefix === 'U') {
+				// Микросхемы: нет обязательных специальных полей
+			}
+
+			if (prefix === 'J') {
+				// Разъёмы: pin_count, pitch_mm
+				if (!row.pin_count || row.pin_count === '') {
+					rowErrors.push('pin_count (для разъёмов)');
+				}
+				if (!row.pitch_mm || row.pitch_mm === '') {
+					rowErrors.push('pitch_mm (для разъёмов)');
+				}
+			}
+
+			// ===== НОМИНАЛ ДЛЯ ПАССИВНЫХ =====
+			if (['R', 'C', 'L'].includes(prefix)) {
+				const hasValue = (row.value_numeric !== null && row.value_numeric !== undefined && row.value_numeric !== 0) ||
+							(row.value_display && String(row.value_display).trim() !== '');
+				if (!hasValue) {
+					rowErrors.push('Value (номинал)');
+				}
 			}
 
 			if (rowErrors.length > 0) {
