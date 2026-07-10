@@ -74,16 +74,11 @@ export default {
 				if (parsedValue.unit === 'Ω' || parsedValue.unit === 'ohm') {
 					resistance_ohm = num;
 				} else if (parsedValue.unit === 'F' || parsedValue.unit === 'farad' || parsedValue.unit === 'pF' || parsedValue.unit === 'µF' || parsedValue.unit === 'nF') {
-					let pf = num;
-					if (parsedValue.unit === 'F') pf = num * 1e12;
-					else if (parsedValue.unit === 'µF') pf = num * 1e6;
-					else if (parsedValue.unit === 'nF') pf = num * 1e3;
-					capacitance_pf = pf;
+					// capacitance_pf = value_display (без конвертации)
+					capacitance_pf = num;
 				} else if (parsedValue.unit === 'H' || parsedValue.unit === 'henry' || parsedValue.unit === 'µH' || parsedValue.unit === 'mH') {
-					let uh = num;
-					if (parsedValue.unit === 'H') uh = num * 1e6;
-					else if (parsedValue.unit === 'mH') uh = num * 1e3;
-					inductance_uh = uh;
+					// inductance_uh = value_display (без конвертации)
+					inductance_uh = num;
 				}
 			}
 		}

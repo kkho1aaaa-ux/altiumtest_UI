@@ -322,18 +322,11 @@ export default {
 						if (valueData.unit === 'Ω' || valueData.unit === 'ohm') {
 							result.resistance_ohm = num;
 						} else if (valueData.unit === 'F' || valueData.unit === 'farad' || valueData.unit === 'pF' || valueData.unit === 'µF' || valueData.unit === 'nF') {
-							// Конвертируем в пикофарады
-							let pf = num;
-							if (valueData.unit === 'F') pf = num * 1e12;
-							else if (valueData.unit === 'µF') pf = num * 1e6;
-							else if (valueData.unit === 'nF') pf = num * 1e3;
-							result.capacitance_pf = pf;
+							// capacitance_pf = value_display (без конвертации)
+							result.capacitance_pf = num;
 						} else if (valueData.unit === 'H' || valueData.unit === 'henry' || valueData.unit === 'µH' || valueData.unit === 'mH') {
-							// Конвертируем в микрегенри
-							let uh = num;
-							if (valueData.unit === 'H') uh = num * 1e6;
-							else if (valueData.unit === 'mH') uh = num * 1e3;
-							result.inductance_uh = uh;
+							// inductance_uh = value_display (без конвертации)
+							result.inductance_uh = num;
 						}
 					}
 				}
@@ -370,6 +363,31 @@ export default {
 				}
 				if (!this.state.mapping.altium_designator) {
 					result.altium_designator = designator;
+				}
+
+				// ===== АВТОМАТИЧЕСКОЕ ОПРЕДЕЛЕНИЕ DIELECTRIC ДЛЯ КОНДЕНСАТОРОВ =====
+				if (designator === 'C' && !this.state.mapping.dielectric_type) {
+					// Определяем тип диэлектрика из Temp. Coefficient или других полей
+					const tempCoeff = result['Temp. Coefficient'] || result.temp_coefficient || '';
+					if (tempCoeff.toLowerCase().includes('c0g') || tempCoeff.toLowerCase().includes('npo')) {
+						result.dielectric_type = 'Ceramic';
+					} else if (tempCoeff.toLowerCase().includes('x5r') || tempCoeff.toLowerCase().includes('x7r')) {
+						result.dielectric_type = 'Ceramic';
+					} else if (tempCoeff.toLowerCase().includes('tantalum') || tempCoeff.toLowerCase().includes('tantal')) {
+						result.dielectric_type = 'Tantalum';
+					} else if (tempCoeff.toLowerCase().includes('electrolytic') || tempCoeff.toLowerCase().includes('al')) {
+						result.dielectric_type = 'Electrolytic';
+					}
+				}
+
+				// Автоматическое определение is_polarized для конденсаторов
+				if (designator === 'C' && result.is_polarized === undefined) {
+					// Электролитические и тантальные конденсаторы полярные
+					const tempCoeff = result['Temp. Coefficient'] || result.temp_coefficient || '';
+					const isElectrolytic = tempCoeff.toLowerCase().includes('electrolytic') || 
+																tempCoeff.toLowerCase().includes('tantalum') ||
+																tempCoeff.toLowerCase().includes('al');
+					result.is_polarized = isElectrolytic;
 				}
 
 				// ===== ИСПРАВЛЕНО: Передаём designator как fallback =====
