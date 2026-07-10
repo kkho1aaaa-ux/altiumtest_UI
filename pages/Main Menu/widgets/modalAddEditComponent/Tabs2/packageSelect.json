@@ -22,7 +22,11 @@
       "key": "sourceData"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onOptionChange"
+    }
+  ],
   "isDisabled": false,
   "isFilterable": true,
   "isLoading": false,
@@ -43,6 +47,7 @@
   "mobileRightColumn": 21,
   "mobileTopRow": 31,
   "needsErrorInfo": false,
+  "onOptionChange": "{{formHandlers.onPackageChangeWithDelay()}}",
   "optionLabel": "label",
   "optionValue": "value",
   "originalBottomRow": 47,

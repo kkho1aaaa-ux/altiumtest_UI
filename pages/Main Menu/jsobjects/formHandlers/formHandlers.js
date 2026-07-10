@@ -172,10 +172,11 @@ export default {
 	},
 
 	openAddForm: () => {
+		formHandlers.resetForm();
 		showModal(modalAddEditComponent.name);
 	},
 
-	onCategoryChange: async () => {
+	onCategoryChange: () => {
 		const categoryId = categorySelect.selectedOptionValue;
 
 		if (!categoryId) return;
@@ -232,6 +233,28 @@ export default {
 
 		// ===== ОЧИСТКА СПЕЦ ПОЛЕЙ ПРИ СМЕНЕ КАТЕГОРИИ =====
 		formHandlers.clearSpecFields();
+	},
+
+	onPackageChange: () => {
+		const categoryId = categorySelect.selectedOptionValue;
+		if (!categoryId) return;
+
+		const categories = getCategories.data || [];
+		const selectedCategory = categories.find(cat => cat.id == categoryId);
+		if (!selectedCategory) return;
+
+		const designator = selectedCategory.designator_prefix || 'X';
+		const packageName = packageSelect.selectedOptionValue || '';
+
+		const fpFilter = packageName ? `${designator}*${packageName}*` : '';
+		const keywords = `${selectedCategory.name.toLowerCase()} ${packageName}`.trim();
+
+		kicadFpFilterInput.setValue(fpFilter);
+		kicadKeywordsInput.setValue(keywords);
+	},
+
+	onPackageChangeWithDelay: () => {
+		setTimeout(() => formHandlers.onPackageChange(), 100);
 	},
 
 	validateForm: () => {
@@ -381,6 +404,19 @@ export default {
 			showAlert('Ошибки валидации:\n\n• ' + errors.join('\n• '), 'error');
 			return;
 		}
+
+		// ===== ОБНОВЛЕНИЕ KICAD ПОЛЕЙ ПЕРЕД СОХРАНЕНИЕМ =====
+		const categories = getCategories.data || [];
+		const selectedCategory = categories.find(cat => cat.id == categoryId);
+		const designator = selectedCategory?.designator_prefix || 'X';
+		const packageName = packageSelect.selectedOptionValue || '';
+		const categoryName = selectedCategory?.name || '';
+
+		const fpFilter = packageName ? `${designator}*${packageName}*` : '';
+		const keywords = `${categoryName.toLowerCase()} ${packageName}`.trim();
+
+		kicadFpFilterInput.setValue(fpFilter);
+		kicadKeywordsInput.setValue(keywords);
 
 		const editingId = appsmith.store.editingComponentId;
 
