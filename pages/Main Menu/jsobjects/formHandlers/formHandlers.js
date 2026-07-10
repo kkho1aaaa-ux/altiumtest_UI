@@ -60,7 +60,7 @@ export default {
 	},
 
 	clearSpecFields: () => {
-		if (typeof dielectricSelect !== 'undefined') dielectricSelect.clearSelectedOption();
+		if (typeof dielectricSelect !== 'undefined') dielectricSelect.setSelectedOptionValue('');
 		if (typeof polarizedCheckbox !== 'undefined') {
 			if (typeof polarizedCheckbox.setChecked === 'function') {
 				polarizedCheckbox.setChecked(false);
@@ -71,8 +71,8 @@ export default {
 		if (typeof qFactorInput !== 'undefined') qFactorInput.setValue('');
 		if (typeof forwardVoltageInput !== 'undefined') forwardVoltageInput.setValue('');
 		if (typeof reverseVoltageInput !== 'undefined') reverseVoltageInput.setValue('');
-		if (typeof transistorTypeSelect !== 'undefined') transistorTypeSelect.clearSelectedOption();
-		if (typeof channelTypeSelect !== 'undefined') channelTypeSelect.clearSelectedOption();
+		if (typeof transistorTypeSelect !== 'undefined') transistorTypeSelect.setSelectedOptionValue('');
+		if (typeof channelTypeSelect !== 'undefined') channelTypeSelect.setSelectedOptionValue('');
 		if (typeof outputVoltageInput !== 'undefined') outputVoltageInput.setValue('');
 		if (typeof dropoutVoltageInput !== 'undefined') dropoutVoltageInput.setValue('');
 		if (typeof pinCountInput !== 'undefined') pinCountInput.setValue('');
