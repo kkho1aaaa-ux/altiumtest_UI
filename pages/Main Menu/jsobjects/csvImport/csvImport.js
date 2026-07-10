@@ -1,5 +1,3 @@
-// поле capacitance pf для конденсаторов должно быть равно value_display, тоже самое относится к резисторам и индуктивностям. это правило не выполняется при автомаппинге, а должно! При добавлении package поля kicad тоже должно обновляться (filter, keywords)!  
-
 export default {
 	state: {
 		rawData: [],
@@ -258,40 +256,40 @@ export default {
 		};
 
 		if (this.state.previewData.length === 0) {
-    this.state.previewData = this.state.rawData.map((row, index) => {
-        const result = {
-            _id: index,
-            _selected: false
-        };
+			this.state.previewData = this.state.rawData.map((row, index) => {
+				const result = {
+					_id: index,
+					_selected: false
+				};
 
-        // ===== ИНИЦИАЛИЗАЦИЯ ВСЕХ ПОЛЕЙ ИЗ dbFields =====
-        // Это гарантирует что все колонки появятся в таблице,
-        // даже если поле не замаплено
-        this.state.dbFields.forEach(field => {
-            if (field.type === 'mapping') {
-                result[field.key] = null;  // значение по умолчанию
-            }
-        });
+				// ===== ИНИЦИАЛИЗАЦИЯ ВСЕХ ПОЛЕЙ ИЗ dbFields =====
+				// Это гарантирует что все колонки появятся в таблице,
+				// даже если поле не замаплено
+				this.state.dbFields.forEach(field => {
+					if (field.type === 'mapping') {
+						result[field.key] = null;  // значение по умолчанию
+					}
+				});
 
-        // ===== ДОПОЛНИТЕЛЬНЫЕ ПОЛЯ ДЛЯ ОТОБРАЖЕНИЯ =====
-        // Эти поля не в dbFields, но нужны для UI
-        result.category_name = '';
-        result.manufacturer_name = '';
-        result.is_polarized = false;
-        result.kicad_keywords = '';
-        result.kicad_fp_filter = '';
-        result.category_id = null;
-        result.manufacturer_id = null;
-        result.value_numeric = null;
-        result.value_unit = '';
-        result.package_standard = 'Custom';
+				// ===== ДОПОЛНИТЕЛЬНЫЕ ПОЛЯ ДЛЯ ОТОБРАЖЕНИЯ =====
+				// Эти поля не в dbFields, но нужны для UI
+				result.category_name = '';
+				result.manufacturer_name = '';
+				result.is_polarized = false;
+				result.kicad_keywords = '';
+				result.kicad_fp_filter = '';
+				result.category_id = null;
+				result.manufacturer_id = null;
+				result.value_numeric = null;
+				result.value_unit = '';
+				result.package_standard = 'Custom';
 
-        // Копируем все замапленные поля из CSV
-        this.state.dbFields.forEach(field => {
-            if (field.type === 'mapping' && this.state.mapping[field.key]) {
-                result[field.key] = getFieldValue(row, this.state.mapping[field.key]);
-            }
-        });
+				// Копируем все замапленные поля из CSV
+				this.state.dbFields.forEach(field => {
+					if (field.type === 'mapping' && this.state.mapping[field.key]) {
+						result[field.key] = getFieldValue(row, this.state.mapping[field.key]);
+					}
+				});
 
 				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Category =====
 				const categoryNameRaw = result.category_name || '';
