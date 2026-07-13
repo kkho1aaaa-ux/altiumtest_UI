@@ -312,31 +312,6 @@ export default {
 				result.value_numeric = valueData.number;
 				result.value_unit = valueData.unit || componentConstants.getUnitByCategory(categoryName);
 
-				// ===== АВТОМАТИЧЕСКАЯ СИНХРОНИЗАЦИЯ НОМИНАЛОВ =====
-				// Для пассивных компонентов: value_display → resistance_ohm/capacitance_pf/inductance_uh
-				if (valueData.number && valueData.unit) {
-					const num = parseFloat(valueData.number);
-					if (!isNaN(num)) {
-						if (valueData.unit === 'Ω' || valueData.unit === 'ohm') {
-							result.resistance_ohm = num;
-						} else if (valueData.unit === 'F' || valueData.unit === 'farad') {
-							result.capacitance_pf = num * 1e12;
-						} else if (valueData.unit === 'pF') {
-							result.capacitance_pf = num;
-						} else if (valueData.unit === 'µF' || valueData.unit === 'uF') {
-							result.capacitance_pf = num * 1e6;
-						} else if (valueData.unit === 'nF') {
-							result.capacitance_pf = num * 1e3;
-						} else if (valueData.unit === 'H' || valueData.unit === 'henry') {
-							result.inductance_uh = num * 1e6;
-						} else if (valueData.unit === 'µH' || valueData.unit === 'uH') {
-							result.inductance_uh = num;
-						} else if (valueData.unit === 'mH') {
-							result.inductance_uh = num * 1e3;
-						}
-					}
-				}
-
 				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Package =====
 				const packageRaw = result.package || '';
 				const extractedPackage = componentConstants.extractPackage(packageRaw, packagesData);
@@ -585,30 +560,6 @@ export default {
 
 					if (!this.state.mapping.value_numeric) {
 						updatedRow.value_numeric = valueData.number;
-					}
-
-					// ===== СИНХРОНИЗАЦИЯ НОМИНАЛОВ СО СПЕЦИАЛЬНЫМИ ПОЛЯМИ =====
-					if (valueData.number && valueData.unit) {
-						const num = parseFloat(valueData.number);
-						if (!isNaN(num)) {
-							if (valueData.unit === 'Ω' || valueData.unit === 'ohm') {
-								updatedRow.resistance_ohm = num;
-							} else if (valueData.unit === 'F' || valueData.unit === 'farad') {
-								updatedRow.capacitance_pf = num * 1e12;
-							} else if (valueData.unit === 'pF') {
-								updatedRow.capacitance_pf = num;
-							} else if (valueData.unit === 'µF' || valueData.unit === 'uF') {
-								updatedRow.capacitance_pf = num * 1e6;
-							} else if (valueData.unit === 'nF') {
-								updatedRow.capacitance_pf = num * 1e3;
-							} else if (valueData.unit === 'H' || valueData.unit === 'henry') {
-								updatedRow.inductance_uh = num * 1e6;
-							} else if (valueData.unit === 'µH' || valueData.unit === 'uH') {
-								updatedRow.inductance_uh = num;
-							} else if (valueData.unit === 'mH') {
-								updatedRow.inductance_uh = num * 1e3;
-							}
-						}
 					}
 				}
 

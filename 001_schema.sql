@@ -210,9 +210,9 @@ BEGIN
     IF NEW.value_numeric IS NOT NULL AND NEW.value_unit IS NOT NULL THEN
         IF NEW.value_unit = 'Ω' THEN
             NEW.resistance_ohm := NEW.value_numeric;
-        ELSIF NEW.value_unit = 'pF' THEN
+        ELSIF NEW.value_unit IN ('F', 'farad', 'pF', 'µF', 'nF') THEN
             NEW.capacitance_pf := NEW.value_numeric;
-        ELSIF NEW.value_unit IN ('µH', 'uH', 'H') THEN
+        ELSIF NEW.value_unit IN ('H', 'henry', 'µH', 'uH', 'mH') THEN
             NEW.inductance_uh := NEW.value_numeric;
         END IF;
     END IF;
