@@ -17,7 +17,6 @@ export default {
 		const dielectricVal = dielectricSelect.selectedOptionValue;
 		const transistorTypeVal = transistorTypeSelect.selectedOptionValue;
 		const channelTypeVal = channelTypeSelect.selectedOptionValue;
-		const diodeTypeVal = diodeTypeSelect?.selectedOptionValue;
 		const polarizedVal = polarizedCheckbox.isChecked;
 
 		const categoriesData = getCategories.data;
@@ -81,7 +80,6 @@ export default {
 			pitch_mm: (pitchVal && pitchVal !== 'null' && pitchVal !== '') ? parseNumeric(pitchVal) : null,
 			q_factor: (qFactorVal && qFactorVal !== 'null' && qFactorVal !== '') ? parseNumeric(qFactorVal) : null,
 			dielectric_type: dielectricVal || '',
-			diode_type: diodeTypeVal || '',
 			transistor_type: transistorTypeVal || '',
 			channel_type: channelTypeVal || '',
 			is_polarized: isPolarized,

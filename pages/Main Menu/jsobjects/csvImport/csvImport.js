@@ -214,9 +214,10 @@ export default {
 		const mappingsData = getCategoryLibraryMappings.data || [];
 
 		const dependentFields = {
-			'category_name': ['category_id', 'altium_designator'],
+			'category_name': ['category_id', 'altium_designator', 'kicad_keywords', 'kicad_fp_filter'],
 			'value_display': ['value_unit', 'value_numeric'],
-			'manufacturer_name': ['manufacturer_id']
+			'manufacturer_name': ['manufacturer_id'],
+			'package': ['kicad_keywords', 'kicad_fp_filter']  // ← Добавить
 		};
 
 		const fieldsToUpdate = new Set(changedFields);
@@ -366,8 +367,8 @@ export default {
 					// Электролитические и тантальные конденсаторы полярные
 					const tempCoeff = result['Temp. Coefficient'] || result.temp_coefficient || '';
 					const isElectrolytic = tempCoeff.toLowerCase().includes('electrolytic') || 
-																tempCoeff.toLowerCase().includes('tantalum') ||
-																tempCoeff.toLowerCase().includes('al');
+								tempCoeff.toLowerCase().includes('tantalum') ||
+								tempCoeff.toLowerCase().includes('al');
 					result.is_polarized = isElectrolytic;
 				}
 
@@ -421,22 +422,6 @@ export default {
 				}
 
 				// ===== АВТОМАТИЧЕСКОЕ ОПРЕДЕЛЕНИЕ ПАРАМЕТРОВ ПО ТИПАМ =====
-				// Диоды и Светодиоды
-				if ((designator === 'D' || designator === 'LED') && !result.diode_type) {
-					const style = result['Style'] || result.style || '';
-					if (style.toLowerCase().includes('schottky') || style.toLowerCase().includes('шотки')) {
-						result.diode_type = 'Schottky';
-					} else if (style.toLowerCase().includes('zener') || style.toLowerCase().includes('зенер')) {
-						result.diode_type = 'Zener';
-					} else if (style.toLowerCase().includes('led') || style.toLowerCase().includes('светодиод')) {
-						result.diode_type = 'LED';
-					} else if (style.toLowerCase().includes('tvs') || style.toLowerCase().includes('твс')) {
-						result.diode_type = 'TVS';
-					} else {
-						result.diode_type = 'Standard';
-					}
-				}
-
 				// Транзисторы
 				if (designator === 'Q' && !result.transistor_type) {
 					const style = result['Style'] || result.style || '';
@@ -609,7 +594,7 @@ export default {
 					'forward_voltage_v', 'reverse_voltage_v',
 					'output_voltage_v', 'dropout_voltage_v',
 					'pin_count', 'pitch_mm',
-					'dielectric_type', 'diode_type', 'transistor_type', 'channel_type',
+					'dielectric_type', 'transistor_type', 'channel_type',
 					'is_polarized'
 				];
 
@@ -740,9 +725,6 @@ export default {
 			'q_factor': [
 				'q_factor', 'q factor', 'quality factor', 'добротность'
 			],
-			'diode_type': [
-				'diode_type', 'diode type', 'тип диода'
-			],
 			'forward_voltage_v': [
 				'forward_voltage', 'forward voltage', 'vf', 'прямое напряжение'
 			],
@@ -852,6 +834,33 @@ export default {
 				}
 				this.state.userEdits[row._id][field] = value;
 
+				// ===== ОБНОВЛЕНИЕ KICAD ПОЛЕЙ ПРИ ИЗМЕНЕНИИ PACKAGE =====
+				if (field === 'package') {
+					const categoriesData = getCategories.data || [];
+					const category = categoriesData.find(cat => cat.name === row.category_name);
+					const designator = category?.designator_prefix || 'X';
+
+					const prefixMap = {
+						'Resistors': 'R',
+						'Capacitors': 'C',
+						'Inductors': 'L',
+						'Diodes': 'D',
+						'LEDs': 'LED',
+						'Transistors': 'Q',
+						'ICs': 'U',
+						'Connectors': 'J'
+					};
+
+					let prefix = prefixMap[row.category_name] || designator || 'X';
+					const packageName = value;  // Новое значение package
+
+					// Принудительно обновляем KiCad поля (БЕЗ проверки userEdits)
+					row.kicad_fp_filter = packageName ? `${prefix}*${packageName}*` : '';
+					row.kicad_keywords = `${row.category_name.toLowerCase()} ${packageName}`.trim();
+					this.state.userEdits[row._id].kicad_fp_filter = row.kicad_fp_filter;
+					this.state.userEdits[row._id].kicad_keywords = row.kicad_keywords;
+				}
+
 				if (field === 'category_name') {
 					const englishName = componentConstants.getEnglishCategoryName(value);
 					const categoriesData = getCategories.data || [];
@@ -861,6 +870,11 @@ export default {
 						row.category_id = category.id;
 						row.category_name = englishName;
 						row.altium_designator = category.designator_prefix || 'X';
+						const designator = category.designator_prefix || 'X';
+
+						if (!this.state.userEdits[row._id]) {
+							this.state.userEdits[row._id] = {};
+						}
 
 						const mappingsData = getCategoryLibraryMappings.data || [];
 						const schLib = mappingsData.find(m =>
@@ -883,18 +897,19 @@ export default {
 							this.state.userEdits[row._id].footprint_path = row.footprint_path;
 						}
 						if (!this.state.userEdits[row._id].library_ref) {
-							row.library_ref = category.designator_prefix || 'X';
+							row.library_ref = designator;
 							this.state.userEdits[row._id].library_ref = row.library_ref;
 						}
 						if (!this.state.userEdits[row._id].footprint_ref) {
-							row.footprint_ref = category.designator_prefix || 'X';
+							row.footprint_ref = designator;
 							this.state.userEdits[row._id].footprint_ref = row.footprint_ref;
 						}
 
 						this.state.userEdits[row._id].category_id = category.id;
 						this.state.userEdits[row._id].category_name = englishName;
-						this.state.userEdits[row._id].altium_designator = category.designator_prefix || 'X';
+						this.state.userEdits[row._id].altium_designator = designator;
 
+						// ===== ОБНОВЛЯЕМ KICAD ПОЛЯ ПРИ СМЕНЕ КАТЕГОРИИ =====
 						const prefixMap = {
 							'Resistors': 'R',
 							'Capacitors': 'C',
@@ -906,18 +921,14 @@ export default {
 							'Connectors': 'J'
 						};
 
-						const designator = category.designator_prefix || 'X';
 						let prefix = prefixMap[englishName] || designator || 'X';
 						const packageName = row.package || '';
 
-						if (!this.state.userEdits[row._id].kicad_fp_filter) {
-							row.kicad_fp_filter = packageName ? `${prefix}*${packageName}*` : '';
-							this.state.userEdits[row._id].kicad_fp_filter = row.kicad_fp_filter;
-						}
-						if (!this.state.userEdits[row._id].kicad_keywords) {
-							row.kicad_keywords = `${englishName.toLowerCase()} ${packageName}`.trim();
-							this.state.userEdits[row._id].kicad_keywords = row.kicad_keywords;
-						}
+						// Принудительно обновляем KiCad поля (без проверки userEdits)
+						row.kicad_fp_filter = packageName ? `${prefix}*${packageName}*` : '';
+						row.kicad_keywords = `${englishName.toLowerCase()} ${packageName}`.trim();
+						this.state.userEdits[row._id].kicad_fp_filter = row.kicad_fp_filter;
+						this.state.userEdits[row._id].kicad_keywords = row.kicad_keywords;
 					}
 				}
 				if (field === 'value_display') {
@@ -1008,12 +1019,8 @@ export default {
 			}
 
 			if (prefix === 'D' || prefix === 'LED') {
-				// Диоды: forward_voltage_v, diode_type
 				if (!row.forward_voltage_v || row.forward_voltage_v === '') {
 					rowErrors.push('forward_voltage_v (для диодов)');
-				}
-				if (!row.diode_type || String(row.diode_type).trim() === '') {
-					rowErrors.push('diode_type (для диодов)');
 				}
 			}
 

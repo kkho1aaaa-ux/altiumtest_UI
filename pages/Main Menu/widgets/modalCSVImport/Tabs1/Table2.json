@@ -229,6 +229,15 @@
     },
     {
       "key": "primaryColumns.pin_count.computedValue"
+    },
+    {
+      "key": "primaryColumns.dielectric_type.selectOptions"
+    },
+    {
+      "key": "primaryColumns.transistor_type.selectOptions"
+    },
+    {
+      "key": "primaryColumns.channel_type.selectOptions"
     }
   ],
   "dynamicPropertyPathList": [
@@ -491,7 +500,7 @@
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
       "cellBackground": "",
-      "columnType": "text",
+      "columnType": "select",
       "computedValue": "{{(() => { const tableData = Table2.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"channel_type\"])) : channel_type })()}}",
       "currencyCode": "USD",
       "decimals": 0,
@@ -512,6 +521,7 @@
       "label": "channel_type",
       "notation": "standard",
       "originalId": "channel_type",
+      "selectOptions": "{{(() => { const tableData = Table2.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (getChannelTypes.data.map(item => ({\n\tlabel: item.name,\n\tvalue: item.name\n})))) : getChannelTypes.data.map(item => ({\n\tlabel: item.name,\n\tvalue: item.name\n})) })()}}",
       "sticky": "",
       "textColor": "",
       "textSize": "0.875rem",
@@ -590,8 +600,8 @@
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
       "cellBackground": "",
-      "columnType": "text",
-      "computedValue": "{{(() => { const tableData = Table2.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"dielectric_type\"])) : dielectric_type })()}}",
+      "columnType": "select",
+      "computedValue": "{{(() => { const tableData = Table2.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"dielectric_type\"])) : currentRow[\"dielectric_type\"] })()}}",
       "currencyCode": "USD",
       "decimals": 0,
       "enableFilter": true,
@@ -611,6 +621,7 @@
       "label": "dielectric_type",
       "notation": "standard",
       "originalId": "dielectric_type",
+      "selectOptions": "{{(() => { const tableData = Table2.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (getDielectricTypes.data.map(item => ({\n\tlabel: item.name,\n\tvalue: item.name\n})))) : getDielectricTypes.data.map(item => ({\n\tlabel: item.name,\n\tvalue: item.name\n})) })()}}",
       "sticky": "",
       "textColor": "",
       "textSize": "0.875rem",
@@ -1420,7 +1431,7 @@
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
       "cellBackground": "",
-      "columnType": "text",
+      "columnType": "select",
       "computedValue": "{{(() => { const tableData = Table2.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"transistor_type\"])) : transistor_type })()}}",
       "currencyCode": "USD",
       "decimals": 0,
@@ -1441,6 +1452,7 @@
       "label": "transistor_type",
       "notation": "standard",
       "originalId": "transistor_type",
+      "selectOptions": "{{(() => { const tableData = Table2.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (getTransistorTypes.data.map(item => ({\n\tlabel: item.name,\n\tvalue: item.name\n})))) : getTransistorTypes.data.map(item => ({\n\tlabel: item.name,\n\tvalue: item.name\n})) })()}}",
       "sticky": "",
       "textColor": "",
       "textSize": "0.875rem",
@@ -1549,7 +1561,7 @@
   },
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 62,
+  "rightColumn": 64,
   "searchKey": "",
   "serverSidePaginationEnabled": false,
   "showInlineEditingOptionDropdown": true,
