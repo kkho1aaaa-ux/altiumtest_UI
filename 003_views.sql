@@ -72,7 +72,7 @@ LEFT JOIN manufacturers m ON c.manufacturer_id = m.id;
 
 -- ===== 2. VIEW ДЛЯ KiCad - РЕЗИСТОРЫ =====
 -- Иерархия: Resistors/{package}/{part_number}
-CREATE OR REPLACE VIEW v_kicad_resistors AS
+CREATE OR REPLACE VIEW resistors AS
 SELECT 
     c.id,
     c.part_number,
@@ -100,7 +100,7 @@ WHERE cat.designator_prefix = 'R';
 
 -- ===== 3. VIEW ДЛЯ KiCad - КОНДЕНСАТОРЫ =====
 -- Иерархия: Capacitors/{dielectric_type}/{package}/{part_number}
-CREATE OR REPLACE VIEW v_kicad_capacitors AS
+CREATE OR REPLACE VIEW capacitors AS
 SELECT 
     c.id,
     c.part_number,
@@ -131,7 +131,7 @@ WHERE cat.designator_prefix = 'C';
 
 -- ===== 4. VIEW ДЛЯ KiCad - ИНДУКТИВНОСТИ =====
 -- Иерархия: Inductors/{package}/{part_number}
-CREATE OR REPLACE VIEW v_kicad_inductors AS
+CREATE OR REPLACE VIEW inductors AS
 SELECT 
     c.id,
     c.part_number,
@@ -160,7 +160,7 @@ WHERE cat.designator_prefix = 'L';
 
 -- ===== 5. VIEW ДЛЯ KiCad - ДИОДЫ И СВЕТОДИОДЫ =====
 -- Иерархия: Diodes/{part_number}
-CREATE OR REPLACE VIEW v_kicad_diodes AS
+CREATE OR REPLACE VIEW diodes AS
 SELECT 
     c.id,
     c.part_number,
@@ -187,7 +187,7 @@ WHERE cat.designator_prefix IN ('D', 'LED');
 
 -- ===== 6. VIEW ДЛЯ KiCad - ТРАНЗИСТОРЫ =====
 -- Иерархия: Transistors/{transistor_type}/{part_number}
-CREATE OR REPLACE VIEW v_kicad_transistors AS
+CREATE OR REPLACE VIEW transistors AS
 SELECT 
     c.id,
     c.part_number,
@@ -213,7 +213,7 @@ WHERE cat.designator_prefix = 'Q';
 
 -- ===== 7. VIEW ДЛЯ KiCad - МИКРОСХЕМЫ =====
 -- Иерархия: ICs/{part_number}
-CREATE OR REPLACE VIEW v_kicad_ic AS
+CREATE OR REPLACE VIEW ic AS
 SELECT 
     c.id,
     c.part_number,
@@ -239,7 +239,7 @@ WHERE cat.designator_prefix = 'U';
 
 -- ===== 8. VIEW ДЛЯ KiCad - РАЗЪЁМЫ =====
 -- Иерархия: Connectors/{pitch_mm}mm/{pin_count}pin/{part_number}
-CREATE OR REPLACE VIEW v_kicad_connectors AS
+CREATE OR REPLACE VIEW connectors AS
 SELECT 
     c.id,
     c.part_number,

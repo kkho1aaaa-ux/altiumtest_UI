@@ -31,7 +31,7 @@
   "mobileRightColumn": 64,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onClick": "{{closeModal(modalAddEditComponent.name);}}",
+  "onClick": "{{closeModal(modalAddEditComponent.name); formHandlers.resetForm();}}",
   "parentId": "5ba26oy2oq",
   "renderMode": "CANVAS",
   "responsiveBehavior": "hug",

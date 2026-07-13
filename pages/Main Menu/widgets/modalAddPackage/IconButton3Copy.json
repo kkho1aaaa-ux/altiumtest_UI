@@ -31,7 +31,7 @@
   "mobileRightColumn": 64,
   "mobileTopRow": 0,
   "needsErrorInfo": false,
-  "onClick": "{{closeModal(modalAddPackage.name);}}",
+  "onClick": "{{closeModal(modalAddPackage.name); newPackageNameInput.setValue(''); newPackageStandardSelect.setSelectedOption('');}}",
   "parentId": "spe5t5dgmi",
   "renderMode": "CANVAS",
   "responsiveBehavior": "hug",

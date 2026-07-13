@@ -81,5 +81,11 @@
   "version": 2,
   "widgetId": "5mg23470l7",
   "widgetName": "modalCSVImport",
-  "width": 960
+  "width": 960,
+  "dynamicTriggerPathList": [
+    {
+      "key": "onModalClose"
+    }
+  ],
+  "onModalClose": "{{}}"
 }

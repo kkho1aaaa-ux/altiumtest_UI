@@ -172,7 +172,6 @@ export default {
 	},
 
 	openAddForm: () => {
-		formHandlers.resetForm();
 		showModal(modalAddEditComponent.name);
 	},
 

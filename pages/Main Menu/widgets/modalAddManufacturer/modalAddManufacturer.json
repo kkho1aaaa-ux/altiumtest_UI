@@ -57,6 +57,11 @@
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
+  "dynamicTriggerPathList": [
+    {
+      "key": "onModalClose"
+    }
+  ],
   "height": 280,
   "isCanvas": true,
   "isLoading": false,
