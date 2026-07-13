@@ -1009,14 +1009,18 @@ export default {
 
 			// ===== СПЕЦИФИЧЕСКИЕ ПОЛЯ ПО ТИПАМ =====
 			if (prefix === 'C') {
-				// Конденсаторы: is_polarized, dielectric_type
-				if (row.is_polarized === undefined || row.is_polarized === null || row.is_polarized === '') {
-					rowErrors.push('is_polarized (для конденсаторов)');
-				}
-				if (!row.dielectric_type || String(row.dielectric_type).trim() === '') {
-					rowErrors.push('dielectric_type (для конденсаторов)');
-				}
-			}
+    // Конденсаторы: is_polarized, dielectric_type
+    
+    // Принудительно устанавливаем false если не определено
+    if (row.is_polarized === undefined || row.is_polarized === null) {
+        row.is_polarized = false;
+    }
+    
+    // dielectric_type обязателен для конденсаторов
+    if (!row.dielectric_type || String(row.dielectric_type).trim() === '') {
+        rowErrors.push('dielectric_type (для конденсаторов)');
+    }
+}
 
 			if (prefix === 'D' || prefix === 'LED') {
 				if (!row.forward_voltage_v || row.forward_voltage_v === '') {
