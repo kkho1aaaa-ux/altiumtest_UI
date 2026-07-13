@@ -121,6 +121,7 @@ export default {
 			'manufacturer_id',
 			'value_numeric',
 			'value_unit',
+			'value_multiplier', // <-- ДОБАВЛЕНО
 			'altium_comment',
 			'altium_designator',
 			'kicad_keywords',
@@ -215,9 +216,9 @@ export default {
 
 		const dependentFields = {
 			'category_name': ['category_id', 'altium_designator', 'kicad_keywords', 'kicad_fp_filter'],
-			'value_display': ['value_unit', 'value_numeric'],
+			'value_display': ['value_unit', 'value_numeric', 'value_multiplier'], // <-- ДОБАВЛЕНО
 			'manufacturer_name': ['manufacturer_id'],
-			'package': ['kicad_keywords', 'kicad_fp_filter']  // ← Добавить
+			'package': ['kicad_keywords', 'kicad_fp_filter']
 		};
 
 		const fieldsToUpdate = new Set(changedFields);
@@ -283,6 +284,7 @@ export default {
 				result.manufacturer_id = null;
 				result.value_numeric = null;
 				result.value_unit = '';
+				result.value_multiplier = ''; // <-- ДОБАВЛЕНО
 				result.package_standard = 'Custom';
 
 				// Копируем все замапленные поля из CSV
@@ -312,6 +314,7 @@ export default {
 				const valueData = csvParser.parseValue(valueDisplayRaw);
 				result.value_numeric = valueData.number;
 				result.value_unit = valueData.unit || componentConstants.getUnitByCategory(categoryName);
+				result.value_multiplier = valueData.multiplier || ''; // <-- ДОБАВЛЕНО
 
 				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Package =====
 				const packageRaw = result.package || '';
@@ -539,6 +542,7 @@ export default {
 				if (fieldsToUpdate.has('value_display')) {
 					const valueData = csvParser.parseValue(updatedRow.value_display);
 					updatedRow.value_unit = valueData.unit;
+					updatedRow.value_multiplier = valueData.multiplier; // <-- ДОБАВЛЕНО
 
 					if (!this.state.mapping.value_numeric) {
 						updatedRow.value_numeric = valueData.number;
@@ -934,9 +938,11 @@ export default {
 				if (field === 'value_display') {
 					const valueData = csvParser.parseValue(value);
 					row.value_unit = valueData.unit;
+					row.value_multiplier = valueData.multiplier; // <-- ДОБАВЛЕНО
 					row.value_numeric = valueData.number;
 
 					this.state.userEdits[row._id].value_unit = valueData.unit;
+					this.state.userEdits[row._id].value_multiplier = valueData.multiplier; // <-- ДОБАВЛЕНО
 					this.state.userEdits[row._id].value_numeric = row.value_numeric;
 				}
 
