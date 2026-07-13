@@ -87,6 +87,7 @@ CREATE TABLE IF NOT EXISTS components (
     value_display VARCHAR(100),
     value_numeric DECIMAL(15, 6),
     value_unit VARCHAR(100),
+    value_multiplier VARCHAR(10),
     
     -- ===== УНИВЕРСАЛЬНЫЕ ПАРАМЕТРЫ =====
     tolerance_percent DECIMAL(5, 2),
@@ -192,8 +193,3 @@ CREATE TRIGGER update_packages_updated_at
     BEFORE UPDATE ON packages 
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
-
--- ===== 7. ИНДЕКСЫ НА СПЕЦИФИЧНЫЕ ПОЛЯ =====
-
-CREATE INDEX IF NOT EXISTS idx_components_forward_voltage ON components(forward_voltage_v);
-CREATE INDEX IF NOT EXISTS idx_components_reverse_voltage ON components(reverse_voltage_v);
