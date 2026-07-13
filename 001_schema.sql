@@ -88,11 +88,6 @@ CREATE TABLE IF NOT EXISTS components (
     value_numeric DECIMAL(15, 6),
     value_unit VARCHAR(100),
     
-    -- ===== ДУБЛИРУЮЩИЕ ПОЛЯ ДЛЯ БЫСТРОГО ПОИСКА =====
-    resistance_ohm DECIMAL(15, 6),
-    capacitance_pf DECIMAL(15, 6),
-    inductance_uh DECIMAL(15, 6),
-    
     -- ===== УНИВЕРСАЛЬНЫЕ ПАРАМЕТРЫ =====
     tolerance_percent DECIMAL(5, 2),
     temp_min_c DECIMAL(5, 1),
@@ -167,9 +162,6 @@ CREATE INDEX IF NOT EXISTS idx_components_package ON components(package);
 
 -- Номиналы (для быстрого поиска)
 CREATE INDEX IF NOT EXISTS idx_components_value_numeric ON components(value_numeric);
-CREATE INDEX IF NOT EXISTS idx_components_resistance ON components(resistance_ohm);
-CREATE INDEX IF NOT EXISTS idx_components_capacitance ON components(capacitance_pf);
-CREATE INDEX IF NOT EXISTS idx_components_inductance ON components(inductance_uh);
 
 -- Универсальные параметры
 CREATE INDEX IF NOT EXISTS idx_components_tolerance ON components(tolerance_percent);
@@ -203,26 +195,7 @@ CREATE TRIGGER update_packages_updated_at
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
 
--- Триггер синхронизации value_numeric со специфичными полями
-CREATE OR REPLACE FUNCTION sync_value_with_category_params()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.value_numeric IS NOT NULL AND NEW.value_unit IS NOT NULL THEN
-        IF NEW.value_unit = 'Ω' THEN
-            NEW.resistance_ohm := NEW.value_numeric;
-        ELSIF NEW.value_unit IN ('F', 'farad', 'pF', 'µF', 'nF') THEN
-            NEW.capacitance_pf := NEW.value_numeric;
-        ELSIF NEW.value_unit IN ('H', 'henry', 'µH', 'uH', 'mH') THEN
-            NEW.inductance_uh := NEW.value_numeric;
-        END IF;
-    END IF;
-    
-    RETURN NEW;
-END;
-$$ LANGUAGE 'plpgsql';
+-- ===== 7. ИНДЕКСЫ НА СПЕЦИФИЧНЫЕ ПОЛЯ =====
 
-DROP TRIGGER IF EXISTS trg_sync_value_with_category_params ON components;
-CREATE TRIGGER trg_sync_value_with_category_params
-    BEFORE INSERT OR UPDATE OF value_numeric, value_unit ON components
-    FOR EACH ROW
-    EXECUTE FUNCTION sync_value_with_category_params();
+CREATE INDEX IF NOT EXISTS idx_components_forward_voltage ON components(forward_voltage_v);
+CREATE INDEX IF NOT EXISTS idx_components_reverse_voltage ON components(reverse_voltage_v);
