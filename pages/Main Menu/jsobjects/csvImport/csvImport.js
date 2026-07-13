@@ -1111,17 +1111,41 @@ export default {
 		const errors = [];
 
 		for (let i = 0; i < data.length; i++) {
-			const item = data[i];
-			storeValue('importItem', item);
+			let item = data[i];
+
+			// ===== 1. ОЧИСТКА ЧИСЛОВЫХ ПОЛЕЙ ОТ ПУСТЫХ СТРОК =====
+			// Создаем копию объекта, чтобы не ломать оригинал
+			const cleanItem = { ...item };
+
+			// Список всех полей в БД, которые имеют тип NUMERIC или INTEGER
+			const numericFields = [
+				'value_numeric', 'tolerance_percent', 'temp_min_c', 'temp_max_c',
+				'q_factor', 'forward_voltage_v', 'reverse_voltage_v',
+				'output_voltage_v', 'dropout_voltage_v', 'pin_count', 'pitch_mm'
+			];
+
+			numericFields.forEach(field => {
+				const val = cleanItem[field];
+				// Если значение пустая строка, 'null' (как строка), null или undefined -> делаем честный null
+				if (val === '' || val === 'null' || val === null || val === undefined) {
+					cleanItem[field] = null;
+				} else {
+					// Иначе принудительно превращаем в число (на случай если там строка "10")
+					cleanItem[field] = parseFloat(val);
+				}
+			});
+			// =====================================================
+
+			// Сохраняем уже очищенный объект
+			storeValue('importItem', cleanItem);
 
 			try {
 				const result = await importComponent.run();
-				// INSERT ... ON CONFLICT DO UPDATE всегда возвращает строку
-				// даже если это обновление существующей записи
 				successCount++;
 			} catch (error) {
 				errorCount++;
-				errors.push(`${item.part_number}: ${error.message}`);
+				console.error(`❌ SQL ОШИБКА для ${cleanItem.part_number}:`, error);
+				errors.push(`${cleanItem.part_number}: ${error.message}`);
 			}
 		}
 

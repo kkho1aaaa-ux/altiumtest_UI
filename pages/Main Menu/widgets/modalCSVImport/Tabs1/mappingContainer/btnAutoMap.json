@@ -1,7 +1,7 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 60,
+  "bottomRow": 54,
   "boxShadow": "none",
   "buttonColor": "#1e3a8a",
   "buttonVariant": "PRIMARY",
@@ -46,7 +46,7 @@
   "responsiveBehavior": "hug",
   "rightColumn": 16,
   "text": "Авто-маппинг",
-  "topRow": 56,
+  "topRow": 50,
   "type": "BUTTON_WIDGET",
   "version": 1,
   "widgetId": "qog9dzqbf7",
