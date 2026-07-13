@@ -68,6 +68,7 @@ export default {
 			manufacturer_id: (manufacturerVal && manufacturerVal !== 'null' && manufacturerVal !== '') ? parseInt(manufacturerVal) : null,
 			value_numeric: baseValue || null,
 			value_unit: parsedValue.unit || componentConstants.getUnitByCategory(categoryName),
+			value_multiplier: parsedValue.multiplier || '', // ← ДОБАВЛЕНО
 			value_display: valueDisplay,
 			tolerance_percent: (toleranceVal && toleranceVal !== 'null' && toleranceVal !== '') ? parseFloat(toleranceVal) : null,
 			temp_min_c: (tempMinVal && tempMinVal !== 'null' && tempMinVal !== '') ? parseFloat(tempMinVal) : null,

@@ -9,6 +9,7 @@ UPDATE components SET
     spice_model_path = {{componentData.prepareData().spice_model_path}},
     value_numeric = {{componentData.prepareData().value_numeric}},
     value_unit = {{componentData.prepareData().value_unit}},
+		value_multiplier = {{componentData.prepareData().value_multiplier}},
     value_display = {{componentData.prepareData().value_display}},
     tolerance_percent = {{componentData.prepareData().tolerance_percent}},
     temp_min_c = {{componentData.prepareData().temp_min_c}},

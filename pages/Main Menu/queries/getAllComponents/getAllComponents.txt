@@ -20,6 +20,7 @@ SELECT
     c.value_display,
     c.value_unit,
     c.value_numeric,
+		c.value_multiplier,
     c.tolerance_percent,
     c.temp_min_c,
     c.temp_max_c,
