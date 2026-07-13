@@ -14,6 +14,9 @@
     },
     {
       "key": "isDisabled"
+    },
+    {
+      "key": "sourceData"
     }
   ],
   "dynamicHeight": "FIXED",
@@ -56,7 +59,7 @@
   "responsiveBehavior": "fill",
   "rightColumn": 24,
   "serverSideFiltering": false,
-  "sourceData": "[\n  {\n    \"name\": \"Blue\",\n    \"code\": \"BLUE\"\n  },\n  {\n    \"name\": \"Green\",\n    \"code\": \"GREEN\"\n  },\n  {\n    \"name\": \"Red\",\n    \"code\": \"RED\"\n  }\n]",
+  "sourceData": "{{getDielectricTypes.data.map(item => ({\n\tlabel: item.description ? `${item.name} (${item.description})` : item.name,\n\tvalue: item.name\n}))}}",
   "topRow": 5,
   "type": "SELECT_WIDGET",
   "version": 1,

@@ -1,0 +1,4 @@
+SELECT name, description
+FROM component_specifications
+WHERE spec_type = 'channel_type' AND is_active = TRUE
+ORDER BY sort_order, name;
