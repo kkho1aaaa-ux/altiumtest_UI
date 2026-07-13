@@ -390,9 +390,6 @@ export default {
 				if (result.temp_max_c) {
 					result.temp_max_c = csvParser.parseTemperature(result.temp_max_c);
 				}
-				if (result.inductance_uh) {
-					result.inductance_uh = parseFloat(result.inductance_uh) || null;
-				}
 				if (result.q_factor) {
 					result.q_factor = parseFloat(result.q_factor) || null;
 				}
@@ -608,7 +605,7 @@ export default {
 					'datasheet_url', 'spice_model_path',
 					'altium_comment',
 					'altium_designator', 'kicad_keywords', 'kicad_fp_filter',
-					'inductance_uh', 'q_factor',
+					'q_factor',
 					'forward_voltage_v', 'reverse_voltage_v',
 					'output_voltage_v', 'dropout_voltage_v',
 					'pin_count', 'pitch_mm',
@@ -622,7 +619,7 @@ export default {
 						if (field === 'tolerance_percent') parsedValue = csvParser.parseTolerance(parsedValue);
 						else if (field === 'temp_min_c' || field === 'temp_max_c') parsedValue = csvParser.parseTemperature(parsedValue);
 						else if (field === 'package_standard') parsedValue = parsedValue || 'Custom';
-						else if (field === 'inductance_uh' || field === 'q_factor' || 
+						else if (field === 'q_factor' || 
 										 field === 'forward_voltage_v' || field === 'reverse_voltage_v' ||
 										 field === 'output_voltage_v' || field === 'dropout_voltage_v' ||
 										 field === 'pitch_mm') {
@@ -739,9 +736,6 @@ export default {
 			],
 			'dielectric_type': [
 				'dielectric', 'dielectric_type', 'dielectric type', 'диэлектрик', 'тип диэлектрика'
-			],
-			'inductance_uh': [
-				'inductance', 'inductance_uh', 'inductance value', 'индуктивность'
 			],
 			'q_factor': [
 				'q_factor', 'q factor', 'quality factor', 'добротность'
