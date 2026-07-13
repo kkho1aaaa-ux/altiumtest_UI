@@ -310,9 +310,6 @@ export default {
 			if (!forwardVoltageInput.text || forwardVoltageInput.text.trim() === '') {
 				errors.push('Forward Voltage (прямое напряжение) обязателен');
 			}
-			if (!diodeTypeSelect.selectedOptionValue) {
-				errors.push('Diode Type (тип диода) обязателен');
-			}
 		}
 
 		if (prefix === 'Q') {

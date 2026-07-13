@@ -1,14 +1,14 @@
 {
   "animateLoading": true,
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-  "bottomRow": 50,
+  "bottomRow": 75,
   "boxShadow": "none",
   "canEscapeKeyClose": true,
   "canOutsideClickClose": true,
   "children": [
     {
       "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-      "bottomRow": 500,
+      "bottomRow": 750,
       "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
       "canExtend": true,
       "detachFromLayout": true,
@@ -57,19 +57,25 @@
     }
   ],
   "dynamicHeight": "AUTO_HEIGHT",
-  "height": 500,
+  "dynamicTriggerPathList": [
+    {
+      "key": "onModalClose"
+    }
+  ],
+  "height": 750,
   "isCanvas": true,
   "isLoading": false,
   "key": "83s1t168ss",
   "leftColumn": 20,
   "maxDynamicHeight": 9000,
   "minDynamicHeight": 24,
-  "minHeight": 500,
+  "minHeight": 750,
   "mobileBottomRow": 78,
   "mobileLeftColumn": 20,
   "mobileRightColumn": 44,
   "mobileTopRow": 54,
   "needsErrorInfo": false,
+  "onModalClose": "{{}}",
   "parentColumnSpace": 19.8125,
   "parentId": "0",
   "parentRowSpace": 10,
@@ -81,11 +87,5 @@
   "version": 2,
   "widgetId": "5mg23470l7",
   "widgetName": "modalCSVImport",
-  "width": 960,
-  "dynamicTriggerPathList": [
-    {
-      "key": "onModalClose"
-    }
-  ],
-  "onModalClose": "{{}}"
+  "width": 960
 }
