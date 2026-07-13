@@ -319,12 +319,20 @@ export default {
 					if (!isNaN(num)) {
 						if (valueData.unit === 'Ω' || valueData.unit === 'ohm') {
 							result.resistance_ohm = num;
-						} else if (valueData.unit === 'F' || valueData.unit === 'farad' || valueData.unit === 'pF' || valueData.unit === 'µF' || valueData.unit === 'nF') {
-							// capacitance_pf = value_display (без конвертации)
+						} else if (valueData.unit === 'F' || valueData.unit === 'farad') {
+							result.capacitance_pf = num * 1e12;
+						} else if (valueData.unit === 'pF') {
 							result.capacitance_pf = num;
-						} else if (valueData.unit === 'H' || valueData.unit === 'henry' || valueData.unit === 'µH' || valueData.unit === 'mH') {
-							// inductance_uh = value_display (без конвертации)
+						} else if (valueData.unit === 'µF' || valueData.unit === 'uF') {
+							result.capacitance_pf = num * 1e6;
+						} else if (valueData.unit === 'nF') {
+							result.capacitance_pf = num * 1e3;
+						} else if (valueData.unit === 'H' || valueData.unit === 'henry') {
+							result.inductance_uh = num * 1e6;
+						} else if (valueData.unit === 'µH' || valueData.unit === 'uH') {
 							result.inductance_uh = num;
+						} else if (valueData.unit === 'mH') {
+							result.inductance_uh = num * 1e3;
 						}
 					}
 				}
@@ -585,17 +593,20 @@ export default {
 						if (!isNaN(num)) {
 							if (valueData.unit === 'Ω' || valueData.unit === 'ohm') {
 								updatedRow.resistance_ohm = num;
-							} else if (valueData.unit === 'F' || valueData.unit === 'farad' || valueData.unit === 'pF' || valueData.unit === 'µF' || valueData.unit === 'nF') {
-								let pf = num;
-								if (valueData.unit === 'F') pf = num * 1e12;
-								else if (valueData.unit === 'µF') pf = num * 1e6;
-								else if (valueData.unit === 'nF') pf = num * 1e3;
-								updatedRow.capacitance_pf = pf;
-							} else if (valueData.unit === 'H' || valueData.unit === 'henry' || valueData.unit === 'µH' || valueData.unit === 'mH') {
-								let uh = num;
-								if (valueData.unit === 'H') uh = num * 1e6;
-								else if (valueData.unit === 'mH') uh = num * 1e3;
-								updatedRow.inductance_uh = uh;
+							} else if (valueData.unit === 'F' || valueData.unit === 'farad') {
+								updatedRow.capacitance_pf = num * 1e12;
+							} else if (valueData.unit === 'pF') {
+								updatedRow.capacitance_pf = num;
+							} else if (valueData.unit === 'µF' || valueData.unit === 'uF') {
+								updatedRow.capacitance_pf = num * 1e6;
+							} else if (valueData.unit === 'nF') {
+								updatedRow.capacitance_pf = num * 1e3;
+							} else if (valueData.unit === 'H' || valueData.unit === 'henry') {
+								updatedRow.inductance_uh = num * 1e6;
+							} else if (valueData.unit === 'µH' || valueData.unit === 'uH') {
+								updatedRow.inductance_uh = num;
+							} else if (valueData.unit === 'mH') {
+								updatedRow.inductance_uh = num * 1e3;
 							}
 						}
 					}
