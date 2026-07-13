@@ -964,6 +964,15 @@ export default {
 	importAll: async () => {
 		const data = this.state.previewData;
 
+		// ===== ВСТАВИТЬ ВОТ ЭТОТ КОД =====
+		console.log('🔍 === НАЧАЛО ИМПОРТА ===');
+		console.log('📊 Всего строк:', data.length);
+		console.log('📋 Первая строка:', JSON.stringify(data[0], null, 2));
+		console.log(' Вторая строка:', JSON.stringify(data[1], null, 2));
+		console.log('🏷  Категории из БД:', getCategories.data);
+		console.log('========================');
+		// ===================================
+
 		if (data.length === 0) {
 			showAlert('Нет данных для импорта', 'warning');
 			return;
@@ -1015,18 +1024,18 @@ export default {
 
 			// ===== СПЕЦИФИЧЕСКИЕ ПОЛЯ ПО ТИПАМ =====
 			if (prefix === 'C') {
-    // Конденсаторы: is_polarized, dielectric_type
-    
-    // Принудительно устанавливаем false если не определено
-    if (row.is_polarized === undefined || row.is_polarized === null) {
-        row.is_polarized = false;
-    }
-    
-    // dielectric_type обязателен для конденсаторов
-    if (!row.dielectric_type || String(row.dielectric_type).trim() === '') {
-        rowErrors.push('dielectric_type (для конденсаторов)');
-    }
-}
+				// Конденсаторы: is_polarized, dielectric_type
+
+				// Принудительно устанавливаем false если не определено
+				if (row.is_polarized === undefined || row.is_polarized === null) {
+					row.is_polarized = false;
+				}
+
+				// dielectric_type обязателен для конденсаторов
+				if (!row.dielectric_type || String(row.dielectric_type).trim() === '') {
+					rowErrors.push('dielectric_type (для конденсаторов)');
+				}
+			}
 
 			if (prefix === 'D' || prefix === 'LED') {
 				if (!row.forward_voltage_v || row.forward_voltage_v === '') {
