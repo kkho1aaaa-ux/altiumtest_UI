@@ -107,7 +107,6 @@ CREATE TABLE IF NOT EXISTS components (
     q_factor DECIMAL(10, 2),
     
     -- Диоды (D, LED)
-    diode_type VARCHAR(50),
     forward_voltage_v DECIMAL(10, 3),
     reverse_voltage_v DECIMAL(10, 2),
     
@@ -171,7 +170,6 @@ CREATE INDEX IF NOT EXISTS idx_components_temp ON components(temp_min_c, temp_ma
 CREATE INDEX IF NOT EXISTS idx_components_dielectric_type ON components(dielectric_type);
 CREATE INDEX IF NOT EXISTS idx_components_is_polarized ON components(is_polarized);
 CREATE INDEX IF NOT EXISTS idx_components_q_factor ON components(q_factor);
-CREATE INDEX IF NOT EXISTS idx_components_diode_type ON components(diode_type);
 CREATE INDEX IF NOT EXISTS idx_components_transistor_type ON components(transistor_type);
 CREATE INDEX IF NOT EXISTS idx_components_channel_type ON components(channel_type);
 CREATE INDEX IF NOT EXISTS idx_components_output_voltage ON components(output_voltage_v);
