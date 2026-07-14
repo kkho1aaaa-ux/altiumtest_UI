@@ -122,7 +122,12 @@ export default {
 	},
 
 	buildMappingUI: () => {
-		const columnsData = getComponentColumns.data || [];
+		const columnsData = (getComponentColumns.data || []);
+		if (!columnsData || !Array.isArray(columnsData)) {
+			console.error('getComponentColumns.data is not available:', getComponentColumns.data);
+			showAlert('Ошибка: не загружены колонки компонентов. Попробуйте перезагрузить страницу.', 'error');
+			return;
+		}
 		const allKeys = columnsData.map(row => row.column_name);
 
 		const excludedKeys = [
@@ -224,6 +229,13 @@ export default {
 		const categoriesData = getCategories.data || [];
 		const manufacturersData = getManufacturers.data || [];
 		const mappingsData = getCategoryLibraryMappings.data || [];
+		const packagesData = getPackages.data || [];
+
+		if (!categoriesData || !Array.isArray(categoriesData) || categoriesData.length === 0) {
+			console.error('getCategories.data is not available:', getCategories.data);
+			showAlert('Ошибка: не загружены категории. Попробуйте перезагрузить страницу.', 'error');
+			return false;
+		}
 
 		const dependentFields = {
 			'category_name': ['category_id', 'altium_designator', 'kicad_keywords', 'kicad_fp_filter'],
@@ -239,7 +251,7 @@ export default {
 			}
 		});
 
-		const packagesData = getPackages.data || [];
+		// packagesData уже объявлен выше
 
 		// ===== ИСПРАВЛЕННАЯ ГЕНЕРАЦИЯ KICAD ПОЛЕЙ =====
 		const generateKiCadFields = (categoryName, packageName, designator) => {
@@ -1086,6 +1098,7 @@ export default {
 					rowErrors.push('Value (номинал)');
 				}
 			}
+			// Для остальных типов value_display не обязателен
 
 			if (rowErrors.length > 0) {
 				validationErrors.push({
@@ -1124,6 +1137,16 @@ export default {
 		for (let i = 0; i < data.length; i++) {
 			let item = data[i];
 
+			if (!item || typeof item !== 'object') {
+				errorCount++;
+				errors.push(`Строка ${i + 1}: некорректные данные`);
+				continue;
+			}
+
+			// Применяем ручные правки из userEdits
+			const rowEdits = this.state.userEdits[item._id] || {};
+			item = { ...item, ...rowEdits };
+
 			// ===== 1. ОЧИСТКА ЧИСЛОВЫХ ПОЛЕЙ ОТ ПУСТЫХ СТРОК =====
 			// Создаем копию объекта, чтобы не ломать оригинал
 			const cleanItem = { ...item };
@@ -1146,6 +1169,13 @@ export default {
 				}
 			});
 			// =====================================================
+
+			// Гарантируем наличие всех обязательных полей
+			const requiredFields = ['part_number', 'category_id', 'manufacturer_id', 'library_path', 'library_ref', 'footprint_path', 'footprint_ref', 'package', 'package_standard'];
+			requiredFields.forEach(f => {
+				if (cleanItem[f] === undefined) cleanItem[f] = null;
+			});
+			if (!cleanItem.package_standard) cleanItem.package_standard = 'Custom';
 
 			// Сохраняем уже очищенный объект
 			storeValue('importItem', cleanItem);
