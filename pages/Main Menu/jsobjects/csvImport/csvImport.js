@@ -341,8 +341,14 @@ export default {
 
 				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Package =====
 				const packageRaw = result.package || '';
-				const extractedPackage = componentConstants.extractPackage(packageRaw, packagesData);
-				result.package = componentConstants.getStandardPackage(extractedPackage, packagesData);
+				// Если packagesData пуст (нет связи с БД) - оставляем исходную строку как есть
+				// чтобы не потерять ведущие нули (0402 -> 402)
+				if (!packagesData || packagesData.length === 0) {
+					result.package = String(packageRaw).trim();
+				} else {
+					const extractedPackage = componentConstants.extractPackage(packageRaw, packagesData);
+					result.package = componentConstants.getStandardPackage(extractedPackage, packagesData);
+				}
 				if (!result.package_standard) result.package_standard = 'Custom';
 
 				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Библиотеки =====
