@@ -238,6 +238,9 @@
     },
     {
       "key": "primaryColumns.value_multiplier.computedValue"
+    },
+    {
+      "key": "primaryColumns.package_standard.selectOptions"
     }
   ],
   "dynamicPropertyPathList": [
@@ -282,8 +285,8 @@
   "mobileTopRow": 10,
   "multiRowSelection": true,
   "needsErrorInfo": false,
-  "onRowSelected": "{{\n(function() {\n\tconst selectedRows = Table2.selectedRows || [];\n\tconst selectedIds = selectedRows.map(r => r._id);\n\n\tcsvImport.state.previewData.forEach(row => {\n\t\trow._selected = selectedIds.includes(row._id);\n\t});\n})()\n}}",
   "onCellEdit": "{{(editedRow, editedCell) => { csvImport.state.userEdits[editedRow._id] = csvImport.state.userEdits[editedRow._id] || {}; csvImport.state.userEdits[editedRow._id][editedCell.columnName] = editedCell.value; csvImport.state.previewData = [...csvImport.state.previewData]; }}",
+  "onRowSelected": "{{\n(function() {\n\tconst selectedRows = Table2.selectedRows || [];\n\tconst selectedIds = selectedRows.map(r => r._id);\n\n\tcsvImport.state.previewData.forEach(row => {\n\t\trow._selected = selectedIds.includes(row._id);\n\t});\n})()\n}}",
   "originalBottomRow": 66,
   "originalTopRow": 26,
   "parentColumnSpace": 14.037109375,
@@ -1092,7 +1095,7 @@
       "label": "package_standard",
       "notation": "standard",
       "originalId": "package_standard",
-      "selectOptions": "{{[...new Set(getPackages.data.map(item => item.standard))].map(s => ({label: s, value: s})).concat({label: 'Custom', value: 'Custom'})}}",
+      "selectOptions": "{{(() => { const tableData = Table2.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ([...new Set(getPackages.data.map(item => item.standard))].map(s => ({label: s, value: s})))) : [...new Set(getPackages.data.map(item => item.standard))].map(s => ({label: s, value: s})) })()}}",
       "sticky": "",
       "textColor": "",
       "textSize": "0.875rem",
