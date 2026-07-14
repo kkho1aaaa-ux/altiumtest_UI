@@ -55,12 +55,23 @@ export default {
 			this.state.previewData = [];
 			this.state.userEdits = {};
 
+			// ===== ИСПРАВЛЕННЫЙ КОД =====
 			const options = headers
-			.map(h => ({ label: String(h), value: String(h) }))
+			.filter(h => h !== null && h !== undefined && String(h).trim() !== '')
+			.map(h => {
+				const headerStr = String(h).trim();
+				return { 
+					label: headerStr, 
+					value: headerStr 
+				};
+			})
 			.sort((a, b) => a.label.localeCompare(b.label));
+
+			console.log('CSV Field Options:', options); // Для отладки
 
 			storeValue('csvFieldOptions', options);
 			storeValue('csvFieldSelectedValues', headers);
+			// ============================
 
 			showAlert(`Загружено: ${rows.length} строк, ${headers.length} полей`, 'success');
 			return { success: true, rows: rows.length, headers: headers.length };

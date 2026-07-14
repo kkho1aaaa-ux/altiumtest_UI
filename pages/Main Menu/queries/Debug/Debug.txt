@@ -1,8 +1,7 @@
--- Проверить текущее формирование
-SELECT symbol_name, part_number, category_name 
-FROM v_kicad_capacitors 
-LIMIT 5;
-
-SELECT symbol_name, part_number, category_name 
-FROM v_kicad_resistors 
-LIMIT 5;
+-- Проверь, что возвращает VIEW
+SELECT 
+    part_number,
+    manufacturer_name,
+    symbol_name
+FROM capacitors 
+WHERE part_number = 'CC0100JRNPO6BN101';

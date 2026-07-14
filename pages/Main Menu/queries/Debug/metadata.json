@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "-- Проверить текущее формирование\nSELECT symbol_name, part_number, category_name \nFROM v_kicad_capacitors \nLIMIT 5;\n\nSELECT symbol_name, part_number, category_name \nFROM v_kicad_resistors \nLIMIT 5;",
+      "body": "-- Проверь, что возвращает VIEW\nSELECT \n    part_number,\n    manufacturer_name,\n    symbol_name\nFROM capacitors \nWHERE part_number = 'CC0100JRNPO6BN101';",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
