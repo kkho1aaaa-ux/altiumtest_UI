@@ -1,16 +1,10 @@
 -- ===== МИГРАЦИЯ 003: VIEW'Ы ДЛЯ ЭКСПОРТА И ОТОБРАЖЕНИЯ =====
--- Создает представления (VIEW) для главной таблицы и для экспорта в различные САПР
--- Иерархия в KiCad:
---   Резисторы: Resistors/{package}/{part_number}
---   Конденсаторы: Capacitors/{dielectric_type}/{package}/{part_number}
---   Индуктивности: Inductors/{package}/{part_number}
---   Диоды: Diodes/{part_number}
---   Светодиоды: Diodes/{part_number}
---   Транзисторы: Transistors/{transistor_type}/{part_number}
---   Микросхемы: ICs/{part_number}
---   Разъёмы: Connectors/{pitch_mm}mm/{pin_count}pin/{part_number}
+-- Создает представления (VIEW) для экспорта в KiCad и Altium
+-- Используем только symbol_name для всех библиотек
+-- Формируем чистые имена библиотек для Altium (без пути и расширения)
 
 -- ===== 1. ПОЛНЫЙ VIEW ДЛЯ ГЛАВНОЙ ТАБЛИЦЫ =====
+DROP VIEW IF EXISTS v_components_full CASCADE;
 CREATE OR REPLACE VIEW v_components_full AS
 SELECT 
     c.id,
@@ -40,6 +34,7 @@ SELECT
     c.value_display,
     c.value_numeric,
     c.value_unit,
+    c.value_multiplier,
     c.tolerance_percent,
     c.temp_min_c,
     c.temp_max_c,
@@ -66,18 +61,19 @@ FROM components c
 LEFT JOIN categories cat ON c.category_id = cat.id
 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id;
 
--- ===== 2. VIEW ДЛЯ KiCad - РЕЗИСТОРЫ =====
--- Иерархия: Resistors/{package}/{part_number}
+-- ===== 2. VIEW ДЛЯ KiCad/Altium - РЕЗИСТОРЫ =====
+DROP VIEW IF EXISTS resistors CASCADE;
 CREATE OR REPLACE VIEW resistors AS
 SELECT 
     c.id,
     c.part_number,
-    CONCAT('Resistors/', COALESCE(c.package, 'Unknown'), '/', c.part_number) AS symbol_name,
+    CONCAT(COALESCE(c.package, 'Unknown'), '/', c.part_number) AS symbol_name,
+    cat.designator_prefix,
     c.package,
     c.value_display,
     c.value_numeric,
     c.value_unit,
-    c.value_display AS resistance_ohm,
+    c.value_multiplier,
     c.tolerance_percent,
     c.temp_min_c,
     c.temp_max_c,
@@ -86,29 +82,39 @@ SELECT
     c.library_ref,
     c.footprint_path,
     c.footprint_ref,
+    CONCAT(
+        regexp_replace(regexp_replace(c.library_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.library_ref
+    ) AS altium_symbol_path,
+    CONCAT(
+        regexp_replace(regexp_replace(c.footprint_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.footprint_ref
+    ) AS altium_footprint_path,
     c.datasheet_url,
     c.kicad_keywords,
-    c.kicad_fp_filter
+    c.kicad_fp_filter,
+    c.altium_comment
 FROM components c
 LEFT JOIN categories cat ON c.category_id = cat.id
 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
 WHERE cat.designator_prefix = 'R';
 
--- ===== 3. VIEW ДЛЯ KiCad - КОНДЕНСАТОРЫ =====
--- Иерархия: Capacitors/{dielectric_type}/{package}/{part_number}
+-- ===== 3. VIEW ДЛЯ KiCad/Altium - КОНДЕНСАТОРЫ =====
+DROP VIEW IF EXISTS capacitors CASCADE;
 CREATE OR REPLACE VIEW capacitors AS
 SELECT 
     c.id,
     c.part_number,
-    CONCAT('Capacitors/', COALESCE(c.dielectric_type, 'Unknown'), '/', 
+    CONCAT(COALESCE(c.dielectric_type, 'Unknown'), '/', 
            COALESCE(c.package, 'Unknown'), '/', c.part_number) AS symbol_name,
+    cat.designator_prefix,
     c.dielectric_type,
     c.is_polarized,
     c.package,
     c.value_display,
     c.value_numeric,
     c.value_unit,
-    c.value_display AS capacitance_pf,
+    c.value_multiplier,
     c.tolerance_percent,
     c.temp_min_c,
     c.temp_max_c,
@@ -117,26 +123,36 @@ SELECT
     c.library_ref,
     c.footprint_path,
     c.footprint_ref,
+    CONCAT(
+        regexp_replace(regexp_replace(c.library_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.library_ref
+    ) AS altium_symbol_path,
+    CONCAT(
+        regexp_replace(regexp_replace(c.footprint_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.footprint_ref
+    ) AS altium_footprint_path,
     c.datasheet_url,
     c.kicad_keywords,
-    c.kicad_fp_filter
+    c.kicad_fp_filter,
+    c.altium_comment
 FROM components c
 LEFT JOIN categories cat ON c.category_id = cat.id
 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
 WHERE cat.designator_prefix = 'C';
 
--- ===== 4. VIEW ДЛЯ KiCad - ИНДУКТИВНОСТИ =====
--- Иерархия: Inductors/{package}/{part_number}
+-- ===== 4. VIEW ДЛЯ KiCad/Altium - ИНДУКТИВНОСТИ =====
+DROP VIEW IF EXISTS inductors CASCADE;
 CREATE OR REPLACE VIEW inductors AS
 SELECT 
     c.id,
     c.part_number,
-    CONCAT('Inductors/', COALESCE(c.package, 'Unknown'), '/', c.part_number) AS symbol_name,
+    CONCAT(COALESCE(c.package, 'Unknown'), '/', c.part_number) AS symbol_name,
+    cat.designator_prefix,
     c.package,
     c.value_display,
     c.value_numeric,
     c.value_unit,
-    c.value_display AS inductance_uh,
+    c.value_multiplier,
     c.q_factor,
     c.tolerance_percent,
     c.temp_min_c,
@@ -146,25 +162,34 @@ SELECT
     c.library_ref,
     c.footprint_path,
     c.footprint_ref,
+    CONCAT(
+        regexp_replace(regexp_replace(c.library_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.library_ref
+    ) AS altium_symbol_path,
+    CONCAT(
+        regexp_replace(regexp_replace(c.footprint_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.footprint_ref
+    ) AS altium_footprint_path,
     c.datasheet_url,
     c.kicad_keywords,
-    c.kicad_fp_filter
+    c.kicad_fp_filter,
+    c.altium_comment
 FROM components c
 LEFT JOIN categories cat ON c.category_id = cat.id
 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
 WHERE cat.designator_prefix = 'L';
 
--- ===== 5. VIEW ДЛЯ KiCad - ДИОДЫ И СВЕТОДИОДЫ =====
--- Иерархия: Diodes/{part_number}
+-- ===== 5. VIEW ДЛЯ KiCad/Altium - ДИОДЫ И СВЕТОДИОДЫ =====
+DROP VIEW IF EXISTS diodes CASCADE;
 CREATE OR REPLACE VIEW diodes AS
 SELECT 
     c.id,
     c.part_number,
-    CONCAT('Diodes/', c.part_number) AS symbol_name,
+    c.part_number AS symbol_name,
+    cat.designator_prefix,
+    c.package,
     c.forward_voltage_v,
     c.reverse_voltage_v,
-    c.package,
-    c.value_display,
     c.temp_min_c,
     c.temp_max_c,
     m.name AS manufacturer_name,
@@ -172,25 +197,34 @@ SELECT
     c.library_ref,
     c.footprint_path,
     c.footprint_ref,
+    CONCAT(
+        regexp_replace(regexp_replace(c.library_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.library_ref
+    ) AS altium_symbol_path,
+    CONCAT(
+        regexp_replace(regexp_replace(c.footprint_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.footprint_ref
+    ) AS altium_footprint_path,
     c.datasheet_url,
     c.kicad_keywords,
-    c.kicad_fp_filter
+    c.kicad_fp_filter,
+    c.altium_comment
 FROM components c
 LEFT JOIN categories cat ON c.category_id = cat.id
 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
 WHERE cat.designator_prefix IN ('D', 'LED');
 
--- ===== 6. VIEW ДЛЯ KiCad - ТРАНЗИСТОРЫ =====
--- Иерархия: Transistors/{transistor_type}/{part_number}
+-- ===== 6. VIEW ДЛЯ KiCad/Altium - ТРАНЗИСТОРЫ =====
+DROP VIEW IF EXISTS transistors CASCADE;
 CREATE OR REPLACE VIEW transistors AS
 SELECT 
     c.id,
     c.part_number,
-    CONCAT('Transistors/', COALESCE(c.transistor_type, 'Unknown'), '/', c.part_number) AS symbol_name,
+    CONCAT(COALESCE(c.transistor_type, 'Unknown'), '/', c.part_number) AS symbol_name,
+    cat.designator_prefix,
     c.transistor_type,
     c.channel_type,
     c.package,
-    c.value_display,
     c.temp_min_c,
     c.temp_max_c,
     m.name AS manufacturer_name,
@@ -198,25 +232,34 @@ SELECT
     c.library_ref,
     c.footprint_path,
     c.footprint_ref,
+    CONCAT(
+        regexp_replace(regexp_replace(c.library_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.library_ref
+    ) AS altium_symbol_path,
+    CONCAT(
+        regexp_replace(regexp_replace(c.footprint_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.footprint_ref
+    ) AS altium_footprint_path,
     c.datasheet_url,
     c.kicad_keywords,
-    c.kicad_fp_filter
+    c.kicad_fp_filter,
+    c.altium_comment
 FROM components c
 LEFT JOIN categories cat ON c.category_id = cat.id
 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
 WHERE cat.designator_prefix = 'Q';
 
--- ===== 7. VIEW ДЛЯ KiCad - МИКРОСХЕМЫ =====
--- Иерархия: ICs/{part_number}
+-- ===== 7. VIEW ДЛЯ KiCad/Altium - МИКРОСХЕМЫ =====
+DROP VIEW IF EXISTS ic CASCADE;
 CREATE OR REPLACE VIEW ic AS
 SELECT 
     c.id,
     c.part_number,
-    CONCAT('ICs/', c.part_number) AS symbol_name,
+    c.part_number AS symbol_name,
+    cat.designator_prefix,
     c.package,
     c.output_voltage_v,
     c.dropout_voltage_v,
-    c.value_display,
     c.temp_min_c,
     c.temp_max_c,
     m.name AS manufacturer_name,
@@ -224,28 +267,36 @@ SELECT
     c.library_ref,
     c.footprint_path,
     c.footprint_ref,
+    CONCAT(
+        regexp_replace(regexp_replace(c.library_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.library_ref
+    ) AS altium_symbol_path,
+    CONCAT(
+        regexp_replace(regexp_replace(c.footprint_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.footprint_ref
+    ) AS altium_footprint_path,
     c.datasheet_url,
     c.kicad_keywords,
-    c.kicad_fp_filter
+    c.kicad_fp_filter,
+    c.altium_comment
 FROM components c
 LEFT JOIN categories cat ON c.category_id = cat.id
 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
 WHERE cat.designator_prefix = 'U';
 
--- ===== 8. VIEW ДЛЯ KiCad - РАЗЪЁМЫ =====
--- Иерархия: Connectors/{pitch_mm}mm/{pin_count}pin/{part_number}
+-- ===== 8. VIEW ДЛЯ KiCad/Altium - РАЗЪЁМЫ =====
+DROP VIEW IF EXISTS connectors CASCADE;
 CREATE OR REPLACE VIEW connectors AS
 SELECT 
     c.id,
     c.part_number,
-    CONCAT('Connectors/', 
-           COALESCE(CAST(c.pitch_mm AS VARCHAR), 'Unknown'), 'mm/',
+    CONCAT(COALESCE(CAST(c.pitch_mm AS VARCHAR), 'Unknown'), 'mm/',
            COALESCE(CAST(c.pin_count AS VARCHAR), '?'), 'pin/',
            c.part_number) AS symbol_name,
+    cat.designator_prefix,
     c.pitch_mm,
     c.pin_count,
     c.package,
-    c.value_display,
     c.temp_min_c,
     c.temp_max_c,
     m.name AS manufacturer_name,
@@ -253,9 +304,18 @@ SELECT
     c.library_ref,
     c.footprint_path,
     c.footprint_ref,
+    CONCAT(
+        regexp_replace(regexp_replace(c.library_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.library_ref
+    ) AS altium_symbol_path,
+    CONCAT(
+        regexp_replace(regexp_replace(c.footprint_path, '.*[\\/]', ''), '\.[^.]+$', ''), 
+        ':', c.footprint_ref
+    ) AS altium_footprint_path,
     c.datasheet_url,
     c.kicad_keywords,
-    c.kicad_fp_filter
+    c.kicad_fp_filter,
+    c.altium_comment
 FROM components c
 LEFT JOIN categories cat ON c.category_id = cat.id
 LEFT JOIN manufacturers m ON c.manufacturer_id = m.id
