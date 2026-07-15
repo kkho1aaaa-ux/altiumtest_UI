@@ -228,7 +228,6 @@ export default {
 
 		const categoriesData = getCategories.data || [];
 		const manufacturersData = getManufacturers.data || [];
-		const mappingsData = getCategoryLibraryMappings.data || [];
 		const packagesData = getPackages.data || [];
 
 		if (!categoriesData || !Array.isArray(categoriesData) || categoriesData.length === 0) {
@@ -352,28 +351,21 @@ export default {
 				if (!result.package_standard) result.package_standard = 'Custom';
 
 				// ===== СПЕЦИАЛЬНАЯ ОБРАБОТКА: Библиотеки =====
-				const schLibMapping = mappingsData.find(m =>
-																								m.category_id === categoryId &&
-																								m.platform === 'altium' &&
-																								m.library_name?.endsWith('.SchLib')
-																							 );
-				const pcbLibMapping = mappingsData.find(m =>
-																								m.category_id === categoryId &&
-																								m.platform === 'altium' &&
-																								m.library_name?.endsWith('.PcbLib')
-																							 );
+				const bindings = componentConstants.getLibraryBindings(categoryName);
 
 				if (!this.state.mapping.library_path) {
-					result.library_path = schLibMapping?.library_name || '';
+					result.library_path = bindings ? bindings.libraryPath : '';
 				}
 				if (!this.state.mapping.library_ref) {
-					result.library_ref = designator;
+					result.library_ref = bindings ? bindings.libraryRef : designator;
 				}
 				if (!this.state.mapping.footprint_path) {
-					result.footprint_path = pcbLibMapping?.library_name || '';
+					result.footprint_path = bindings ? bindings.footprintPath : '';
 				}
 				if (!this.state.mapping.footprint_ref) {
-					result.footprint_ref = designator;
+					const pinCount = result.pin_count != null ? result.pin_count : '';
+					const pitch = result.pitch_mm != null ? result.pitch_mm : '';
+					result.footprint_ref = componentConstants.buildFootprintRef(bindings, result.package, pinCount, pitch);
 				}
 				if (!this.state.mapping.altium_designator) {
 					result.altium_designator = designator;
@@ -532,25 +524,25 @@ export default {
 					}
 
 					if (!userEditsForRow.library_path && !mapping.library_path) {
-						const schLib = mappingsData.find(m =>
-																						 m.category_id === updatedRow.category_id && m.platform === 'altium' && m.library_name?.endsWith('.SchLib')
-																						);
-						updatedRow.library_path = schLib?.library_name || '';
+						const bindings = componentConstants.getLibraryBindings(categoryName);
+						updatedRow.library_path = bindings ? bindings.libraryPath : '';
 					}
 
 					if (!userEditsForRow.library_ref && !mapping.library_ref) {
-						updatedRow.library_ref = designator;
+						const bindings = componentConstants.getLibraryBindings(categoryName);
+						updatedRow.library_ref = bindings ? bindings.libraryRef : designator;
 					}
 
 					if (!userEditsForRow.footprint_path && !mapping.footprint_path) {
-						const pcbLib = mappingsData.find(m =>
-																						 m.category_id === updatedRow.category_id && m.platform === 'altium' && m.library_name?.endsWith('.PcbLib')
-																						);
-						updatedRow.footprint_path = pcbLib?.library_name || '';
+						const bindings = componentConstants.getLibraryBindings(categoryName);
+						updatedRow.footprint_path = bindings ? bindings.footprintPath : '';
 					}
 
 					if (!userEditsForRow.footprint_ref && !mapping.footprint_ref) {
-						updatedRow.footprint_ref = designator;
+						const bindings = componentConstants.getLibraryBindings(categoryName);
+						const pinCount = updatedRow.pin_count != null ? updatedRow.pin_count : '';
+						const pitch = updatedRow.pitch_mm != null ? updatedRow.pitch_mm : '';
+						updatedRow.footprint_ref = componentConstants.buildFootprintRef(bindings, updatedRow.package, pinCount, pitch);
 					}
 
 					if (!userEditsForRow.altium_designator) {
@@ -600,6 +592,14 @@ export default {
 					}
 					if (!userEditsForRow.kicad_keywords) {
 						updatedRow.kicad_keywords = keywords;
+					}
+
+					// ===== ОБНОВЛЯЕМ FOOTPRINT REF ПРИ ИЗМЕНЕНИИ PACKAGE =====
+					if (!userEditsForRow.footprint_ref && !mapping.footprint_ref) {
+						const bindings = componentConstants.getLibraryBindings(updatedRow.category_name);
+						const pinCount = updatedRow.pin_count != null ? updatedRow.pin_count : '';
+						const pitch = updatedRow.pitch_mm != null ? updatedRow.pitch_mm : '';
+						updatedRow.footprint_ref = componentConstants.buildFootprintRef(bindings, updatedRow.package, pinCount, pitch);
 					}
 				}
 
@@ -653,6 +653,15 @@ export default {
 						updatedRow[field] = parsedValue;
 					}
 				});
+
+				// ===== ОБНОВЛЯЕМ FOOTPRINT REF ПРИ ИЗМЕНЕНИИ КОНТАКТОВ/ШАГА (разъёмы) =====
+				if ((fieldsToUpdate.has('pin_count') || fieldsToUpdate.has('pitch_mm')) &&
+						!userEditsForRow.footprint_ref && !mapping.footprint_ref) {
+					const bindings = componentConstants.getLibraryBindings(updatedRow.category_name);
+					const pinCount = updatedRow.pin_count != null ? updatedRow.pin_count : '';
+					const pitch = updatedRow.pitch_mm != null ? updatedRow.pitch_mm : '';
+					updatedRow.footprint_ref = componentConstants.buildFootprintRef(bindings, updatedRow.package, pinCount, pitch);
+				}
 
 				return updatedRow;
 			});
@@ -909,32 +918,24 @@ export default {
 							this.state.userEdits[row._id] = {};
 						}
 
-						const mappingsData = getCategoryLibraryMappings.data || [];
-						const schLib = mappingsData.find(m =>
-																						 m.category_id === category.id &&
-																						 m.platform === 'altium' &&
-																						 m.library_name?.endsWith('.SchLib')
-																						);
-						const pcbLib = mappingsData.find(m =>
-																						 m.category_id === category.id &&
-																						 m.platform === 'altium' &&
-																						 m.library_name?.endsWith('.PcbLib')
-																						);
+						const bindings = componentConstants.getLibraryBindings(englishName);
 
 						if (!this.state.userEdits[row._id].library_path) {
-							row.library_path = schLib?.library_name || '';
+							row.library_path = bindings ? bindings.libraryPath : '';
 							this.state.userEdits[row._id].library_path = row.library_path;
 						}
 						if (!this.state.userEdits[row._id].footprint_path) {
-							row.footprint_path = pcbLib?.library_name || '';
+							row.footprint_path = bindings ? bindings.footprintPath : '';
 							this.state.userEdits[row._id].footprint_path = row.footprint_path;
 						}
 						if (!this.state.userEdits[row._id].library_ref) {
-							row.library_ref = designator;
+							row.library_ref = bindings ? bindings.libraryRef : designator;
 							this.state.userEdits[row._id].library_ref = row.library_ref;
 						}
 						if (!this.state.userEdits[row._id].footprint_ref) {
-							row.footprint_ref = designator;
+							const pinCount = row.pin_count != null ? row.pin_count : '';
+							const pitch = row.pitch_mm != null ? row.pitch_mm : '';
+							row.footprint_ref = componentConstants.buildFootprintRef(bindings, row.package, pinCount, pitch);
 							this.state.userEdits[row._id].footprint_ref = row.footprint_ref;
 						}
 

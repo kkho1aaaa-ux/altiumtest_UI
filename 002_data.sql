@@ -18,26 +18,24 @@ ON CONFLICT (name) DO NOTHING;
 
 -- ===== 2. ТАБЛИЦА DESIGNATORS =====
 INSERT INTO component_designators (prefix, description, category_id, altium_lib_type, kicad_symbol_prefix, sort_order) VALUES
-('R', 'Resistor', (SELECT id FROM categories WHERE designator_prefix = 'R' LIMIT 1), 'Resistors.SchLib', 'R', 1),
-('C', 'Capacitor', (SELECT id FROM categories WHERE designator_prefix = 'C' LIMIT 1), 'Capacitors.SchLib', 'C', 2),
-('L', 'Inductor', (SELECT id FROM categories WHERE designator_prefix = 'L' LIMIT 1), 'Inductors.SchLib', 'L', 3),
-('D', 'Diode', (SELECT id FROM categories WHERE designator_prefix = 'D' LIMIT 1), 'Diodes.SchLib', 'D', 4),
-('LED', 'Light Emitting Diode', (SELECT id FROM categories WHERE designator_prefix = 'LED' LIMIT 1), 'LED.SchLib', 'LED', 5),
-('Q', 'Transistor', (SELECT id FROM categories WHERE designator_prefix = 'Q' LIMIT 1), 'Transistors.SchLib', 'Q', 6),
+('R', 'Resistor', (SELECT id FROM categories WHERE designator_prefix = 'R' LIMIT 1), 'Passive.SchLib', 'R', 1),
+('C', 'Capacitor', (SELECT id FROM categories WHERE designator_prefix = 'C' LIMIT 1), 'Passive.SchLib', 'C', 2),
+('L', 'Inductor', (SELECT id FROM categories WHERE designator_prefix = 'L' LIMIT 1), 'Passive.SchLib', 'L', 3),
+('D', 'Diode', (SELECT id FROM categories WHERE designator_prefix = 'D' LIMIT 1), 'Active.SchLib', 'D', 4),
+('LED', 'Light Emitting Diode', (SELECT id FROM categories WHERE designator_prefix = 'LED' LIMIT 1), 'Active.SchLib', 'LED', 5),
+('Q', 'Transistor', (SELECT id FROM categories WHERE designator_prefix = 'Q' LIMIT 1), 'Active.SchLib', 'Q', 6),
 ('U', 'Integrated Circuit', (SELECT id FROM categories WHERE designator_prefix = 'U' LIMIT 1), 'IC.SchLib', 'Device', 7),
 ('J', 'Connector', (SELECT id FROM categories WHERE designator_prefix = 'J' LIMIT 1), 'Connectors.SchLib', 'Connector', 8)
 ON CONFLICT (prefix) DO NOTHING;
 
 -- ===== 3. МАППИНГ БИБЛИОТЕК (Altium) — SchLib =====
+-- Пассивные (R, C, L) -> Passive.SchLib, активные (D, LED, Q) -> Active.SchLib
 INSERT INTO category_library_mapping (category_id, platform, library_name, is_default)
 SELECT id, 'altium',
     CASE 
-        WHEN name IN ('Diodes', 'LEDs') THEN 'Diodes.SchLib'
-        WHEN name = 'Transistors' THEN 'Transistors.SchLib'
-        WHEN name IN ('ICs') THEN 'IC.SchLib'
-        WHEN name = 'Resistors' THEN 'Resistors.SchLib'
-        WHEN name = 'Capacitors' THEN 'Capacitors.SchLib'
-        WHEN name = 'Inductors' THEN 'Inductors.SchLib'
+        WHEN name IN ('Resistors', 'Capacitors', 'Inductors') THEN 'Passive.SchLib'
+        WHEN name IN ('Diodes', 'LEDs', 'Transistors') THEN 'Active.SchLib'
+        WHEN name = 'ICs' THEN 'IC.SchLib'
         WHEN name = 'Connectors' THEN 'Connectors.SchLib'
         ELSE 'IC.SchLib'
     END,

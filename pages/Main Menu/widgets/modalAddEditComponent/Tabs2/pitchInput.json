@@ -23,10 +23,15 @@
       "key": "isDisabled"
     }
   ],
-  "dynamicTriggerPathList": [],
+  "dynamicTriggerPathList": [
+    {
+      "key": "onTextChange"
+    }
+  ],
   "iconAlign": "left",
   "inputType": "TEXT",
   "isDisabled": "{{!formHandlers.isConnector()}}",
+  "onTextChange": "{{formHandlers.updateFootprintRef()}}",
   "isLoading": false,
   "isRequired": false,
   "isVisible": true,

@@ -188,36 +188,32 @@ export default {
 			return;
 		}
 
-		const mappingsData = getCategoryLibraryMappings.data;
-		const mappings = Array.isArray(mappingsData) ? mappingsData : [];
-
-		const schLibMapping = mappings.find(m =>
-																				m.category_id == categoryId &&
-																				m.platform === 'altium' &&
-																				m.library_name &&
-																				m.library_name.endsWith('.SchLib')
-																			 );
-
-		const pcbLibMapping = mappings.find(m =>
-																				m.category_id == categoryId &&
-																				m.platform === 'altium' &&
-																				m.library_name &&
-																				m.library_name.endsWith('.PcbLib')
-																			 );
-
-		const schLib = schLibMapping ? schLibMapping.library_name : '';
-		const pcbLib = pcbLibMapping ? pcbLibMapping.library_name : '';
 		const designator = selectedCategory.designator_prefix || 'X';
 
-		libraryPathInput.setValue(schLib);
-		footprintPathInput.setValue(pcbLib);
+		// ===== БИНДЫ БИБЛИОТЕК ПО КАТЕГОРИИ =====
+		const bindings = componentConstants.getLibraryBindings(selectedCategory.name);
+
+		if (bindings) {
+			libraryPathInput.setValue(bindings.libraryPath);
+			libraryRefInput.setValue(bindings.libraryRef);
+			footprintPathInput.setValue(bindings.footprintPath);
+		} else {
+			libraryPathInput.setValue('');
+			libraryRefInput.setValue('');
+			footprintPathInput.setValue('');
+		}
+
 		altiumDesignatorInput.setValue(designator);
-		libraryRefInput.setValue(designator);
-		footprintRefInput.setValue(designator);
 
+		// Footprint Ref зависит от корпуса/контактов/шага
 		const packageName = packageSelect.selectedOptionValue || '';
-		const fpFilter = packageName ? `${designator}*${packageName}*` : '';
+		const pinCount = pinCountInput.text || '';
+		const pitch = pitchInput.text || '';
+		footprintRefInput.setValue(
+			componentConstants.buildFootprintRef(bindings, packageName, pinCount, pitch)
+		);
 
+		const fpFilter = packageName ? `${designator}*${packageName}*` : '';
 		const keywords = `${selectedCategory.name.toLowerCase()} ${packageName}`.trim();
 
 		kicadFpFilterInput.setValue(fpFilter);
@@ -230,6 +226,27 @@ export default {
 
 		// ===== ОЧИСТКА СПЕЦ ПОЛЕЙ ПРИ СМЕНЕ КАТЕГОРИИ =====
 		formHandlers.clearSpecFields();
+	},
+
+	// Пересчитывает Footprint Ref при изменении корпуса/контактов/шага
+	updateFootprintRef: () => {
+		const categoryId = categorySelect.selectedOptionValue;
+		if (!categoryId) return;
+
+		const categories = getCategories.data || [];
+		const selectedCategory = categories.find(cat => cat.id == categoryId);
+		if (!selectedCategory) return;
+
+		const bindings = componentConstants.getLibraryBindings(selectedCategory.name);
+		if (!bindings) return;
+
+		const packageName = packageSelect.selectedOptionValue || '';
+		const pinCount = pinCountInput.text || '';
+		const pitch = pitchInput.text || '';
+
+		footprintRefInput.setValue(
+			componentConstants.buildFootprintRef(bindings, packageName, pinCount, pitch)
+		);
 	},
 
 	onPackageChange: () => {
@@ -248,6 +265,9 @@ export default {
 
 		kicadFpFilterInput.setValue(fpFilter);
 		kicadKeywordsInput.setValue(keywords);
+
+		// Footprint Ref зависит от корпуса
+		formHandlers.updateFootprintRef();
 	},
 
 	onPackageChangeWithDelay: () => {

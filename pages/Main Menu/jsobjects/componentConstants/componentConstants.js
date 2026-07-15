@@ -230,5 +230,88 @@ export default {
 			'Connectors': 'V'
 		};
 		return unitMap[categoryName] || '';
+	},
+
+	// ===== БИНДЫ АВТОЗАПОЛНЕНИЯ БИБЛИОТЕК (Altium) =====
+	// Фиксированное соответствие категория -> Library Path / Library Ref /
+	// Footprint Path / Footprint Ref.
+	//   libraryPath  : SchLib
+	//   libraryRef   : имя компонента в схемной библиотеке
+	//   footprintPath: PcbLib
+	//   footprintRef : посадочное место (зависит от корпуса/контактов)
+	// Для footprintRef используются плейсхолдеры:
+	//   {package}      - корпус (например 0402)
+	//   {pinCount}     - количество контактов разъёма
+	//   {pitch}        - шаг контактов разъёма
+	LIBRARY_BINDINGS: {
+		'Resistors': {
+			libraryPath: 'Passive.SchLib',
+			libraryRef: 'Resistor',
+			footprintPath: 'Resistors.PcbLib',
+			footprintRef: 'R{package}'
+		},
+		'Capacitors': {
+			libraryPath: 'Passive.SchLib',
+			libraryRef: 'Capacitor',
+			footprintPath: 'Capacitors.PcbLib',
+			footprintRef: 'C{package}'
+		},
+		'Inductors': {
+			libraryPath: 'Passive.SchLib',
+			libraryRef: 'Inductor',
+			footprintPath: 'Inductors.PcbLib',
+			footprintRef: 'L{package}'
+		},
+		'Diodes': {
+			libraryPath: 'Active.SchLib',
+			libraryRef: 'Diode',
+			footprintPath: 'Diodes.PcbLib',
+			footprintRef: 'D{package}'
+		},
+		'LEDs': {
+			libraryPath: 'Active.SchLib',
+			libraryRef: 'LED',
+			footprintPath: 'LED.PcbLib',
+			footprintRef: 'LED{package}'
+		},
+		'Transistors': {
+			libraryPath: 'Active.SchLib',
+			libraryRef: 'Transistor',
+			footprintPath: 'Transistors.PcbLib',
+			footprintRef: 'Q{package}'
+		},
+		'ICs': {
+			libraryPath: 'IC.SchLib',
+			libraryRef: '',
+			footprintPath: 'IC.PcbLib',
+			footprintRef: '{package}'
+		},
+		'Connectors': {
+			libraryPath: 'Connectors.SchLib',
+			libraryRef: 'J',
+			footprintPath: 'Connectors.PcbLib',
+			footprintRef: 'J{pinCount}-{pitch}'
+		}
+	},
+
+	// Возвращает бинды для категории (по английскому имени).
+	// Если передано имя на русском - переводит в английское.
+	getLibraryBindings: (categoryName) => {
+		if (!categoryName) return null;
+		const enName = componentConstants.getEnglishCategoryName(categoryName);
+		return componentConstants.LIBRARY_BINDINGS[enName] || null;
+	},
+
+	// Формирует Footprint Ref на основе бинда и значений корпуса/контактов/шага.
+	// packageName - выбранный корпус (например "0402")
+	// pinCount    - количество контактов (для разъёмов)
+	// pitch       - шаг контактов (для разъёмов)
+	buildFootprintRef: (binding, packageName, pinCount, pitch) => {
+		if (!binding) return '';
+		let ref = binding.footprintRef || '';
+		ref = ref.replace(/\{package\}/g, packageName || '');
+		ref = ref.replace(/\{pinCount\}/g, pinCount != null && pinCount !== '' ? String(pinCount) : '');
+		ref = ref.replace(/\{pitch\}/g, pitch != null && pitch !== '' ? String(pitch) : '');
+		return ref;
 	}
 }
